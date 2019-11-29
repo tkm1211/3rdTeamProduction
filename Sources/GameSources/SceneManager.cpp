@@ -13,6 +13,8 @@ void SceneManager::Init()
 	SetScene(new SceneTitle());
 	ShaderSystem::GetInstance()->Init();
 	Light::GetInstance()->Init();
+	//Fade‚Ì‰Šú‰»ˆ—
+	Fade::GetInstance()->Init();
 }
 
 void SceneManager::Update()
@@ -50,6 +52,9 @@ void SceneManager::Update()
 		pScene->Init();
 	}
 	pScene->Update();
+
+	//Fade‚ÌXVˆ—
+	Fade::GetInstance()->Update();
 }
 
 void SceneManager::Render()
@@ -69,6 +74,9 @@ void SceneManager::Render()
 	}
 	pScene->Render();
 
+	//Fade‚Ì•`‰æˆ—
+	Fade::GetInstance()->Draw();
+	
 // IMGUI *************************************************************************
 #if DEBUG_MODE
 
@@ -124,4 +132,8 @@ void SceneManager::UnInit()
 	pScene = nullptr;
 	pNext = nullptr;
 	pStackScene = nullptr;
+	
+	//Fade‚Ì‰ð•úˆ—
+	Fade::GetInstance()->UnInit();
+	
 }

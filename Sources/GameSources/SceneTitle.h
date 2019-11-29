@@ -9,10 +9,12 @@
 #include "Scene.h"
 #include "Collision.h"
 
+#include "BG.h"
 
 class SceneTitle : public Scene
 {
-public:
+private:
+	std::unique_ptr<BG> bg;
 
 public:
 	void Init();

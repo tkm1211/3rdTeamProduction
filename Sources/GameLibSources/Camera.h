@@ -6,7 +6,7 @@
 class Camera
 {
 private:
-	const DirectX::XMFLOAT3	originPos = DirectX::XMFLOAT3(0.0f, 500.0f, 41.0f);
+	const DirectX::XMFLOAT3	originPos = DirectX::XMFLOAT3(270.0f, 500.0f, 1414.0f);
 	const DirectX::XMFLOAT3	originTarget = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	const DirectX::XMFLOAT3	originUp = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 	const DirectX::XMFLOAT3	originRight = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
@@ -24,6 +24,8 @@ private:
 	float rotateY;
 
 	float distance;
+
+	float angleY;
 
 public:
 	DirectX::XMFLOAT3	target;
@@ -51,6 +53,9 @@ public:
 	}
 	void SetRotateX(float _rotateX) { rotateX = _rotateX; }
 	void SetRotateY(float _rotateY) { rotateY = _rotateY; }
+	float GetRotateX() { return rotateX; }
+	float GetRotateY() { return rotateY; }
+	float GetAngleY() { return angleY; }
 };
 
 int GetJoystickAngle();

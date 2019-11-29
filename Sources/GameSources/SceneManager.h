@@ -5,6 +5,8 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 
+#include "Fade.h"
+
 
 class SceneManager
 {
@@ -42,7 +44,8 @@ private:
 			{
 				if (GetKeyState('L') < 0)
 				{
-					SetScene(new SceneLabo(), false);
+					Fade::GetInstance()->onFadeFlg = true;
+					Fade::GetInstance()->SetNextScene(new SceneLabo());
 				}
 			}
 		}

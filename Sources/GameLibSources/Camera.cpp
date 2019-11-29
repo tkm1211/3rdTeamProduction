@@ -35,6 +35,8 @@ void Camera::Init()
 	rotateX = 0.0f;
 	rotateY = 0.0f;
 
+	angleY = 0.0f;
+
 	foward.x = target.x - pos.x;
 	foward.y = target.y - pos.y;
 	foward.z = target.z - pos.z;
@@ -78,6 +80,7 @@ void Camera::Update()
 	ImGui::Text("target.x : %f", target.x);
 	ImGui::Text("target.y : %f", target.y);
 	ImGui::Text("target.z : %f", target.z);
+	ImGui::Text("angle : %f", angleY);
 
 	// ImGui::Text("MOUSE.diMouseState.lX : %f", static_cast<float>(MOUSE.diMouseState.lX));
 	// ImGui::Text("MOUSE.diMouseState.lY : %f", static_cast<float>(MOUSE.diMouseState.lY));
@@ -147,11 +150,15 @@ void Camera::Update()
 	DirectX::XMStoreFloat3(&up, _up);
 	DirectX::XMStoreFloat3(&right, _right);
 
+	PadUpdate();
 }
 
 void Camera::PadUpdate()
 {
-	static float angle = 0.0f;
+	rotateY += (static_cast<float>(xInput[0].sRX) / 1000.0f) * 0.01745f;
+	rotateX += (static_cast<float>(xInput[0].sRY) / 1000.0f) * 0.01745f;
+
+	/*static float angle = 0.0f;
 	angle -= (static_cast<float>(xInput[0].sRX) / 1000.0f);
 
 	pos.x = target.x + 1000.0f * cosf(angle * 0.01745f);
@@ -159,7 +166,7 @@ void Camera::PadUpdate()
 
 	foward.x = target.x - pos.x;
 	foward.y = target.y - pos.y;
-	foward.z = target.z - pos.z;
+	foward.z = target.z - pos.z;*/
 }
 
 #define PI 3.14159265358979f
