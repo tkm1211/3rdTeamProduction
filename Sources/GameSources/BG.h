@@ -11,6 +11,9 @@ private:
 	OBJ3D modelData;
 
 public:
+	BG() {}
+	~BG() {}
+
 	void Init();
 	void Update();
 	void Draw();

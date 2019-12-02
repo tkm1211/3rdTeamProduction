@@ -1,7 +1,6 @@
 #pragma once
 #include "Model.h"
 #include "OBJ3D.h"
-#include "Collision.h"
 
 //creal
 #undef max
@@ -15,6 +14,8 @@
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
+
+
 
 
 class Player
@@ -83,12 +84,16 @@ private:
 	float GetLeftStickAngle();
 
 public:
+	Player() {}
+	~Player() {}
+
 	void Init();
 	void Update();
-	void Attack();
-	void Move();
 	void Draw();
 	void UnInit();
+
+	void Attack();
+	void Move();
 
 	template<class Archive>
 	void serialize(Archive& archive)
@@ -102,8 +107,7 @@ public:
 	}
 
 	OBJ3D GetModelData() { return modelData; }
-	void SetPos(DirectX::XMFLOAT3 _pos) { modelData.SetPos(_pos); }
-	std::unique_ptr<CollisionPrimitive> pCylinderCollision;
+
 
 	void ImGui();
 

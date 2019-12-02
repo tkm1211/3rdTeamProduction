@@ -169,7 +169,7 @@ void Billboard::Render
 	float tw,
 	float th,
 	float angle,
-	float scale,
+	const DirectX::XMFLOAT2& scale,
 	const DirectX::XMFLOAT4& color )
 {
 	HRESULT hr = S_OK;
@@ -237,7 +237,7 @@ void Billboard::Render
 
 	//	ägëÂÅEèkè¨
 	float aspectRatio = static_cast<float>(texture2dDesc.Width) / static_cast<float>(texture2dDesc.Height);
-	S = DirectX::XMMatrixScaling(scale * aspectRatio, scale * aspectRatio, 1.0f);
+	S = DirectX::XMMatrixScaling(scale.x * aspectRatio, scale.y * aspectRatio, 1.0f);
 
 	//	âÒì]
 	R = DirectX::XMMatrixRotationZ(angle);

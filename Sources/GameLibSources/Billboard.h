@@ -98,7 +98,7 @@ public:
 		float tw,
 		float th,
 		float angle,
-		float scale,
+		const DirectX::XMFLOAT2& scale,
 		const DirectX::XMFLOAT4& color
 	);
 	void End();

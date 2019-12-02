@@ -20,6 +20,9 @@ private:
 public:
 	bool onFadeFlg;
 
+	Fade() {}
+	~Fade() {}
+
 	void Init();
 	void Update();
 	void Draw();

@@ -9,13 +9,13 @@
 #include "Scene.h"
 #include "Collision.h"
 
+#include "BuffArea.h"
 #include "BG.h"
 
 class SceneTitle : public Scene
 {
 private:
-	std::unique_ptr<BG> bg;
-
+	std::unique_ptr<BG>                    bg;
 public:
 	void Init();
 	void UnInit();

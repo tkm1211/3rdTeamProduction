@@ -1,8 +1,8 @@
 #include "Player.h"
 #include "Camera.h"
 #include "FrameWork.h"
-#include "Shader.h"
 #include "InputDevice.h"
+#include "Shader.h"
 #include <fstream>
 #include <string>
 
@@ -15,8 +15,6 @@ void Player::Init()
 	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack01.fbx", false);
 	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack02.fbx", false);
 	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack03.fbx", false);
-
-	pCylinderCollision = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CYLINDER, true, DirectX::XMFLOAT3(75.0f, 10.0f, 75.0f));
 
 	modelData.Init();
 	SwitchMotion(ModelState::WAIT);
@@ -62,6 +60,7 @@ void Player::UnInit()
 
 void Player::Update()
 {
+
 	Move();
 
 	Attack();
@@ -69,8 +68,6 @@ void Player::Update()
 	modelData.SetPosX( modelData.GetPos().x + moveSpeed.x );
 	modelData.SetPosZ( modelData.GetPos().z + moveSpeed.z );
 
-	pCylinderCollision->SetPosX( modelData.GetPos().x );
-	pCylinderCollision->SetPosZ( modelData.GetPos().z );
 
 #if _DEBUG
 	ImGui();
@@ -113,9 +110,6 @@ void Player::Draw()
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	}
-
-	pCylinderCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(),
-		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), true);
 }
 
 
@@ -335,7 +329,7 @@ void Player::Attack()
 
 void Player::ImGui()
 {
-	ImGui::Begin(u8"Player");
+	ImGui::Begin(u8"Plyer");
 
 	ImGui::Text("angleY : %f", modelData.GetAngle().y);
 	ImGui::Text("posX   : %f", modelData.GetPos().x);
@@ -346,11 +340,6 @@ void Player::ImGui()
 	ImGui::DragFloat("ATTACKPOWER1##Player", &attackInfo[0].power);
 	ImGui::DragFloat("ATTACKPOWER2##Player", &attackInfo[1].power);
 	ImGui::DragFloat("ATTACKPOWER3##Player", &attackInfo[2].power);
-
-	DirectX::XMFLOAT3 _scale = pCylinderCollision->GetCollisionScale();
-	ImGui::DragFloat3("CylinderCollision", &_scale.x);
-	pCylinderCollision->SetScale(_scale);
-	pCylinderCollision->SetCollisionScale(_scale);
 
 	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCount::ATTACK_1ST);
 	ImGui::SameLine();

@@ -53,7 +53,7 @@ public:
 
 		// BS_ADD
 		ZeroMemory( &blendDesc, sizeof( blendDesc ) );
-		blendDesc.AlphaToCoverageEnable					= FALSE;
+		blendDesc.AlphaToCoverageEnable					= TRUE;
 		blendDesc.IndependentBlendEnable				= FALSE;
 		blendDesc.RenderTarget[0].BlendEnable			= TRUE;
 		blendDesc.RenderTarget[0].SrcBlend				= D3D11_BLEND_SRC_ALPHA; //D3D11_BLEND_ONE
