@@ -56,7 +56,15 @@ public:
 	virtual void ReStartAnimation() {}
 	virtual void PauseAnimation() {}
 	virtual int GetAnimationFrame() { return 0; }
-	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, DirectX::XMFLOAT3& pos ) { return DirectX::XMFLOAT4X4(); }
+	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo ) { return DirectX::XMFLOAT4X4(); }
+	virtual int RayPick
+	(
+		const DirectX::XMFLOAT3& startPosition,
+		const DirectX::XMFLOAT3& endPosition,
+		DirectX::XMFLOAT3* outPosition,
+		DirectX::XMFLOAT3* outNormal,
+		float* outLength
+	) { return 0; }
 
 	template <class T>
 	void serialize( T &archive )

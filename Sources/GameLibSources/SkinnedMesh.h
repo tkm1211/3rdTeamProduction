@@ -172,10 +172,46 @@ private:
 		}
 	};
 
+	struct VectexPos
+	{
+		DirectX::XMFLOAT4 pos;
+
+		VectexPos() = default;
+
+		template <class T>
+		void serialize(T& archive)
+		{
+			archive
+			(
+				CEREAL_NVP(pos.x), CEREAL_NVP(pos.y), CEREAL_NVP(pos.z), CEREAL_NVP(pos.w)
+			);
+		}
+	};
+
+	struct Face
+	{
+		DirectX::XMFLOAT3 pos[3];
+		int materialIndex;
+
+		Face() = default;
+
+		template <class T>
+		void serialize(T& archive)
+		{
+			archive
+			(
+				CEREAL_NVP( pos[0].x ), CEREAL_NVP( pos[0].y ), CEREAL_NVP( pos[0].z ),
+				CEREAL_NVP( pos[1].x ), CEREAL_NVP( pos[1].y ), CEREAL_NVP( pos[1].z ),
+				CEREAL_NVP( pos[2].x ), CEREAL_NVP( pos[2].y ), CEREAL_NVP( pos[2].z ),
+				CEREAL_NVP( materialIndex )
+			);
+		}
+	};
+
 	struct MeshData
 	{
 		std::string name;
-		DirectX::XMFLOAT4 pos;
+		std::vector<VectexPos> vectexPos;
 		float boneWeights[MAX_BONE_INFLUENCES] = { 1, 0, 0, 0 };
 		int boneIndeces[MAX_BONE_INFLUENCES] = {};
 		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
@@ -192,7 +228,7 @@ private:
 			archive
 			(
 				CEREAL_NVP( name ),
-				CEREAL_NVP( pos.x ), CEREAL_NVP( pos.y ), CEREAL_NVP( pos.z ), CEREAL_NVP( pos.w ),
+				CEREAL_NVP( vectexPos ),
 				CEREAL_NVP( boneWeights ),
 				CEREAL_NVP( boneIndeces ),
 				CEREAL_NVP( subsets ),
@@ -217,6 +253,7 @@ public:
 	std::vector<std::vector<Vertex>> integratedVertex;
 	std::vector<std::vector<unsigned int>>  integratedIndex;
 	std::vector<MeshData> meshes;
+	std::vector<Face> faces;
 	int numIndex;
 
 private:
@@ -368,6 +405,16 @@ public:
 		return animationFrame;
 	}
 
+	// レイピック関数
+	int RayPick
+	(
+		const DirectX::XMFLOAT3& startPosition,
+		const DirectX::XMFLOAT3& endPosition,
+		DirectX::XMFLOAT3* outPosition,
+		DirectX::XMFLOAT3* outNormal,
+		float* outLength
+	);
+
 private:
 	void LoadFBX( ID3D11Device *device, const char* fileName );
 	void FbxAMatrixToXMFLOAT4X4( const FbxAMatrix& fbxamatrix, DirectX::XMFLOAT4X4& xmfloat4x4 );
@@ -400,7 +447,7 @@ private:
 		// *******************************************************************************
 
 	}
-	DirectX::XMFLOAT4X4 GetBoneTransform(std::string name, DirectX::XMFLOAT3& pos)
+	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo )
 	{
 #if 0
 		for (auto& mesh : meshes)
@@ -423,13 +470,15 @@ private:
 		for (auto& mesh : meshes)
 		{
 			if (mesh.name != name) continue;
-
+			if (vectexPosNo < 0) continue;
+			if (static_cast<int>(mesh.vectexPos.size()) <= vectexPosNo) continue;
 
 			std::vector<Bone>& skeletal = mesh.skeletalAnimations.at(animationNumber).skeletel.at(animationFrame).bone;
 			size_t number_of_bones = skeletal.size();
 			_ASSERT_EXPR(number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES.");
 
-			DirectX::XMFLOAT4 _pos = { mesh.pos.x + pos.x, mesh.pos.y + pos.y, mesh.pos.z + pos.z, mesh.pos.w };
+
+			DirectX::XMFLOAT4 _pos = { mesh.vectexPos[vectexPosNo].pos.x + pos.x, mesh.vectexPos[vectexPosNo].pos.y + pos.y, mesh.vectexPos[vectexPosNo].pos.z + pos.z, mesh.vectexPos[vectexPosNo].pos.w };
 			DirectX::XMFLOAT3 _p = { 0, 0, 0 };
 			
 			for (size_t i = 0; i < 4; i++)
@@ -489,6 +538,7 @@ public:
 			CEREAL_NVP( integratedVertex ),
 			CEREAL_NVP( integratedIndex ),
 			CEREAL_NVP( meshes ),
+			CEREAL_NVP( faces ),
 			CEREAL_NVP( numIndex )
 		);
 	}
