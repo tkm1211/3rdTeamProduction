@@ -4,6 +4,17 @@
 #include <wrl.h>
 #include <DirectXMath.h>
 
+#undef max
+#undef min
+
+#include <cereal/cereal.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/string.hpp>
+
 
 class OBJ3D
 {
@@ -31,6 +42,7 @@ public:
 public:
 	void Init()
 	{
+#if 0
 		pos    = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
 		speed  = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
 		scale  = DirectX::XMFLOAT3( 1.0f, 1.0f, 1.0f );
@@ -38,6 +50,7 @@ public:
 		adjust = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
 		color  = DirectX::XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
 		exists = false;
+#endif
 	}
 	void UnInit()
 	{
@@ -92,5 +105,31 @@ public: // Setä÷êî
 		color = _color;
 		adjust = _adjust;
 		exists = _exists;
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("pos.x", pos.x),
+			cereal::make_nvp("pos.y", pos.y),
+			cereal::make_nvp("pos.z", pos.z),
+			cereal::make_nvp("speed.x", speed.x),
+			cereal::make_nvp("speed.y", speed.y),
+			cereal::make_nvp("speed.z", speed.z),
+			cereal::make_nvp("scale.x", scale.x),
+			cereal::make_nvp("scale.y", scale.y),
+			cereal::make_nvp("scale.z", scale.z),
+			cereal::make_nvp("angle.x", angle.x),
+			cereal::make_nvp("angle.y", angle.y),
+			cereal::make_nvp("angle.z", angle.z),
+			cereal::make_nvp("color.r", color.x),
+			cereal::make_nvp("color.g", color.y),
+			cereal::make_nvp("color.b", color.z),
+			cereal::make_nvp("color.a", color.w),
+			cereal::make_nvp("adjust.x", adjust.x),
+			cereal::make_nvp("adjust.y", adjust.y),
+			cereal::make_nvp("adjust.z", adjust.z)
+		);
 	}
 };
