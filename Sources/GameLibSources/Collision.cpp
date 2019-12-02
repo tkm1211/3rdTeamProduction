@@ -504,6 +504,157 @@ bool Collision::CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius
 //	}
 //}
 
+float Collision::Dot(DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1)
+{
+	float dot;
+
+	dot = (v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z);
+
+	return dot;
+}
+DirectX::XMFLOAT3 Collision::Cross(DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1)
+{
+	DirectX::XMFLOAT3 cross;
+	cross.x = v0.y * v1.z - v0.z * v1.y;
+	cross.y = v0.z * v1.x - v0.x * v1.z;
+	cross.z = v0.x * v1.y - v0.y * v1.x;
+	return cross;
+}
+DirectX::XMFLOAT3 Collision::Normalize(DirectX::XMFLOAT3 v)
+{
+	DirectX::XMFLOAT3 _v;
+	float length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+	
+	_v.x /= length;
+	_v.y /= length;
+	_v.z /= length;
+
+	return _v;
+}
+
+// -------------------------------------------------------------
+/// <summary>
+/// 3次元座標上の線分と3角ポリゴンが交差してるかを判定
+/// </summary>
+bool Collision::detectIsIntersectedLineSegmentAndPolygon(DirectX::XMFLOAT3 a, DirectX::XMFLOAT3 b, DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1, DirectX::XMFLOAT3 v2)
+{
+	bool bCollision = detectCollisionLineSegmentAndPlane(a, b, v0, v1, v2);
+
+	if (bCollision)
+	{
+		DirectX::XMFLOAT3 p = calcIntersectionLineSegmentAndPlane(a, b, v0, v1, v2);
+		if (detectPointIsEnclosedByPolygon(p, v0, v1, v2))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+// -------------------------------------------------------------
+/// <summary>
+/// ポリゴン上に点が含まれるかを判定
+/// </summary>
+bool Collision::detectPointIsEnclosedByPolygon(DirectX::XMFLOAT3 p, DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1, DirectX::XMFLOAT3 v2)
+{
+	DirectX::XMFLOAT3 vec1 = { v1.x - v0.x, v1.y - v0.y, v1.z - v0.z };
+	DirectX::XMFLOAT3 vec2 = { v2.x - v1.x, v2.y - v1.y, v2.z - v1.z };
+	DirectX::XMFLOAT3 vec3 = { v0.x - v2.x, v0.y - v2.y, v0.z - v2.z };
+
+	DirectX::XMFLOAT3 vec4 = { p.x - v1.x, p.y - v1.y, p.z - v1.z };
+	DirectX::XMFLOAT3 vec5 = { p.x - v2.x, p.y - v2.y, p.z - v2.z };
+	DirectX::XMFLOAT3 vec6 = { p.x - v0.x, p.y - v0.y, p.z - v0.z };
+
+	DirectX::XMFLOAT3 n = Normalize(Cross(vec1, vec2));
+
+	DirectX::XMFLOAT3 n0 = Normalize(Cross(vec1, vec4));
+	DirectX::XMFLOAT3 n1 = Normalize(Cross(vec2, vec5));
+	DirectX::XMFLOAT3 n2 = Normalize(Cross(vec3, vec6));
+
+	if ((1.0f - Dot(n, n0)) > 0.001f) return false;
+	if ((1.0f - Dot(n, n1)) > 0.001f) return false;
+	if ((1.0f - Dot(n, n2)) > 0.001f) return false;
+
+	return true;
+}
+
+// -------------------------------------------------------------
+/// <summary>
+/// 3次元座標上の線分と平面の交点座標を求める
+/// </summary>
+DirectX::XMFLOAT3 Collision::calcIntersectionLineSegmentAndPlane(DirectX::XMFLOAT3 a, DirectX::XMFLOAT3 b, DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1, DirectX::XMFLOAT3 v2)
+{
+	float distAP = calcDistancePointAndPlane(a, v0, v1, v2);
+	float distBP = calcDistancePointAndPlane(b, v0, v1, v2);
+
+	float t = distAP / (distAP + distBP);
+
+	DirectX::XMFLOAT3 result;
+	result.x = (b.x - a.x) * t + a.x;
+	result.y = (b.y - a.y) * t + a.y;
+	result.z = (b.z - a.z) * t + a.z;
+
+	return result;
+}
+
+// -------------------------------------------------------------
+/// <summary>
+/// ある点から平面までの距離
+/// </summary>
+float Collision::calcDistancePointAndPlane(DirectX::XMFLOAT3 p, DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1, DirectX::XMFLOAT3 v2)
+{
+	DirectX::XMFLOAT3 vec1 = { v1.x - v0.x, v1.y - v0.y, v1.z - v0.z };
+	DirectX::XMFLOAT3 vec2 = { v2.x - v1.x, v2.y - v1.y, v2.z - v1.z };
+
+	DirectX::XMFLOAT3 n = Normalize(Cross(vec1, vec2));
+	DirectX::XMFLOAT3 g;
+	g.x = (v0.x + v1.x + v2.x) / 3.0f;
+	g.y = (v0.y + v1.y + v2.y) / 3.0f;
+	g.z = (v0.z + v1.z + v2.z) / 3.0f;
+
+	DirectX::XMFLOAT3 vec3;
+	vec3.x = p.x - g.x;
+	vec3.y = p.y - g.y;
+	vec3.z = p.z - g.z;
+
+	return abs(Dot(n, vec3));
+}
+
+// -------------------------------------------------------------
+/// <summary>
+/// 3次元座標上の線分と平面が交差してるかを判定
+/// </summary>
+bool Collision::detectCollisionLineSegmentAndPlane(DirectX::XMFLOAT3 a, DirectX::XMFLOAT3 b, DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1, DirectX::XMFLOAT3 v2)
+{
+	DirectX::XMFLOAT3 vec1 = { v1.x - v0.x, v1.y - v0.y, v1.z - v0.z };
+	DirectX::XMFLOAT3 vec2 = { v2.x - v1.x, v2.y - v1.y, v2.z - v1.z };
+
+	DirectX::XMFLOAT3 n = Normalize(Cross(vec1, vec2));
+	DirectX::XMFLOAT3 g;
+	g.x = (v0.x + v1.x + v2.x) / 3.0f;
+	g.y = (v0.y + v1.y + v2.y) / 3.0f;
+	g.z = (v0.z + v1.z + v2.z) / 3.0f;
+
+	DirectX::XMFLOAT3 vec3 = { a.x - g.x, a.y - g.y, a.z - g.z };
+	DirectX::XMFLOAT3 vec4 = { b.x - g.x, b.y - g.y, b.z - g.z };
+
+	if (Dot(vec3, n) * Dot(vec4, n) <= 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 CollisionPrimitive::CollisionPrimitive( int type, bool isCreateBottom, DirectX::XMFLOAT3 _collisionScale)
 {
