@@ -18,12 +18,19 @@ void SceneTitle::Init()
 
 void SceneTitle::Update()
 {
+	if (GetKeyState('G') < 0)
+	{
+		Fade::GetInstance()->onFadeFlg = true;
+		Fade::GetInstance()->SetNextScene(new SceneGame());
+	}
+
 	bg->Update();
 	CharacterSystem::GetInstance()->Update();
-	camera.target = DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x, 
-		                               CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-		                               CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
-		                             );
+	camera.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x, 
+		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
+		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
+		                             ));
+
 }
 
 void SceneTitle::Render()

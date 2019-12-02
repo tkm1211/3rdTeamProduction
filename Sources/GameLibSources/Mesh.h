@@ -45,7 +45,8 @@ public:
 		const DirectX::XMFLOAT4X4& world,
 		const DirectX::XMFLOAT4& lightDirection,
 		const DirectX::XMFLOAT4& materialColor,
-		float elapsedTime
+		float elapsedTime,
+		bool inCamera
 	) {}
 
 	//virtual void Release() {}

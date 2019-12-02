@@ -17,7 +17,7 @@ void Light::Init()
 	lightDir.z = cosf(lightAngle);
 
 	SetPointLight(0, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, 50.0f);
-	SetSpotLight(0, DirectX::XMFLOAT3(-5, 5, -5), DirectX::XMFLOAT3(0, 1, 0), DirectX::XMFLOAT3(1, -0.2, 0), 50.0f, 0.99f, 0.9f);
+	SetSpotLight(0, DirectX::XMFLOAT3(-5.0f, 5.0f, -5.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT3(1.0f, -0.2f, 0.0f), 50.0f, 0.99f, 0.9f);
 
 	HRESULT hr = S_OK;
 	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();

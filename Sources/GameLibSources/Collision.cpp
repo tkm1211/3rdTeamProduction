@@ -19,19 +19,32 @@ bool Collision::SphereVsSphere(DirectX::XMFLOAT3 pos1, DirectX::XMFLOAT3 pos2, f
 //******************************************************
 //球体　vs　カプセル
 //******************************************************
-bool Collision::SphereVsCapsule(DirectX::XMFLOAT3 sphere, DirectX::XMFLOAT3 capsule1, DirectX::XMFLOAT3 capsule2, float sphere_radius, float capsule_radius)
+bool Collision::SphereVsCapsule(DirectX::XMFLOAT3& capsule1, DirectX::XMFLOAT3 capsule2, float capsule_radius, DirectX::XMFLOAT3 sphere, float sphere_radius)
 {
 	// 球の中心とカプセルの線分の距離（の二乗）を計算
-	float dis = GetSqDistancePoint2Segment(sphere, capsule1, capsule2);
+	DirectX::XMFLOAT3 dir;
+	float dis = GetSqDistancePoint2Segment(sphere, capsule1, capsule2, dir);
 
 	// 距離（の二乗）が半径の和（の二乗）より小さければ当たっている
 	float radius = sphere_radius + capsule_radius;
 
 	if (radius * radius < dis) return false;
+	if (dis == 0.0f) return false;
+	if (dir.x == 0.0f && dir.y == 0.0f && dir.z == 0.0f) return false;
+
+	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+
+	dir.x /= length;
+	dir.y /= length;
+	dir.z /= length;
+
+	capsule1.x = sphere.x + radius * dir.x;
+	capsule1.y = sphere.y + radius * dir.y;
+	capsule1.z = sphere.z + radius * dir.z;
 
 	return true;
 }
-float Collision::GetSqDistancePoint2Segment(DirectX::XMFLOAT3 point, DirectX::XMFLOAT3 seg_start, DirectX::XMFLOAT3 seg_end)
+float Collision::GetSqDistancePoint2Segment(DirectX::XMFLOAT3 point, DirectX::XMFLOAT3 seg_start, DirectX::XMFLOAT3 seg_end, DirectX::XMFLOAT3& dir)
 {
 	const float eqsilon = 1.0e-5f;	// 誤差吸収用の微小な値
 
@@ -40,6 +53,7 @@ float Collision::GetSqDistancePoint2Segment(DirectX::XMFLOAT3 point, DirectX::XM
 
 	// 線分の始点から点へのベクトル
 	DirectX::XMFLOAT3 segment_point = DirectX::XMFLOAT3(point.x - seg_start.x, point.y - seg_start.y, point.z - seg_start.z);
+	dir = segment_point;
 
 	// 射影ベクトル
 	DirectX::XMFLOAT3 cross_point;
@@ -66,6 +80,7 @@ float Collision::GetSqDistancePoint2Segment(DirectX::XMFLOAT3 point, DirectX::XM
 	cross_point.x = segment_sub.y * segment_point.z - segment_sub.z * segment_point.y;
 	cross_point.y = segment_sub.z * segment_point.x - segment_sub.x * segment_point.z;
 	cross_point.z = segment_sub.x * segment_point.y - segment_sub.y * segment_point.x;
+	dir = segment_sub;
 	return (((cross_point.x * cross_point.x) + (cross_point.y * cross_point.y) + (cross_point.z * cross_point.z)) 
 		/ ((segment_sub.x * segment_sub.x) + (segment_sub.y * segment_sub.y) + (segment_sub.z * segment_sub.z)));
 }
@@ -398,30 +413,155 @@ float Collision::GetSqDistancePoint2Segment(DirectX::XMFLOAT3 point, DirectX::XM
 //	return r1 + r2 + r3;
 //}
 
+//******************************************************
+//矩形　vs　矩形
+//******************************************************
+bool Collision::RectVsRectAndExtrusion(DirectX::XMFLOAT2& pos1, DirectX::XMFLOAT2 scale1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 scale2)
+{
+	bool isHit = false;
+
+	if (pos1.x - scale1.x <= pos2.x - scale2.x)
+	{
+		pos1.x = pos2.x - scale2.x + scale1.x;
+		isHit = true;
+	}
+	if (pos2.x + scale2.x <= pos1.x + scale1.x)
+	{
+		pos1.x = pos2.x + scale2.x - scale1.x;
+		isHit = true;
+	}
+	if (pos1.y - scale1.y <= pos2.y - scale2.y)
+	{
+		pos1.y = pos2.y - scale2.y + scale1.y;
+		isHit = true;
+	}
+	if (pos2.y + scale2.y <= pos1.y + scale1.y)
+	{
+		pos1.y = pos2.y + scale2.y - scale1.y;
+		isHit = true;
+	}
+
+	return isHit;
+}
+
+//******************************************************
+//円　vs　円
+//******************************************************
+bool Collision::CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2)
+{
+	if ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (radius1 + radius2) * (radius1 + radius2))
+	{
+		DirectX::XMFLOAT2 dir = { pos1.x - pos2.x, pos1.y - pos2.y };
+		float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+
+		dir.x /= length;
+		dir.y /= length;
+
+		pos1.x = pos2.x + (radius1 + radius2) * dir.x;
+		pos1.y = pos2.y + (radius1 + radius2) * dir.y;
+
+		return true;
+	}
+	else return false;
+}
+
+//******************************************************
+//カプセル　vs　円
+//******************************************************
+//bool Collision::CapsuleVsCircleAndExtrusion(DirectX::XMFLOAT3& nowPos1, DirectX::XMFLOAT3 oldPos1, float radius1, DirectX::XMFLOAT3 pos2, float radius2)
+//{
+//	/*if ((pos2.x - nowPos1.x) * (pos2.x - nowPos1.x) + (pos2.z - nowPos1.z) * (pos2.z - nowPos1.z) <= (radius1 + radius2) * (radius1 + radius2))
+//	{
+//		DirectX::XMFLOAT2 dir = { oldPos1.x - pos2.x, oldPos1.z - pos2.z };
+//		float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+//
+//		dir.x /= length;
+//		dir.y /= length;
+//
+//		nowPos1.x = pos2.x + (radius1 + radius2) * dir.x;
+//		nowPos1.z = pos2.z + (radius1 + radius2) * dir.y;
+//
+//		return true;
+//	}*/
+//	if ((pos2.x - oldPos1.x) * (pos2.x - oldPos1.x) + (pos2.z - oldPos1.z) * (pos2.z - oldPos1.z) <= (radius1 + radius2) * (radius1 + radius2))
+//	{
+//		DirectX::XMFLOAT2 dir = { oldPos1.x - pos2.x, oldPos1.z - pos2.z };
+//		float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+//
+//		dir.x /= length;
+//		dir.y /= length;
+//
+//		nowPos1.x = pos2.x + (radius1 + radius2) * dir.x;
+//		nowPos1.z = pos2.z + (radius1 + radius2) * dir.y;
+//
+//		return true;
+//	}
+//	else
+//	{
+//		DirectX::XMFLOAT2 dir = { nowPos1.x - oldPos1.x, nowPos1.z - oldPos1.z };
+//		float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+//
+//		if (length <= 0.0f) return false;
+//
+//		DirectX::XMFLOAT3 frontVec = { dir.x / length, 0.0f, dir.y / length };
+//		DirectX::XMFLOAT3 upVec = { 0.0f, 1.0f, 0.0f };
+//		DirectX::XMFLOAT3 rightVec;
+//		rightVec.x = upVec.y * frontVec.z - upVec.z * frontVec.y;
+//		rightVec.y = upVec.z * frontVec.x - upVec.x * frontVec.z;
+//		rightVec.z = upVec.x * frontVec.y - upVec.y * frontVec.x;
+//
+//		DirectX::XMFLOAT3 rey = { dir.x, 0.0f, dir.y };
+//		DirectX::XMFLOAT3 rightPoint = { rightVec.x * radius1, 0.0f, rightVec.z * radius1 };
+//		DirectX::XMFLOAT3 leftPoint = { rightVec.x * radius1 * -1, 0.0f, rightVec.z * radius1 * -1 };
+//
+//
+//	}
+//}
 
 
 CollisionPrimitive::CollisionPrimitive( int type, bool isCreateBottom, DirectX::XMFLOAT3 _collisionScale)
 {
 	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();
 
-
+	primitiveType = type;
 	geometricPrimitive = std::make_unique<GeometricPrimitive>( device.Get(), type, isCreateBottom, &_collisionScale );
 
-	scale = collisionScale = _collisionScale;
-	color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	collisionScale = _collisionScale;
+	if (type == CollisionPrimitiveType::CYLINDER)
+	{
+		scale.x = _collisionScale.x;
+		scale.z = _collisionScale.x;
+		scale.y = _collisionScale.y;
+	}
+	color = DirectX::XMFLOAT4(0.2f, 0.8f, 0.45f, 1.0f);
 }
 
 void CollisionPrimitive::Render
  (  const DirectX::XMMATRIX& view,
 	const DirectX::XMMATRIX& projection,
 	const DirectX::XMFLOAT4& lightDirection,
-	float elapsedTime )
+	float elapsedTime,
+	bool bSolid )
 {
 
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();
 
 	//	ワールド変換行列取得
-	DirectX::XMMATRIX worldM = GetWorldMatrix();
+	DirectX::XMMATRIX worldM;
+	if (primitiveType == CollisionPrimitiveType::CYLINDER)
+	{
+		scale.x += 15.0f;
+		scale.z += 15.0f;
+
+		worldM = GetWorldMatrix();
+
+		scale.x -= 15.0f;
+		scale.z -= 15.0f;
+	}
+	else
+	{
+		worldM = GetWorldMatrix();
+	}
 
 	//	Matrix -> Float4x4 変換
 	DirectX::XMFLOAT4X4 wvp;
@@ -433,7 +573,7 @@ void CollisionPrimitive::Render
 	//	描画
 	if (geometricPrimitive)
 	{
-		geometricPrimitive->Render(immediateContext.Get(), wvp, world, lightDirection, color, false);
+		geometricPrimitive->Render(immediateContext.Get(), wvp, world, lightDirection, color, bSolid);
 	}
 
 }

@@ -139,10 +139,10 @@ void SkinnedMesh::Preparation( ID3D11DeviceContext* immediateContext, Shader sha
 	memcpy( cb.pointLight, Light::GetInstance()->pointLight, sizeof( Light::POINTLIGHT ) * Light::POINTMAX );
 	memcpy( cb.spotLight, Light::GetInstance()->spotLight, sizeof( Light::SPOTLIGHT ) * Light::SPOTMAX );
 
-	immediateContext->UpdateSubresource(Light::GetInstance()->constantBufferLight.Get(), 0, 0, &cb, 0, 0);
+	immediateContext->UpdateSubresource( Light::GetInstance()->constantBufferLight.Get(), 0, 0, &cb, 0, 0 );
 
-	immediateContext->VSSetConstantBuffers(2, 1, Light::GetInstance()->constantBufferLight.GetAddressOf());
-	immediateContext->PSSetConstantBuffers(2, 1, Light::GetInstance()->constantBufferLight.GetAddressOf());
+	immediateContext->VSSetConstantBuffers( 2, 1, Light::GetInstance()->constantBufferLight.GetAddressOf() );
+	immediateContext->PSSetConstantBuffers( 2, 1, Light::GetInstance()->constantBufferLight.GetAddressOf() );
 }
 
 void SkinnedMesh::Render
@@ -151,7 +151,8 @@ void SkinnedMesh::Render
 	const DirectX::XMFLOAT4X4 &world,
 	const DirectX::XMFLOAT4 &lightDirection,
 	const DirectX::XMFLOAT4 &materialColor,
-	float elapsedTime )
+	float elapsedTime,
+	bool inCamara )
 {
 
 	for ( auto& mesh : meshes )
@@ -168,28 +169,6 @@ void SkinnedMesh::Render
 		for ( auto &subset : mesh.subsets )
 		{
 			CBuffer data;
-			if ( !handedCoordinateSystem )
-			{
-				DirectX::XMStoreFloat4x4(    &data.wvp,
-					DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-					DirectX::XMLoadFloat4x4( &wvp ) );
-
-				DirectX::XMStoreFloat4x4(    &data.world,
-					DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-					DirectX::XMLoadFloat4x4( &world ) );
-			}
-			else
-			{
-				DirectX::XMStoreFloat4x4(    &data.wvp,
-					DirectX::XMLoadFloat4x4( &coordinateConversion ) *
-					DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-					DirectX::XMLoadFloat4x4( &wvp ) );
-
-				DirectX::XMStoreFloat4x4(    &data.world,
-					DirectX::XMLoadFloat4x4( &coordinateConversion ) *
-					DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-					DirectX::XMLoadFloat4x4( &world ) );
-			}
 
 			if ( isAnimation )
 			{
@@ -254,22 +233,48 @@ void SkinnedMesh::Render
 				}
 			}
 
-			// コンスタントバッファの設定
-			data.lightDirection = lightDirection;
-			data.materialColor.x = materialColor.x;
-			data.materialColor.y = materialColor.y;
-			data.materialColor.z = materialColor.z;
-			data.materialColor.w = materialColor.w;
+			if ( inCamara )
+			{
+				if ( !handedCoordinateSystem )
+				{
+					DirectX::XMStoreFloat4x4(    &data.wvp,
+						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
+						DirectX::XMLoadFloat4x4( &wvp ) );
 
-			immediateContext->UpdateSubresource( constantBuffer.Get(), 0, 0, &data, 0, 0 );
+					DirectX::XMStoreFloat4x4(    &data.world,
+						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
+						DirectX::XMLoadFloat4x4( &world ) );
+				}
+				else
+				{
+					DirectX::XMStoreFloat4x4(    &data.wvp,
+						DirectX::XMLoadFloat4x4( &coordinateConversion ) *
+						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
+						DirectX::XMLoadFloat4x4( &wvp ) );
 
-			immediateContext->VSSetConstantBuffers( 0, 1, constantBuffer.GetAddressOf() );
-			immediateContext->PSSetConstantBuffers( 0, 1, constantBuffer.GetAddressOf() );
+					DirectX::XMStoreFloat4x4(    &data.world,
+						DirectX::XMLoadFloat4x4( &coordinateConversion ) *
+						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
+						DirectX::XMLoadFloat4x4( &world ) );
+				}
 
-			immediateContext->PSSetShaderResources( 0, 1, subset.diffuse.shaderResourceView.GetAddressOf() );
+				// コンスタントバッファの設定
+				data.lightDirection = lightDirection;
+				data.materialColor.x = materialColor.x;
+				data.materialColor.y = materialColor.y;
+				data.materialColor.z = materialColor.z;
+				data.materialColor.w = materialColor.w;
 
-			// Draw
-			immediateContext->DrawIndexed( subset.indexCount, subset.indexStart, 0 );
+				immediateContext->UpdateSubresource( constantBuffer.Get(), 0, 0, &data, 0, 0 );
+
+				immediateContext->VSSetConstantBuffers( 0, 1, constantBuffer.GetAddressOf() );
+				immediateContext->PSSetConstantBuffers( 0, 1, constantBuffer.GetAddressOf() );
+
+				immediateContext->PSSetShaderResources( 0, 1, subset.diffuse.shaderResourceView.GetAddressOf() );
+
+				// Draw
+				immediateContext->DrawIndexed( subset.indexCount, subset.indexStart, 0 );
+			}
 		}
 		//break;
 	}
@@ -456,24 +461,27 @@ void SkinnedMesh::FetchMaterials( ID3D11Device* device, const char* fileName, Fb
 					{
 						const char* _fileName = fileTexture->GetRelativeFileName();
 
-						// Create "diffuse.shader_resource_view" from "filename".
-						char allName[256] = { 0 };
-						char fbxFileName[64] = { 0 };
-						char textureFileName[64] = { 0 };
+						if (_fileName[0] != NULL)
+						{
+							// Create "diffuse.shader_resource_view" from "filename".
+							char allName[256] = { 0 };
+							char fbxFileName[64] = { 0 };
+							char textureFileName[64] = { 0 };
 
-						_splitpath_s( fileName, NULL, NULL, fbxFileName, sizeof( fbxFileName ), NULL, NULL, NULL, NULL );
-						_makepath_s( allName, 256, NULL, fbxFileName, _fileName, NULL );
+							_splitpath_s(fileName, NULL, NULL, fbxFileName, sizeof(fbxFileName), NULL, NULL, NULL, NULL);
+							_makepath_s(allName, 256, NULL, fbxFileName, _fileName, NULL);
 
-						material.texture = allName;
+							material.texture = allName;
+						}
 					}
 				}
 			}
 		};
-		FetchMaterial(subset.diffuse,   FbxSurfaceMaterial::sDiffuse,   FbxSurfaceMaterial::sDiffuseFactor);
-		FetchMaterial(subset.ambient,   FbxSurfaceMaterial::sAmbient,   FbxSurfaceMaterial::sAmbientFactor);
-		FetchMaterial(subset.specular,  FbxSurfaceMaterial::sSpecular,  FbxSurfaceMaterial::sSpecularFactor);
-		FetchMaterial(subset.normalMap, FbxSurfaceMaterial::sNormalMap, FbxSurfaceMaterial::sBumpFactor);
-		FetchMaterial(subset.bump,      FbxSurfaceMaterial::sBump,      FbxSurfaceMaterial::sBumpFactor);
+		FetchMaterial( subset.diffuse,		FbxSurfaceMaterial::sDiffuse,	FbxSurfaceMaterial::sDiffuseFactor	);
+		FetchMaterial( subset.ambient,		FbxSurfaceMaterial::sAmbient,	FbxSurfaceMaterial::sAmbientFactor	);
+		FetchMaterial( subset.specular,		FbxSurfaceMaterial::sSpecular,	FbxSurfaceMaterial::sSpecularFactor	);
+		FetchMaterial( subset.normalMap,	FbxSurfaceMaterial::sNormalMap,	FbxSurfaceMaterial::sBumpFactor		);
+		FetchMaterial( subset.bump,			FbxSurfaceMaterial::sBump,		FbxSurfaceMaterial::sBumpFactor		);
 
 	}
 

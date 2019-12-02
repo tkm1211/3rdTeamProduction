@@ -29,12 +29,13 @@ public:
 	void Preparation( Shader shader, bool wireframe = false );
 	void Render
 	(
-		const DirectX::XMMATRIX& world, 
+		const DirectX::XMMATRIX& world,
 		const DirectX::XMMATRIX& view,
 		const DirectX::XMMATRIX& projection,
 		const DirectX::XMFLOAT4& lightDirection,
 		const DirectX::XMFLOAT4& color,
-		float elapsedTime
+		float elapsedTime,
+		float radius = 0.0f
 	);
 
 public: // アニメーション関数
@@ -66,4 +67,7 @@ public: // アニメーション関数
 	{
 		return pMesh->GetBoneTransform( name, pos );
 	}
+
+private:
+	bool JudgeInCamera( DirectX::XMFLOAT3 pos );
 };

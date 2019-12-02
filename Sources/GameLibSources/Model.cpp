@@ -43,10 +43,20 @@ void Model::Render
 	const DirectX::XMMATRIX& projection,
 	const DirectX::XMFLOAT4& lightDirection,
 	const DirectX::XMFLOAT4& color,
-	float elapsedTime )
+	float elapsedTime,
+	float radius )
 {
 
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();
+
+	// カメラの中に入っているか判定
+	bool inCamera = true;
+	if (0.0f < radius)
+	{
+		DirectX::XMFLOAT4X4 _world;
+		DirectX::XMStoreFloat4x4(&_world, world);
+		inCamera = JudgeInCamera( {_world._41, _world._42, _world._43} );
+	}
 
 	//	ワールド変換行列取得
 	DirectX::XMMATRIX worldM = world;
@@ -61,7 +71,50 @@ void Model::Render
 	//	描画
 	if ( pMesh )
 	{
-		pMesh->Render( immediateContext.Get(), wvp, _world, lightDirection, color, elapsedTime );
+		pMesh->Render( immediateContext.Get(), wvp, _world, lightDirection, color, elapsedTime, inCamera );
 	}
 
+}
+
+bool Model::JudgeInCamera( DirectX::XMFLOAT3 pos )
+{
+	DirectX::XMFLOAT3 _cameraFoward = camera.GetFoward();
+	DirectX::XMVECTOR cameraFowardVec = DirectX::XMLoadFloat2( &DirectX::XMFLOAT2( _cameraFoward.x, _cameraFoward.z ) );
+
+	DirectX::XMFLOAT3 _cameraPos = camera.GetPos();
+	DirectX::XMVECTOR modelToCamaraVec = DirectX::XMLoadFloat2( &DirectX::XMFLOAT2( pos.x - _cameraPos.x, pos.z - _cameraPos.z ) );
+
+	// ベクトルの長さ
+	float cameraFowardLength = 0.0f;
+	float modelToCamaraLength = 0.0f;
+	DirectX::XMVECTOR cameraFowardVecN = DirectX::XMVector2Normalize( cameraFowardVec );
+	DirectX::XMVECTOR modelToCamaraVecN = DirectX::XMVector2Normalize( modelToCamaraVec );
+	DirectX::XMStoreFloat( &cameraFowardLength,  DirectX::XMVector2Length( cameraFowardVecN  ) );
+	DirectX::XMStoreFloat( &modelToCamaraLength, DirectX::XMVector2Length( modelToCamaraVecN ) );
+
+	// 内積
+	float dot = 0.0f;
+	DirectX::XMStoreFloat( &dot, DirectX::XMVector2Dot( cameraFowardVecN, modelToCamaraVecN ) );
+
+	// cosΘ
+	float cosSita = dot / ( cameraFowardLength * modelToCamaraLength );
+
+	// cosΘからΘ
+	if ( 1.0f < cosSita )
+	{
+		cosSita = 1.0f;
+	}
+	float sita = acosf( cosSita );
+
+	//角度(degree)
+	float degreeSita = sita * 180.0f / PI;
+
+	// カメラに映っているか判定
+	float degreeFov = ( camera.GetFov() * 180.0f / PI );
+	if ( -degreeFov <= degreeSita && degreeSita <= degreeFov )
+	{
+		return true;
+	}
+
+	return false;
 }

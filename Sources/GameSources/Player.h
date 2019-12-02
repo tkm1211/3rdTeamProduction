@@ -1,11 +1,43 @@
 #pragma once
 #include "Model.h"
 #include "OBJ3D.h"
+#include "Collision.h"
+
+//creal
+#undef max
+#undef min
+
+#include <cereal/cereal.hpp>
+
+#include <cereal/types/string.hpp>
+
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
 
 class Player
 {
 private:
-	static const int MAX_SPEED = 10;
+	enum PlayerAtkCount
+	{
+		ATTACK_1ST,
+		ATTACK_2ND,
+		ATTACK_3RD
+	};
+
+
+	int MAX_SPEED  = 10;
+	int ATK_NUMBER = PlayerAtkCount::ATTACK_1ST;
+	struct PlayerAttackInfo
+	{
+		// 攻撃中何フレーム入力を受け付けるか
+		int inputAttackTime;
+		float power;
+
+	};
+
 	enum class ModelState
 	{
 		T,
@@ -15,35 +47,64 @@ private:
 		ATTACK2,
 		ATTACK3
 	};
+	ModelState motionState;
 
 
-	std::unique_ptr<Model> pT			;
-	std::unique_ptr<Model> pWait		;
-	std::unique_ptr<Model> pRun			;
-	std::unique_ptr<Model> pAttack[3]	;
+	std::unique_ptr<Model> pT;
+	std::unique_ptr<Model> pWait;
+	std::unique_ptr<Model> pRun;
+	std::unique_ptr<Model> pAttack[3];
 
 	OBJ3D modelData;
 
-	ModelState motionState;
+	// 左スティックの傾いてる方向
+	DirectX::XMFLOAT2 leftStickVec;
 
-	DirectX::XMFLOAT2 RightStickVec;
+	// 移動スピード
+	DirectX::XMFLOAT3 moveSpeed;
 
-	DirectX::XMFLOAT3 MoveSpeed;
+	// 何段攻撃目か
+	int attackCnt;
+	PlayerAttackInfo attackInfo[3];
+
+	// 移動していたらtrue
+	bool isMove;
+	// 攻撃してたらtrue
+	bool isAttack;
+	bool nextAttack;
 
 private:
 
-	void SwitchMotion( ModelState state );
+	//モーションの切り替え関数
+	void SwitchMotion(ModelState state);
+	//左スティックの傾いてる方向を取得
+	DirectX::XMFLOAT2 GetLeftStickVector();
+	// 左スティックの傾いてる角度を取得
+	float GetLeftStickAngle();
 
 public:
 	void Init();
 	void Update();
+	void Attack();
+	void Move();
 	void Draw();
 	void UnInit();
-	void ImGui() {};
 
-	DirectX::XMFLOAT2 GetLeftStickVector();
-	//右スティックの傾いてる角度を取得
-	float GetLeftStickAngle();
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("移動スピード", MAX_SPEED),
+			cereal::make_nvp("攻撃力1", attackInfo[0].power),
+			cereal::make_nvp("攻撃力2", attackInfo[1].power),
+			cereal::make_nvp("攻撃力3", attackInfo[2].power)
+			);
+	}
+
 	OBJ3D GetModelData() { return modelData; }
+	void SetPos(DirectX::XMFLOAT3 _pos) { modelData.SetPos(_pos); }
+	std::unique_ptr<CollisionPrimitive> pCylinderCollision;
+
+	void ImGui();
 
 };

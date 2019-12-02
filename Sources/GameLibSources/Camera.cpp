@@ -24,13 +24,11 @@ void Camera::Init()
 
 	distance = sqrtf(x * x + y * y + z * z);
 
-	float	fov = DirectX::XMConvertToRadians(30.0f);
+	fov = DirectX::XMConvertToRadians(30.0f);
 	float	aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 
 	//SetOrthographicMatrix(50.0f, 50.0f, 0.1f, 100000.0f);
 	SetPerspectiveMatrix(fov, aspect, 0.1f, 1000000.0f);
-
-	standard_pos = DirectX::XMFLOAT3(0.0f, 0.0f, 36.0f);
 
 	rotateX = 0.0f;
 	rotateY = 0.0f;
@@ -151,6 +149,10 @@ void Camera::Update()
 	DirectX::XMStoreFloat3(&right, _right);
 
 	PadUpdate();
+
+
+	DirectX::XMVECTOR _foward = DirectX::XMVectorSubtract( _target, _pos );
+	DirectX::XMStoreFloat3( &foward, _foward );
 }
 
 void Camera::PadUpdate()
@@ -169,7 +171,6 @@ void Camera::PadUpdate()
 	foward.z = target.z - pos.z;*/
 }
 
-#define PI 3.14159265358979f
 int GetJoystickAngle()
 {
 	float radian = 0;
