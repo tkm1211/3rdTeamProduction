@@ -6,6 +6,17 @@
 #include <string>
 #include "Shader.h"
 
+#undef max
+#undef min
+
+#include <cereal/cereal.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/string.hpp>
+
 
 class Mesh
 {
@@ -21,6 +32,27 @@ protected:
 
 	// TRUE : right handed , FALSE : left handed
 	BOOL handedCoordinateSystem = FALSE;
+
+public:
+	struct Face
+	{
+		DirectX::XMFLOAT3 pos[3];
+		int materialIndex;
+
+		Face() = default;
+
+		template <class T>
+		void serialize(T& archive)
+		{
+			archive
+			(
+				CEREAL_NVP(pos[0].x), CEREAL_NVP(pos[0].y), CEREAL_NVP(pos[0].z),
+				CEREAL_NVP(pos[1].x), CEREAL_NVP(pos[1].y), CEREAL_NVP(pos[1].z),
+				CEREAL_NVP(pos[2].x), CEREAL_NVP(pos[2].y), CEREAL_NVP(pos[2].z),
+				CEREAL_NVP(materialIndex)
+			);
+		}
+	};
 
 public:
 	Mesh() {}
@@ -51,12 +83,13 @@ public:
 
 	//virtual void Release() {}
 
-	virtual void StartAnimation( u_int _animationNumber, bool _isloopAnimation ) {}
+	virtual void StartAnimation(u_int _animationNumber, bool _isloopAnimation) {}
 	// virtual void StopAnimation() {}
 	virtual void ReStartAnimation() {}
 	virtual void PauseAnimation() {}
 	virtual int GetAnimationFrame() { return 0; }
-	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo ) { return DirectX::XMFLOAT4X4(); }
+	virtual void GetVectexPos(std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo) {}
+	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform ) { return DirectX::XMFLOAT4X4(); }
 	virtual int RayPick
 	(
 		const DirectX::XMFLOAT3& startPosition,
@@ -65,13 +98,14 @@ public:
 		DirectX::XMFLOAT3* outNormal,
 		float* outLength
 	) { return 0; }
+	virtual std::vector<Face> GetFaces() { return std::vector<Face>(); }
 
 	template <class T>
-	void serialize( T &archive )
+	void serialize(T& archive)
 	{
 		return;
 	}
 
 protected:
-	void Init( ID3D11Device *device, BOOL handedCoordinateSystem );
+	void Init(ID3D11Device* device, BOOL handedCoordinateSystem);
 };

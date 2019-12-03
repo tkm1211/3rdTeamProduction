@@ -63,9 +63,13 @@ public: // アニメーション関数
 		return pMesh->GetAnimationFrame();
 	}
 
-	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo = 0 )
+	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform )
 	{
-		return pMesh->GetBoneTransform( name, pos, vectexPosNo );
+		return pMesh->GetBoneTransform( name, worldTransform );
+	}
+	void GetVectexPos( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo = 0 )
+	{
+		pMesh->GetVectexPos( name, pos, vectexPosNo );
 	}
 
 	// レイピック関数
@@ -79,6 +83,11 @@ public: // アニメーション関数
 	)
 	{
 		return pMesh->RayPick(startPosition, endPosition, outPosition, outNormal, outLength);
+	}
+
+	std::vector<Mesh::Face> GetFaces()
+	{
+		return pMesh->GetFaces();
 	}
 
 private:

@@ -188,26 +188,6 @@ private:
 		}
 	};
 
-	struct Face
-	{
-		DirectX::XMFLOAT3 pos[3];
-		int materialIndex;
-
-		Face() = default;
-
-		template <class T>
-		void serialize(T& archive)
-		{
-			archive
-			(
-				CEREAL_NVP( pos[0].x ), CEREAL_NVP( pos[0].y ), CEREAL_NVP( pos[0].z ),
-				CEREAL_NVP( pos[1].x ), CEREAL_NVP( pos[1].y ), CEREAL_NVP( pos[1].z ),
-				CEREAL_NVP( pos[2].x ), CEREAL_NVP( pos[2].y ), CEREAL_NVP( pos[2].z ),
-				CEREAL_NVP( materialIndex )
-			);
-		}
-	};
-
 	struct MeshData
 	{
 		std::string name;
@@ -415,6 +395,34 @@ public:
 		float* outLength
 	);
 
+	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform )
+	{
+		for (auto& mesh : meshes)
+		{
+			std::vector<Bone>& skeletal = mesh.skeletalAnimations.at(animationNumber).skeletel.at(animationFrame).bone;
+			size_t number_of_bones = skeletal.size();
+			_ASSERT_EXPR(number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES.");
+
+			for (auto& bone : skeletal)
+			{
+				if (bone.name != name) continue;
+
+				DirectX::XMFLOAT4X4 transform;
+				DirectX::XMStoreFloat4x4(&transform,
+					worldTransform *
+					DirectX::XMLoadFloat4x4(&bone.transform)
+				);
+
+				return transform;
+
+			}
+		}
+
+		return DirectX::XMFLOAT4X4();
+	}
+
+	std::vector<Face> GetFaces() { return faces; }
+
 private:
 	void LoadFBX( ID3D11Device *device, const char* fileName );
 	void FbxAMatrixToXMFLOAT4X4( const FbxAMatrix& fbxamatrix, DirectX::XMFLOAT4X4& xmfloat4x4 );
@@ -447,7 +455,8 @@ private:
 		// *******************************************************************************
 
 	}
-	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo )
+
+	void GetVectexPos( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo )
 	{
 #if 0
 		for (auto& mesh : meshes)
@@ -525,8 +534,6 @@ private:
 			}
 		}
 #endif
-
-		return DirectX::XMFLOAT4X4();
 	}
 
 public:
