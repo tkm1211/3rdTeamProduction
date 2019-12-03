@@ -680,7 +680,7 @@ void CollisionPrimitive::Render
 	float elapsedTime,
 	bool bSolid )
 {
-
+#ifdef DEBUG_MODE
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();
 
 	//	ƒ[ƒ‹ƒh•ÏŠ·s—ñŽæ“¾
@@ -712,5 +712,5 @@ void CollisionPrimitive::Render
 	{
 		geometricPrimitive->Render(immediateContext.Get(), wvp, world, lightDirection, color, bSolid);
 	}
-
+#endif
 }

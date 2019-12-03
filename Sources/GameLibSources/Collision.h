@@ -89,4 +89,19 @@ public:
 
 	DirectX::XMFLOAT3 GetCollisionScale() { return collisionScale; }
 	void SetCollisionScale(DirectX::XMFLOAT3 _collisionScale) { collisionScale = _collisionScale; }
+
+	OBJ3D GetOBJ3D()
+	{
+		OBJ3D allData;
+
+		allData.SetPos(pos);
+		allData.SetSpeed(speed);
+		allData.SetScale(scale);
+		allData.SetAngle(angle);
+		allData.SetColor(color);
+		allData.SetAdjust(adjust);
+		allData.SetExists(exists);
+
+		return allData;
+	}
 };
