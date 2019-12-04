@@ -664,13 +664,13 @@ CollisionPrimitive::CollisionPrimitive( int type, bool isCreateBottom, DirectX::
 	geometricPrimitive = std::make_unique<GeometricPrimitive>( device.Get(), type, isCreateBottom, &_collisionScale );
 
 	collisionScale = _collisionScale;
-	if (type == CollisionPrimitiveType::CYLINDER)
+	if (type == CollisionPrimitiveType::CYLINDER || type == CollisionPrimitiveType::SPHERE)
 	{
 		scale.x = _collisionScale.x;
 		scale.z = _collisionScale.x;
 		scale.y = _collisionScale.y;
 	}
-	color = DirectX::XMFLOAT4(0.2f, 0.8f, 0.45f, 1.0f);
+	color = DirectX::XMFLOAT4(0.2f, 0.8f, 0.45f, 0.9f);
 }
 
 void CollisionPrimitive::Render
@@ -685,20 +685,10 @@ void CollisionPrimitive::Render
 
 	//	ƒ[ƒ‹ƒh•ÏŠ·s—ñŽæ“¾
 	DirectX::XMMATRIX worldM;
-	if (primitiveType == CollisionPrimitiveType::CYLINDER)
-	{
-		scale.x += 15.0f;
-		scale.z += 15.0f;
+	worldM = GetWorldMatrix();
 
-		worldM = GetWorldMatrix();
-
-		scale.x -= 15.0f;
-		scale.z -= 15.0f;
-	}
-	else
-	{
-		worldM = GetWorldMatrix();
-	}
+	/*if (bSolid) color.w = 0.5f;
+	else color.w = 1.0f;*/
 
 	//	Matrix -> Float4x4 •ÏŠ·
 	DirectX::XMFLOAT4X4 wvp;

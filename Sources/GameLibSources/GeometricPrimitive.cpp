@@ -323,7 +323,7 @@ void GeometricPrimitive::GeometricCube(ID3D11Device* device, DirectX::XMFLOAT3 s
 
 void GeometricPrimitive::GeometricCylinder(ID3D11Device* device)
 {
-	constexpr int plate = 18;
+	constexpr int plate = 36;
 	Vertex vertices[3 * 2 * plate + 4 * plate] = {};
 	unsigned int indices[3 * 2 * plate + 3 * 2 * plate] = {};
 
@@ -339,12 +339,12 @@ void GeometricPrimitive::GeometricCylinder(ID3D11Device* device)
 		sin = sinf(angle);
 		cos = cosf(angle);
 		vertices[numV + 0].pos = DirectX::XMFLOAT3(+0.0f, +1.0f, +0.0f);
-		vertices[numV + 1].pos = DirectX::XMFLOAT3(+0.1f * cos - -0.5f * sin, +1.0f, +0.1f * sin + -0.5f * cos);
-		vertices[numV + 2].pos = DirectX::XMFLOAT3(-0.1f * cos - -0.5f * sin, +1.0f, -0.1f * sin + -0.5f * cos);
+		vertices[numV + 1].pos = DirectX::XMFLOAT3(+0.1f * cos - -1.0f * sin, +1.0f, +0.1f * sin + -1.0f * cos);
+		vertices[numV + 2].pos = DirectX::XMFLOAT3(-0.1f * cos - -1.0f * sin, +1.0f, -0.1f * sin + -1.0f * cos);
 		vertices[numV + 0].normal = vertices[numV + 1].normal =
 		vertices[numV + 2].normal = DirectX::XMFLOAT3(+0.0f, +1.0f, +0.0f);
 		indices[numI + 0] = numV + 0;	indices[numI + 1] = numV + 1;	indices[numI + 2] = numV + 2;
-		angle += 0.3475f;
+		angle += 0.35f / 2.0f;
 		numV += 3;	numI += 3;
 	}
 
@@ -358,12 +358,12 @@ void GeometricPrimitive::GeometricCylinder(ID3D11Device* device)
 		sin = sinf(angle);
 		cos = cosf(angle);
 		vertices[numV + 0].pos = DirectX::XMFLOAT3(+0.0f, -1.0f, +0.0f);
-		vertices[numV + 1].pos = DirectX::XMFLOAT3(+0.1f * cos - -0.5f * sin, -1.0f, +0.1f * sin + -0.5f * cos);
-		vertices[numV + 2].pos = DirectX::XMFLOAT3(-0.1f * cos - -0.5f * sin, -1.0f, -0.1f * sin + -0.5f * cos);
+		vertices[numV + 1].pos = DirectX::XMFLOAT3(+0.1f * cos - -1.0f * sin, -1.0f, +0.1f * sin + -1.0f * cos);
+		vertices[numV + 2].pos = DirectX::XMFLOAT3(-0.1f * cos - -1.0f * sin, -1.0f, -0.1f * sin + -1.0f * cos);
 		vertices[numV + 0].normal = vertices[numV + 1].normal =
 		vertices[numV + 2].normal = DirectX::XMFLOAT3(+0.0f, +1.0f, +0.0f);
 		indices[numI + 0] = numV + 2;	indices[numI + 1] = numV + 1;	indices[numI + 2] = numV + 0;
-		angle += 0.3475f;
+		angle += 0.35f / 2.0f;
 		numV += 3;	numI += 3;
 	}
 
@@ -376,15 +376,15 @@ void GeometricPrimitive::GeometricCylinder(ID3D11Device* device)
 	{
 		sin = sinf(angle);
 		cos = cosf(angle);
-		vertices[numV + 0].pos = DirectX::XMFLOAT3(+0.1f * cos - -0.5f * sin, -1.0f, +0.1f * sin + -0.5f * cos);
-		vertices[numV + 1].pos = DirectX::XMFLOAT3(+0.1f * cos - -0.5f * sin, +1.0f, +0.1f * sin + -0.5f * cos);
-		vertices[numV + 2].pos = DirectX::XMFLOAT3(-0.1f * cos - -0.5f * sin, -1.0f, -0.1f * sin + -0.5f * cos);
-		vertices[numV + 3].pos = DirectX::XMFLOAT3(-0.1f * cos - -0.5f * sin, +1.0f, -0.1f * sin + -0.5f * cos);
+		vertices[numV + 0].pos = DirectX::XMFLOAT3(+0.1f * cos - -1.0f * sin, -1.0f, +0.1f * sin + -1.0f * cos);
+		vertices[numV + 1].pos = DirectX::XMFLOAT3(+0.1f * cos - -1.0f * sin, +1.0f, +0.1f * sin + -1.0f * cos);
+		vertices[numV + 2].pos = DirectX::XMFLOAT3(-0.1f * cos - -1.0f * sin, -1.0f, -0.1f * sin + -1.0f * cos);
+		vertices[numV + 3].pos = DirectX::XMFLOAT3(-0.1f * cos - -1.0f * sin, +1.0f, -0.1f * sin + -1.0f * cos);
 		vertices[numV + 0].normal = vertices[numV + 1].normal =
 		vertices[numV + 2].normal = vertices[numV + 3].normal = DirectX::XMFLOAT3(+0.0f, +0.0f, -1.0f);
 		indices[numI + 0] = numV + 0;	indices[numI + 1] = numV + 2;	indices[numI + 2] = numV + 1;
 		indices[numI + 3] = numV + 1;	indices[numI + 4] = numV + 2;	indices[numI + 5] = numV + 3;
-		angle += 0.3475f;
+		angle += 0.35f / 2.0f;
 		numV += 4;	numI += 6;
 	}
 
@@ -398,7 +398,7 @@ void GeometricPrimitive::GeometricSphere(ID3D11Device* device, u_int slices, u_i
 	std::vector<u_int> indices;
 
 
-	float r = 0.5f;		//	”¼Œa 0.5f = ’¼Œa 1.0f
+	float r = 1.0f;		//	”¼Œa 1.0f = ’¼Œa 2.0f
 
 	//
 	// Compute the vertices stating at the top pole and moving down the stacks.
