@@ -409,8 +409,8 @@ public:
 
 				DirectX::XMFLOAT4X4 transform;
 				DirectX::XMStoreFloat4x4(&transform,
-					worldTransform *
-					DirectX::XMLoadFloat4x4(&bone.transform)
+					DirectX::XMLoadFloat4x4(&bone.transform) *
+					worldTransform
 				);
 
 				return transform;

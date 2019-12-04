@@ -64,7 +64,7 @@ void PlayerTemplate::ImGui()
 	DirectX::XMFLOAT4X4 boneTransform;
 	ImGui::DragFloat3("Pos", &_pos.x);
 	modelData.SetPos(_pos);
-	switch (modelState)
+	/*switch (modelState)
 	{
 	case PlayerTemplate::WAIT:
 		boneTransform = pWait->GetBoneTransform(std::string("mixamorig:Hips"), _pos);
@@ -76,7 +76,7 @@ void PlayerTemplate::ImGui()
 		boneTransform = pAttack->GetBoneTransform(std::string("mixamorig:Hips"), _pos);
 		break;
 	default: break;
-	}
+	}*/
 	ImGui::Text("Wait Animation Frame : %d", pWait->GetAnimationFrame());
 	ImGui::Text("Run Animation Frame : %d", pRun->GetAnimationFrame());
 	ImGui::Text("Attack Animation Frame : %d", pAttack->GetAnimationFrame());

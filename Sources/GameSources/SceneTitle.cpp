@@ -8,7 +8,7 @@
 #include "SkinnedMesh.h"
 #include "CharacterSystem.h"
 #include "ObjectSystem.h"
-
+#include "ParticleSystem.h"
 
 void SceneTitle::Init()
 {
@@ -16,6 +16,8 @@ void SceneTitle::Init()
 	bg->Init();
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
+	ParticleSystem::GetInstance()->Init();
+
 }
 
 void SceneTitle::Update()
@@ -24,19 +26,21 @@ void SceneTitle::Update()
 	{
 		Fade::GetInstance()->onFadeFlg = true;
 		Fade::GetInstance()->SetNextScene(new SceneGame());
+		//SetScene(new SceneLabo(), false);
 	}
 
 	bg->Update();
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
+	ParticleSystem::GetInstance()->Update();
 	camera.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x, 
-		                               CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-		                               CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
-		                             ) );
+		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
+		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
+		                               ) );
 
 	if (xInput[0].bBt)
 	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
+		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
 	}
 
 }
@@ -46,6 +50,8 @@ void SceneTitle::Render()
 	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
+	ParticleSystem::GetInstance()->Draw();
+
 }
 
 void SceneTitle::ImGui()
@@ -54,6 +60,10 @@ void SceneTitle::ImGui()
 	if (ImGui::Button("BuffArea  POP "))
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
+	}
+	if (ImGui::Button("Particle  POP "))
+	{
+		ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
 	}
 	ImGui::End();
 }

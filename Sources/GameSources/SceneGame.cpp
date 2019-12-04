@@ -1,23 +1,63 @@
 #include "SceneGame.h"
-
+#include <FrameWork.h>
+#include <string>
+#include "Collision.h"
+#include "Blender.h"
+#include "InputDevice.h"
+#include "SkinnedMesh.h"
+#include "CharacterSystem.h"
+#include "ObjectSystem.h"
+#include "ParticleSystem.h"
 
 void SceneGame::Init()
 {
+	bg = std::make_unique<BG>();
+	bg->Init();
+	CharacterSystem::GetInstance()->Init();
+	ObjectSystem::GetInstance()->Init();
+	ParticleSystem::GetInstance()->Init();
 
 }
 
 void SceneGame::Update()
 {
-	EnemyManager::GetInstance()->Update();
+	bg->Update();
+	CharacterSystem::GetInstance()->Update();
+	ObjectSystem::GetInstance()->Update();
+	ParticleSystem::GetInstance()->Update();
+	camera.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x, 
+		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
+		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
+		                               ) );
+
+	if (xInput[0].bBt)
+	{
+		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
+	}
+
 }
 
 void SceneGame::Render()
 {
-	EnemyManager::GetInstance()->Draw();
+	bg->Draw();
+	CharacterSystem::GetInstance()->Draw();
+	ObjectSystem::GetInstance()->Draw();
+	ParticleSystem::GetInstance()->Draw();
+
 }
 
 void SceneGame::ImGui()
 {
+	ImGui::Begin("Game");
+	if (ImGui::Button("BuffArea  POP "))
+	{
+		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
+	}
+	if (ImGui::Button("Particle  POP "))
+	{
+		ParticleSystem::GetInstance()->SetBuffAreaParticle({ 50.0f, 100.0f, 50.0f }, 200);
+	}
+	ImGui::End();
 
 }
 

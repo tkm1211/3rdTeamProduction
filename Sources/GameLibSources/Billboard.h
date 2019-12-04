@@ -52,41 +52,41 @@ private:
 	int numIndex = 0;
 
 public:
-	Billboard( ID3D11Device* device, const wchar_t* fileName )
+	Billboard(ID3D11Device* device, const wchar_t* fileName)
 	{
 
-	// Create Vertex Shader and Input Layout *****************************************
+		// Create Vertex Shader and Input Layout *****************************************
 
 		D3D11_INPUT_ELEMENT_DESC ieDesc[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT   , 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT   , 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		ResourceManager::CreateVertexShaderAndInputLayout( device, "Data/Shader/BillboardVS.cso", vertexShader.GetAddressOf(), inputLayout.GetAddressOf(), ieDesc, ARRAYSIZE( ieDesc ) );
+		ResourceManager::CreateVertexShaderAndInputLayout(device, "Data/Shader/BillboardVS.cso", vertexShader.GetAddressOf(), inputLayout.GetAddressOf(), ieDesc, ARRAYSIZE(ieDesc));
 
-	// *******************************************************************************
+		// *******************************************************************************
 
-	// Create Pixel Shader ***********************************************************
+		// Create Pixel Shader ***********************************************************
 
-		ResourceManager::CreatePixelShader( device, "Data/Shader/BillboardPS.cso", pixelShader.GetAddressOf() );
+		ResourceManager::CreatePixelShader(device, "Data/Shader/BillboardPS.cso", pixelShader.GetAddressOf());
 
-	// *******************************************************************************
+		// *******************************************************************************
 
-		Init( device );
+		Init(device);
 
 		for (int i = 0; i < 256; i++)
 		{
 			mapFileName[i] = fileName[i];
 		}
 
-		CreateShaderResourceView( device, fileName );
+		CreateShaderResourceView(device, fileName);
 
 	}
 	~Billboard() {}
 
-	void Init( ID3D11Device* device );
-	void Begin( ID3D11DeviceContext* deviceContext, bool bSolid );
+	void Init(ID3D11Device* device);
+	void Begin(ID3D11DeviceContext* deviceContext);
 	void Render
 	(
 		ID3D11DeviceContext* deviceContext,
@@ -97,7 +97,7 @@ public:
 		float ty,
 		float tw,
 		float th,
-		float angle,
+		const DirectX::XMFLOAT3& angle,
 		const DirectX::XMFLOAT2& scale,
 		const DirectX::XMFLOAT4& color
 	);
@@ -105,10 +105,10 @@ public:
 
 private:
 	//void CreateBoard( ID3D11Device* device );
-	void CreateBuffers( ID3D11Device* device, Vertex* vertices, int numVertices, u_int* indices, int numIndices );
-	void CreateShaderResourceView( ID3D11Device* device, const wchar_t* fileName )
+	void CreateBuffers(ID3D11Device* device, Vertex* vertices, int numVertices, u_int* indices, int numIndices);
+	void CreateShaderResourceView(ID3D11Device* device, const wchar_t* fileName)
 	{
-		Texture::LoadTextureFromFile( device, fileName, shaderResourceView.GetAddressOf(), &texture2dDesc );
+		Texture::LoadTextureFromFile(device, fileName, shaderResourceView.GetAddressOf(), &texture2dDesc);
 	}
 };
 

@@ -1,6 +1,6 @@
 #include "Fade.h"
 #include "SceneManager.h"
-
+#include "Blender.h"
 void Fade::Init()
 {
 	fade_spr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/Fade/BG_SceneTransition.png");
@@ -62,7 +62,9 @@ void Fade::Update()
 
 void Fade::Draw()
 {
+	SetBlenderMode(BM_ALPHA);
 	fade_spr->Begin();
 	fade_spr->Draw({ 0, 0 }, { 1920, 1080 }, fade_spr_data.texPos, fade_spr_data.size, 0, {1, 1, 1, alpha});
 	fade_spr->End();
+	SetBlenderMode(BM_NONE);
 }

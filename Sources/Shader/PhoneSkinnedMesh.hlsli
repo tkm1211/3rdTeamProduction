@@ -21,7 +21,7 @@ struct POINTLIGHT {
 	float4 pos;
 	float4 color;
 };
-#define POINTMAX 32
+#define POINTMAX 96
 //-----------------------------------------
 // スポットライト構造体
 //-----------------------------------------

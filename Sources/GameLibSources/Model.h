@@ -9,6 +9,7 @@ class Model
 {
 private:
 	std::unique_ptr<Mesh> pMesh;
+	DirectX::XMFLOAT4X4 addGlobalTransform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 
 public: // コンストラクタ・デストラクタ
 	Model() {}
@@ -88,6 +89,11 @@ public: // アニメーション関数
 	std::vector<Mesh::Face> GetFaces()
 	{
 		return pMesh->GetFaces();
+	}
+
+	void SetAddGlobalTransform(const DirectX::XMFLOAT4X4& _addGlobalTransform)
+	{
+		addGlobalTransform = _addGlobalTransform;
 	}
 
 private:

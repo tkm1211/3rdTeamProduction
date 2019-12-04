@@ -8,7 +8,7 @@
 class Light
 {
 public:
-	static const int POINTMAX = 32;
+	static const int POINTMAX = 96;
 	static const int SPOTMAX = 32;
 
 	struct POINTLIGHT

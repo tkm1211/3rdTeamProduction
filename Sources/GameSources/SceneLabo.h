@@ -5,6 +5,7 @@
 #include "OBJ3D.h"
 #include "PlayerTemplate.h"
 #include "Collision.h"
+#include "Billboard.h"
 
 
 class SceneLabo : public Scene
@@ -23,6 +24,17 @@ private:
 
 	std::unique_ptr<CollisionPrimitive> pPlayerCylinder;
 	std::unique_ptr<CollisionPrimitive> pGroundCylinder;
+
+	std::unique_ptr<Billboard> particle;
+
+	struct ParticleData
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 texPos;
+		DirectX::XMFLOAT3 texSize;
+		DirectX::XMFLOAT2 scale;
+	};
+	ParticleData particleData;
 
 public:
 	void Init();

@@ -3,14 +3,14 @@
 #include "SceneManager.h"
 #include "Camera.h"
 #include "SkinnedMesh.h"
+#include "Blender.h"
 
 
-void SceneLabo::Init()  
+void SceneLabo::Init()
 {
 	//player.Init();
-	pPlayer = std::make_unique<Model>("Data/Assets/Model/enemy1.fbx", false);
+	pPlayer = std::make_unique<Model>("Data/Assets/Model/danbo_fbx/danbo_atk.fbx", false);
 	playerData.Init();
-	playerData.SetPosZ(35.0f);
 	radius = 5.0f;
 
 	pItem = std::make_unique<Model>("Data/Assets/Model/Life.fbx", false);
@@ -20,8 +20,12 @@ void SceneLabo::Init()
 	pPlayerCube = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CUBE, false, DirectX::XMFLOAT3( 10.0f, 5.0f, 10.0f ));
 	pGroundCube = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CUBE, false, DirectX::XMFLOAT3( 100.0f, 5.0f, 200.0f ));
 
-	pPlayerCylinder = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CYLINDER, false, DirectX::XMFLOAT3(10.0f, 5.0f, 0.0f));
-	pGroundCylinder = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CYLINDER, false, DirectX::XMFLOAT3(20.0f, 5.0f, 0.0f));
+	pPlayerCylinder = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CYLINDER, false, DirectX::XMFLOAT3(20.0f, 50.0f, 20.0f));
+	pGroundCylinder = std::make_unique<CollisionPrimitive>(CollisionPrimitive::SPHERE, false, DirectX::XMFLOAT3(20.0f, 20.0f, 20.0f));
+	pGroundCylinder->SetPosZ(35.0f);
+
+	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();
+	particle = std::make_unique<Billboard>(device.Get(), L"Data/Assets/Texture/particle.png");
 }
 void SceneLabo::Update()
 {
@@ -35,6 +39,7 @@ void SceneLabo::Update()
 	ImGui::End();
 
 	static DirectX::XMFLOAT3 _pos = { 0.0f, 1.0f, 0.0f };
+	static int vectexPosNo = 0;
 	DirectX::XMFLOAT3 addModelPos = _pos;
 	DirectX::XMFLOAT3 modelPos = playerData.GetPos();
 	DirectX::XMFLOAT3 oldModelPos = playerData.GetPos();
@@ -42,6 +47,7 @@ void SceneLabo::Update()
 	ImGui::Begin("Test Model");
 	ImGui::DragFloat3("pos", &_pos.x);
 	ImGui::DragFloat3("model pos", &modelPos.x);
+	ImGui::InputInt("Vectex Pos No", &vectexPosNo);
 	ImGui::DragFloat("draw radius", &radius);
 
 	if (ImGui::Button("Anim Start"))
@@ -108,21 +114,41 @@ void SceneLabo::Update()
 	pPlayerCylinder->SetPosZ(_collisionPosFloat3.z);
 #endif
 
-
-	pPlayer->GetBoneTransform(std::string("pCube1"), addModelPos);
+#if 0
+	pPlayer->GetVectexPos(std::string("pCube2"), addModelPos, vectexPosNo);
 
 	DirectX::XMMATRIX M = DirectX::XMMatrixTranslation(addModelPos.x, addModelPos.y, addModelPos.z);
 	DirectX::XMFLOAT4X4 _M;
 	DirectX::XMStoreFloat4x4(&_M, M * playerData.GetWorldMatrix());
 
 	itemData.SetPos({ _M._41, _M._42, _M._43 });
+#else
+	DirectX::XMFLOAT4X4 M = pPlayer->GetBoneTransform(std::string("R_arm"), playerData.GetWorldMatrix());
 
+	//itemData.SetPos({ M._41 + _pos.x, M._42 + _pos.y, M._43 + _pos.z });
+	pItem->SetAddGlobalTransform(M);
+#endif
+
+	ImGui::Begin("Particle");
+	ImGui::DragFloat3("pos", &particleData.pos.x);
+	ImGui::DragFloat2("texPos", &particleData.texPos.x);
+	ImGui::DragFloat2("texSize", &particleData.texSize.x);
+	ImGui::DragFloat2("scale", &particleData.scale.x);
+	ImGui::End();
+
+	ImGui::Begin("Player Bone Transform");
+	ImGui::Text("_11 : %.3f _12 : %.3f _13 : %.3f _14 : %.3f", M._11, M._12, M._13, M._14);
+	ImGui::Text("_21 : %.3f _22 : %.3f _23 : %.3f _24 : %.3f", M._21, M._22, M._23, M._24);
+	ImGui::Text("_31 : %.3f _32 : %.3f _33 : %.3f _34 : %.3f", M._31, M._32, M._33, M._34);
+	ImGui::Text("_41 : %.3f _42 : %.3f _43 : %.3f _44 : %.3f", M._41, M._42, M._43, M._44);
+	ImGui::End();
 
 	//player.Update();
 }
 void SceneLabo::Render()
 {
 	//player.Draw();
+
 	pPlayer->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	pPlayer->Render(playerData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), playerData.GetColor(), FrameWork::GetInstance().GetElapsedTime(), radius);

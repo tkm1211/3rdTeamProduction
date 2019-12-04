@@ -1,7 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "OBJ3D.h"
-
+#include "Collision.h"
 class BuffArea
 {
 private:
@@ -48,6 +48,7 @@ private:
 	std::vector<BuffAreaInfo> buffArea;
 
 	std::unique_ptr<Model> pArea;
+	std::unique_ptr<CollisionPrimitive> pArea_collision;
 
 private:
 	void SetBuffArea(BuffAreaInfo &b);

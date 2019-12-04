@@ -65,7 +65,7 @@ void Model::Render
 	DirectX::XMFLOAT4X4 wvp;
 	DirectX::XMFLOAT4X4 _world;
 
-	DirectX::XMStoreFloat4x4( &wvp, worldM * view * projection );
+	DirectX::XMStoreFloat4x4( &wvp, DirectX::XMLoadFloat4x4( &addGlobalTransform ) * worldM * view * projection );
 	DirectX::XMStoreFloat4x4( &_world, worldM );
 
 	//	•`‰æ

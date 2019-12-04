@@ -11,7 +11,7 @@
 
 #include "BuffArea.h"
 #include "BG.h"
-
+#include "Billboard.h"
 class SceneTitle : public Scene
 {
 private:

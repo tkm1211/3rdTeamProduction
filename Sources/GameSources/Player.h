@@ -3,9 +3,6 @@
 #include "OBJ3D.h"
 
 //creal
-#undef max
-#undef min
-
 #include <cereal/cereal.hpp>
 
 #include <cereal/types/string.hpp>
