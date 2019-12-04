@@ -19,6 +19,9 @@ void Player::Init()
 	modelData.Init();
 	SwitchMotion(ModelState::WAIT);
 
+	atkCollision = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(20, 20, 20));
+	atkCollision->SetColor({ 0, 1, 0, 1 });
+
 	leftStickVec = {0, 0};
 	
 	moveSpeed = {0, 0, 0};
@@ -68,6 +71,26 @@ void Player::Update()
 	modelData.SetPosX( modelData.GetPos().x + moveSpeed.x );
 	modelData.SetPosZ( modelData.GetPos().z + moveSpeed.z );
 
+	//Collsion
+	switch (motionState)
+	{
+	case Player::ModelState::WAIT:
+		atkCollision->SetPos(pWait->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+		break;
+	case Player::ModelState::RUN:
+		atkCollision->SetPos(pRun->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+		break;
+	case Player::ModelState::ATTACK1:
+		atkCollision->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+		break;
+	case Player::ModelState::ATTACK2:
+		atkCollision->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+		break;
+	case Player::ModelState::ATTACK3:
+		atkCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+		break;
+	}
+
 
 #if _DEBUG
 	ImGui();
@@ -110,6 +133,9 @@ void Player::Draw()
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	}
+
+	atkCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+
 }
 
 
@@ -340,6 +366,10 @@ void Player::ImGui()
 	ImGui::DragFloat("ATTACKPOWER1##Player", &attackInfo[0].power);
 	ImGui::DragFloat("ATTACKPOWER2##Player", &attackInfo[1].power);
 	ImGui::DragFloat("ATTACKPOWER3##Player", &attackInfo[2].power);
+
+	ImGui::DragFloat3("addModelPos##Player", &addModelPos.x);
+
+	ImGui::DragInt("VERTEXNUM##Player", &vectexPosNo);
 
 	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCount::ATTACK_1ST);
 	ImGui::SameLine();

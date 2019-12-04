@@ -1,7 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "OBJ3D.h"
-
+#include "Collision.h"
 //creal
 #include <cereal/cereal.hpp>
 
@@ -70,6 +70,10 @@ private:
 	// çUåÇÇµÇƒÇΩÇÁtrue
 	bool isAttack;
 	bool nextAttack;
+
+	DirectX::XMFLOAT3 addModelPos = {};
+	int vectexPosNo = 0;
+	std::unique_ptr<CollisionPrimitive> atkCollision;
 
 private:
 
