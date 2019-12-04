@@ -7,15 +7,17 @@ class BuffArea
 private:
 	struct BuffAreaInfo
 	{
-		DirectX::XMFLOAT3 pos;		//中心座標
-		float radius;							//半径
+		DirectX::XMFLOAT3 pos;				//中心座標
+		float radius;						//半径
 		float subRadius;					//半径が縮むスピード
 		float addRota;						//回転
 		int state;
-		int timer;								//出現時のeasing用
-		bool isExist;							//生存フラグ
+		int timer;							//出現時のeasing用
+		int lightNum;
+		bool isExist;						//生存フラグ
 		bool stopFlg;						//半径の縮むのを止めるフラグ
 		OBJ3D modelData;
+
 
 		void Init(DirectX::XMFLOAT3 p, float r, float sr)
 		{
@@ -27,6 +29,7 @@ private:
 			stopFlg = false;
 			state = 0;
 			timer = 0;
+			lightNum = -1;
 			modelData.Init();
 			modelData.SetScale({ 0.0f, 0.0f, 0.0f });
 		}
@@ -40,6 +43,7 @@ private:
 			stopFlg = false;
 			state = 0;
 			timer = 0;
+			lightNum = ba.lightNum;
 			modelData.Init();
 			modelData.SetScale({ 0.0f, 0.0f, 0.0f });
 		}
@@ -49,6 +53,8 @@ private:
 
 	std::unique_ptr<Model> pArea;
 	std::unique_ptr<CollisionPrimitive> pArea_collision;
+
+	int onceLightNum;
 
 private:
 	void SetBuffArea(BuffAreaInfo &b);

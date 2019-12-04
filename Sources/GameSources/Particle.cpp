@@ -27,7 +27,7 @@ bool Particle::SetBuffAreaParticle(BuffAreaParticleInfo* p, DirectX::XMFLOAT3 po
 	p->maxScale = rand() % 100 + 300;
 	p->data.isExist = true;
 
-	p->data.tex.Set(0.0f, 1024.0f, 1024.0f, 1024.0f);
+	p->data.tex.Set(1024.0f, 1024.0f, 1024.0f, 1024.0f);
 
 	return true;
 }

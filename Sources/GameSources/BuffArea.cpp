@@ -4,13 +4,15 @@
 #include "FrameWork.h"
 #include "Blender.h"
 #include "ParticleSystem.h"
+#include "Light.h"
 
 void BuffArea::Init()
 {
 	//ÉÇÉfÉãÇÃÉçÅ[Éh
 	pArea = std::make_unique<Model>("Data/Assets/Model/val/auraeffect.fbx", false);
-	pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(3.6*200, 200, 3.6*200));
+	pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8*200, 200, 1.8*200));
 	pArea_collision->SetColor({ 1, 0, 0, 1 });
+	onceLightNum = 0;
 }
 
 void BuffArea::UnInit()
@@ -39,7 +41,7 @@ void BuffArea::Update()
 			if (ba.stopFlg) break;	//ë¶break
 
 			pArea_collision->SetPos(ba.modelData.GetPos());
-			pArea_collision->SetScale({ba.modelData.GetScale().x * 3.6f, 200, ba.modelData.GetScale().z * 3.6f });
+			pArea_collision->SetScale({ba.modelData.GetScale().x * 1.8f, 200, ba.modelData.GetScale().z * 1.8f });
 
 			ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos() .x, ba.modelData.GetPos() .y + 20, ba.modelData.GetPos().z}, ba.modelData.GetScale().x*1.8f);
 
@@ -49,10 +51,16 @@ void BuffArea::Update()
 			{
 				ba.isExist = false;
 				BreakBuffArea();
+				for (int i = 0; i < onceLightNum; i++)
+				{
+					Light::GetInstance()->pointLight[i].range = 0;
+				}
+				onceLightNum = 0;
 			}
 			break;
 		}
 
+		Light::GetInstance()->pointLight[ba.lightNum].range = ba.modelData.GetScale().x * 1.8f;
 		//èÌéûâÒì]Ç≥ÇπÇÈ
 		ba.modelData.SetAngleY(ba.modelData.GetAngle().y + ba.addRota);
 		ba.modelData.SetPos(ba.pos);
@@ -85,7 +93,12 @@ void BuffArea::SetBuffArea(BuffAreaInfo &b)
 		if (!ba.isExist) continue;
 		ba.stopFlg = true;
 	}
-
+	if (onceLightNum < 96)
+	{
+		Light::GetInstance()->SetPointLight(onceLightNum, { b.pos.x, b.pos.y + 11, b.pos.z }, { 54.0f, 96.0f, 110.0f }, 0);
+		b.lightNum = onceLightNum;
+		onceLightNum++;
+	}
 	//ê∂ê¨
 	for (auto& ba : buffArea)
 	{
