@@ -16,14 +16,18 @@ void Light::Init()
 	lightDir.y = posY;
 	lightDir.z = cosf(lightAngle);
 
-	/*for (int i = 0; i < POINTMAX; i++)
+#if 1
+	// SetPointLight(0, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, 50.0f);
+#else
+	for (int i = 0; i < POINTMAX; i++)
 	{
 		float randX = rand() % 1000;
 		float randZ = rand() % 1000;
 		SetPointLight(i, { randX, 11.0f, randZ }, { 54.0f, 96.0f, 110.0f }, 900.0f);
 	}
+#endif
 	SetSpotLight(0, DirectX::XMFLOAT3(-5.0f, 5.0f, -5.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT3(1.0f, -0.2f, 0.0f), 50.0f, 0.99f, 0.9f);
-*/
+
 	HRESULT hr = S_OK;
 	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();
 
@@ -37,6 +41,8 @@ void Light::Init()
 
 	hr = device->CreateBuffer(&bufferDescLight, nullptr, constantBufferLight.GetAddressOf());
 	assert(!hr && "CreateBufferLight	Error");
+
+	pointLightNo = 0;
 }
 
 void Light::Update()
@@ -102,6 +108,25 @@ void Light::SetPointLight(int index, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 co
 	pointLight[index].dumy = 0.0f;
 	pointLight[index].pos = DirectX::XMFLOAT4(pos.x, pos.y, pos.z, 0);
 	pointLight[index].color = DirectX::XMFLOAT4(color.x, color.y, color.z, 0);
+}
+void Light::ReSetPointLight(int index)
+{
+	if (index < 0) return;
+	if (index >= POINTMAX)return;
+	pointLight[index].type = 0.0f;
+}
+void Light::SetPointLight(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 color, float range)
+{
+	if (pointLightNo < 0) return;
+	if (pointLightNo >= POINTMAX)return;
+	pointLight[pointLightNo].index = (float)pointLightNo;
+	pointLight[pointLightNo].range = range;
+	pointLight[pointLightNo].type = 1.0f;
+	pointLight[pointLightNo].dumy = 0.0f;
+	pointLight[pointLightNo].pos = DirectX::XMFLOAT4(pos.x, pos.y, pos.z, 0);
+	pointLight[pointLightNo].color = DirectX::XMFLOAT4(color.x, color.y, color.z, 0);
+
+	pointLightNo++;
 }
 void Light::SetSpotLight(int index, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 color, DirectX::XMFLOAT3 dir,
 	float range, float near_area, float far_area)

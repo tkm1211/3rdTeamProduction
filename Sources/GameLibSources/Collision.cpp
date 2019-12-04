@@ -522,7 +522,7 @@ DirectX::XMFLOAT3 Collision::Cross(DirectX::XMFLOAT3 v0, DirectX::XMFLOAT3 v1)
 }
 DirectX::XMFLOAT3 Collision::Normalize(DirectX::XMFLOAT3 v)
 {
-	DirectX::XMFLOAT3 _v = {};
+	DirectX::XMFLOAT3 _v = v;
 	float length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 	
 	_v.x /= length;

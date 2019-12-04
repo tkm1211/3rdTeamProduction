@@ -66,6 +66,8 @@ public:
 	POINTLIGHT pointLight[POINTMAX];
 	SPOTLIGHT spotLight[SPOTMAX];
 
+	int pointLightNo;
+
 	void Init();
 	void Update();
 	void ImGui();
@@ -73,5 +75,7 @@ public:
 	void SetDirLight(DirectX::XMFLOAT4 dir, DirectX::XMFLOAT3 color);
 	void SetAmbient(DirectX::XMFLOAT3 amb);
 	void SetPointLight(int index, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 color, float range);
-	void SetSpotLight(int index, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 color, DirectX::XMFLOAT3 dir, float range, float near, float far);
+	void ReSetPointLight(int index);
+	void SetPointLight(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 color, float range);
+	void SetSpotLight(int index, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 color, DirectX::XMFLOAT3 dir, float range, float near_area, float far_area);
 };
