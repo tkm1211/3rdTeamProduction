@@ -88,7 +88,7 @@ public:
 	virtual void ReStartAnimation() {}
 	virtual void PauseAnimation() {}
 	virtual int GetAnimationFrame() { return 0; }
-	virtual void GetVectexPos(std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo) {}
+	virtual DirectX::XMFLOAT3 GetVectexPos( std::string name, const DirectX::XMFLOAT3& pos, int vectexPosNo ) { return DirectX::XMFLOAT3(); }
 	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform ) { return DirectX::XMFLOAT4X4(); }
 	virtual int RayPick
 	(

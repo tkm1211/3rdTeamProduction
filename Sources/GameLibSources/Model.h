@@ -68,9 +68,15 @@ public: // アニメーション関数
 	{
 		return pMesh->GetBoneTransform( name, worldTransform );
 	}
-	void GetVectexPos( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo = 0 )
+	DirectX::XMFLOAT3 GetVectexPos( std::string name, const DirectX::XMFLOAT3& pos, const DirectX::XMMATRIX& myWorldTransform, int vectexPosNo = 0 )
 	{
-		pMesh->GetVectexPos( name, pos, vectexPosNo );
+		DirectX::XMFLOAT3 _pos = pMesh->GetVectexPos( name, pos, vectexPosNo );
+
+		DirectX::XMMATRIX M = DirectX::XMMatrixTranslation( _pos.x, _pos.y, _pos.z );
+		DirectX::XMFLOAT4X4 _M;
+		DirectX::XMStoreFloat4x4( &_M, M * myWorldTransform );
+
+		return DirectX::XMFLOAT3( _M._41, _M._42, _M._43 );
 	}
 
 	// レイピック関数

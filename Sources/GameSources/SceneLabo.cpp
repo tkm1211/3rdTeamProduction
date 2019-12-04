@@ -47,7 +47,7 @@ void SceneLabo::Update()
 	ImGui::Begin("Test Model");
 	ImGui::DragFloat3("pos", &_pos.x);
 	ImGui::DragFloat3("model pos", &modelPos.x);
-	ImGui::InputInt("Vectex Pos No", &vectexPosNo);
+	ImGui::DragInt("Vectex Pos No", &vectexPosNo);
 	ImGui::DragFloat("draw radius", &radius);
 
 	if (ImGui::Button("Anim Start"))
@@ -114,19 +114,20 @@ void SceneLabo::Update()
 	pPlayerCylinder->SetPosZ(_collisionPosFloat3.z);
 #endif
 
-#if 0
-	pPlayer->GetVectexPos(std::string("pCube2"), addModelPos, vectexPosNo);
-
-	DirectX::XMMATRIX M = DirectX::XMMatrixTranslation(addModelPos.x, addModelPos.y, addModelPos.z);
-	DirectX::XMFLOAT4X4 _M;
-	DirectX::XMStoreFloat4x4(&_M, M * playerData.GetWorldMatrix());
-
-	itemData.SetPos({ _M._41, _M._42, _M._43 });
+#if 1
+	itemData.SetPos(pPlayer->GetVectexPos(std::string("pCube2"), addModelPos, playerData.GetWorldMatrix(), vectexPosNo));
 #else
 	DirectX::XMFLOAT4X4 M = pPlayer->GetBoneTransform(std::string("R_arm"), playerData.GetWorldMatrix());
 
 	//itemData.SetPos({ M._41 + _pos.x, M._42 + _pos.y, M._43 + _pos.z });
 	pItem->SetAddGlobalTransform(M);
+
+	ImGui::Begin("Player Bone Transform");
+	ImGui::Text("_11 : %.3f _12 : %.3f _13 : %.3f _14 : %.3f", M._11, M._12, M._13, M._14);
+	ImGui::Text("_21 : %.3f _22 : %.3f _23 : %.3f _24 : %.3f", M._21, M._22, M._23, M._24);
+	ImGui::Text("_31 : %.3f _32 : %.3f _33 : %.3f _34 : %.3f", M._31, M._32, M._33, M._34);
+	ImGui::Text("_41 : %.3f _42 : %.3f _43 : %.3f _44 : %.3f", M._41, M._42, M._43, M._44);
+	ImGui::End();
 #endif
 
 	ImGui::Begin("Particle");
@@ -134,13 +135,6 @@ void SceneLabo::Update()
 	ImGui::DragFloat2("texPos", &particleData.texPos.x);
 	ImGui::DragFloat2("texSize", &particleData.texSize.x);
 	ImGui::DragFloat2("scale", &particleData.scale.x);
-	ImGui::End();
-
-	ImGui::Begin("Player Bone Transform");
-	ImGui::Text("_11 : %.3f _12 : %.3f _13 : %.3f _14 : %.3f", M._11, M._12, M._13, M._14);
-	ImGui::Text("_21 : %.3f _22 : %.3f _23 : %.3f _24 : %.3f", M._21, M._22, M._23, M._24);
-	ImGui::Text("_31 : %.3f _32 : %.3f _33 : %.3f _34 : %.3f", M._31, M._32, M._33, M._34);
-	ImGui::Text("_41 : %.3f _42 : %.3f _43 : %.3f _44 : %.3f", M._41, M._42, M._43, M._44);
 	ImGui::End();
 
 	//player.Update();

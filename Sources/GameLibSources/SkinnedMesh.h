@@ -423,40 +423,7 @@ public:
 
 	std::vector<Face> GetFaces() { return faces; }
 
-private:
-	void LoadFBX( ID3D11Device *device, const char* fileName );
-	void FbxAMatrixToXMFLOAT4X4( const FbxAMatrix& fbxamatrix, DirectX::XMFLOAT4X4& xmfloat4x4 );
-	void FetchAnimations( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
-	void FetchMaterials( ID3D11Device* device, const char* fileName, FbxMesh* fbxMesh, MeshData& md );
-	void FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
-	void FetchBoneInfluences( const FbxMesh *fbxMesh, std::vector<BoneInfluencesPerControlPoint> &influences );
-	void FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<SkinnedMesh::Bone> &skeletal, FbxTime time );
-	void FetchAnimations( FbxMesh *fbxMesh, SkinnedMesh::SkeletalAnimation &skeletalAnimation, u_int numOfAnimation, u_int samplingRate = 0 );
-	void CreateBuffer( ID3D11Device *device, MeshData &m, Vertex* v, unsigned int* i, int numV, int numI );
-	void CreateShaderResourceView( ID3D11Device *device );
-	void CreateConstantBuffer( ID3D11Device *device )
-	{
-
-		HRESULT hr = S_OK;
-
-		// Create Constant Buffer ********************************************************
-
-		D3D11_BUFFER_DESC bufferDesc = {};
-		bufferDesc.ByteWidth = sizeof( CBuffer );
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bufferDesc.CPUAccessFlags = 0;
-		bufferDesc.MiscFlags = 0;
-		bufferDesc.StructureByteStride = 0;
-
-		hr = device->CreateBuffer( &bufferDesc, nullptr, constantBuffer.GetAddressOf() );
-		assert( !hr && "CreateBuffer	Error" );
-
-		// *******************************************************************************
-
-	}
-
-	void GetVectexPos( std::string name, DirectX::XMFLOAT3& pos, int vectexPosNo )
+	DirectX::XMFLOAT3 GetVectexPos(std::string name, const DirectX::XMFLOAT3& pos, int vectexPosNo)
 	{
 #if 0
 		for (auto& mesh : meshes)
@@ -489,7 +456,7 @@ private:
 
 			DirectX::XMFLOAT4 _pos = { mesh.vectexPos[vectexPosNo].pos.x + pos.x, mesh.vectexPos[vectexPosNo].pos.y + pos.y, mesh.vectexPos[vectexPosNo].pos.z + pos.z, mesh.vectexPos[vectexPosNo].pos.w };
 			DirectX::XMFLOAT3 _p = { 0, 0, 0 };
-			
+
 			for (size_t i = 0; i < 4; i++)
 			{
 				DirectX::XMFLOAT4X4 transform = skeletal.at(mesh.boneIndeces[i]).transform;
@@ -508,7 +475,7 @@ private:
 				_p.z += (_pos.x * transform._13 + _pos.y * transform._23 + _pos.z * transform._33 + _pos.w * transform._43) / w * mesh.boneWeights[i];
 			}
 
-			pos = { _p.x, _p.y, _p.z };
+			return DirectX::XMFLOAT3(_p.x, _p.y, _p.z);
 		}
 #elif 1
 		for (auto& mesh : meshes)
@@ -534,6 +501,40 @@ private:
 			}
 		}
 #endif
+		return DirectX::XMFLOAT3();
+	}
+
+private:
+	void LoadFBX( ID3D11Device *device, const char* fileName );
+	void FbxAMatrixToXMFLOAT4X4( const FbxAMatrix& fbxamatrix, DirectX::XMFLOAT4X4& xmfloat4x4 );
+	void FetchAnimations( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
+	void FetchMaterials( ID3D11Device* device, const char* fileName, FbxMesh* fbxMesh, MeshData& md );
+	void FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
+	void FetchBoneInfluences( const FbxMesh *fbxMesh, std::vector<BoneInfluencesPerControlPoint> &influences );
+	void FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<SkinnedMesh::Bone> &skeletal, FbxTime time );
+	void FetchAnimations( FbxMesh *fbxMesh, SkinnedMesh::SkeletalAnimation &skeletalAnimation, u_int numOfAnimation, u_int samplingRate = 0 );
+	void CreateBuffer( ID3D11Device *device, MeshData &m, Vertex* v, unsigned int* i, int numV, int numI );
+	void CreateShaderResourceView( ID3D11Device *device );
+	void CreateConstantBuffer( ID3D11Device *device )
+	{
+
+		HRESULT hr = S_OK;
+
+		// Create Constant Buffer ********************************************************
+
+		D3D11_BUFFER_DESC bufferDesc = {};
+		bufferDesc.ByteWidth = sizeof( CBuffer );
+		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bufferDesc.CPUAccessFlags = 0;
+		bufferDesc.MiscFlags = 0;
+		bufferDesc.StructureByteStride = 0;
+
+		hr = device->CreateBuffer( &bufferDesc, nullptr, constantBuffer.GetAddressOf() );
+		assert( !hr && "CreateBuffer	Error" );
+
+		// *******************************************************************************
+
 	}
 
 public:
