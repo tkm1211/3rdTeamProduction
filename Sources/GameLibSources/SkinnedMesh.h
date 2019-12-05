@@ -192,8 +192,8 @@ private:
 	{
 		std::string name;
 		std::vector<VectexPos> vectexPos;
-		float boneWeights[MAX_BONE_INFLUENCES] = { 1, 0, 0, 0 };
-		int boneIndeces[MAX_BONE_INFLUENCES] = {};
+		std::vector<std::vector<float>> boneWeights;
+		std::vector<std::vector<int>>   boneIndeces;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
 		std::vector<Subset> subsets;
@@ -459,7 +459,9 @@ public:
 
 			for (size_t i = 0; i < 4; i++)
 			{
-				DirectX::XMFLOAT4X4 transform = skeletal.at(mesh.boneIndeces[i]).transform;
+				if (mesh.boneIndeces[vectexPosNo][i] == -1) continue;
+
+				DirectX::XMFLOAT4X4 transform = skeletal.at(mesh.boneIndeces[vectexPosNo][i]).transform;
 				if (!handedCoordinateSystem)
 				{
 					DirectX::XMStoreFloat4x4(&transform, DirectX::XMLoadFloat4x4(&transform));
@@ -470,9 +472,9 @@ public:
 				}
 				float w = _pos.x * transform._14 + _pos.y * transform._24 + _pos.z * transform._34 + _pos.w * transform._44;
 
-				_p.x += (_pos.x * transform._11 + _pos.y * transform._21 + _pos.z * transform._31 + _pos.w * transform._41) / w * mesh.boneWeights[i];
-				_p.y += (_pos.x * transform._12 + _pos.y * transform._22 + _pos.z * transform._32 + _pos.w * transform._42) / w * mesh.boneWeights[i];
-				_p.z += (_pos.x * transform._13 + _pos.y * transform._23 + _pos.z * transform._33 + _pos.w * transform._43) / w * mesh.boneWeights[i];
+				_p.x += (_pos.x * transform._11 + _pos.y * transform._21 + _pos.z * transform._31 + _pos.w * transform._41) / w * mesh.boneWeights[vectexPosNo][i];
+				_p.y += (_pos.x * transform._12 + _pos.y * transform._22 + _pos.z * transform._32 + _pos.w * transform._42) / w * mesh.boneWeights[vectexPosNo][i];
+				_p.z += (_pos.x * transform._13 + _pos.y * transform._23 + _pos.z * transform._33 + _pos.w * transform._43) / w * mesh.boneWeights[vectexPosNo][i];
 			}
 
 			return DirectX::XMFLOAT3(_p.x, _p.y, _p.z);

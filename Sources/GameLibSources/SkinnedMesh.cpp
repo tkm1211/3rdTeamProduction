@@ -155,8 +155,11 @@ void SkinnedMesh::Render
 	bool inCamara )
 {
 
+	int cnt = 0;
 	for ( auto& mesh : meshes )
 	{
+		//if (cnt++ <= 0) continue;
+
 		//頂点バッファのバインド
 		UINT stride = sizeof( Vertex );
 		UINT offset = 0;
@@ -235,27 +238,60 @@ void SkinnedMesh::Render
 
 			if ( inCamara )
 			{
-				if ( !handedCoordinateSystem )
+				/*if (cnt == 1)
 				{
-					DirectX::XMStoreFloat4x4(    &data.wvp,
-						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-						DirectX::XMLoadFloat4x4( &wvp ) );
+					DirectX::XMMATRIX M = DirectX::XMMatrixTranslation(25.0f, 0.0f, 0.0f);
+					if (!handedCoordinateSystem)
+					{
+						DirectX::XMStoreFloat4x4(&data.wvp,
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							M *
+							DirectX::XMLoadFloat4x4(&wvp));
 
-					DirectX::XMStoreFloat4x4(    &data.world,
-						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-						DirectX::XMLoadFloat4x4( &world ) );
+						DirectX::XMStoreFloat4x4(&data.world,
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							M *
+							DirectX::XMLoadFloat4x4(&world));
+					}
+					else
+					{
+						DirectX::XMStoreFloat4x4(&data.wvp,
+							DirectX::XMLoadFloat4x4(&coordinateConversion) *
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							M *
+							DirectX::XMLoadFloat4x4(&wvp));
+
+						DirectX::XMStoreFloat4x4(&data.world,
+							DirectX::XMLoadFloat4x4(&coordinateConversion) *
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							 M *
+							DirectX::XMLoadFloat4x4(&world));
+					}
 				}
-				else
+				else*/
 				{
-					DirectX::XMStoreFloat4x4(    &data.wvp,
-						DirectX::XMLoadFloat4x4( &coordinateConversion ) *
-						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-						DirectX::XMLoadFloat4x4( &wvp ) );
+					if (!handedCoordinateSystem)
+					{
+						DirectX::XMStoreFloat4x4(&data.wvp,
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							DirectX::XMLoadFloat4x4(&wvp));
 
-					DirectX::XMStoreFloat4x4(    &data.world,
-						DirectX::XMLoadFloat4x4( &coordinateConversion ) *
-						DirectX::XMLoadFloat4x4( &mesh.globalTransform ) *
-						DirectX::XMLoadFloat4x4( &world ) );
+						DirectX::XMStoreFloat4x4(&data.world,
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							DirectX::XMLoadFloat4x4(&world));
+					}
+					else
+					{
+						DirectX::XMStoreFloat4x4(&data.wvp,
+							DirectX::XMLoadFloat4x4(&coordinateConversion) *
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							DirectX::XMLoadFloat4x4(&wvp));
+
+						DirectX::XMStoreFloat4x4(&data.world,
+							DirectX::XMLoadFloat4x4(&coordinateConversion) *
+							DirectX::XMLoadFloat4x4(&mesh.globalTransform) *
+							DirectX::XMLoadFloat4x4(&world));
+					}
 				}
 
 				// コンスタントバッファの設定
@@ -276,7 +312,8 @@ void SkinnedMesh::Render
 				immediateContext->DrawIndexed( subset.indexCount, subset.indexStart, 0 );
 			}
 		}
-		//break;
+		// if (1 <= cnt++) break;
+		cnt++;
 	}
 
 }
@@ -599,20 +636,32 @@ void SkinnedMesh::FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMes
 					vertex.boneWeights[0] += boneInfluences.at(indexOfControlPoint).at(i).weight;
 				}
 			}
-			for (int i = 0; i < 4; i++)
+
+			std::vector<float> _boneWeights;
+			std::vector<int>   _boneIndeces;
+
+			_boneWeights.resize(MAX_BONE_INFLUENCES);
+			_boneIndeces.resize(MAX_BONE_INFLUENCES);
+
+			for (int i = 0; i < MAX_BONE_INFLUENCES; i++)
 			{
-				mesh.boneWeights[i] = vertex.boneWeights[i];
-				mesh.boneIndeces[i] = vertex.boneIndices[i];
+				_boneWeights[i] = vertex.boneWeights[i];
+				_boneIndeces[i] = vertex.boneIndices[i];
 			}
+
 			VectexPos vectexPos;
 			vectexPos.pos = { vertex.pos.x, vertex.pos.y, vertex.pos.z, 1.0f };
 			mesh.vectexPos.push_back( vectexPos );
+
+			mesh.boneWeights.push_back(_boneWeights);
+			mesh.boneIndeces.push_back(_boneIndeces);
+
 			vertices.push_back( vertex );
 		}
 		subset.indexCount += 3;
 
 		// 面データ保存
-		faces.push_back(face);
+		faces.push_back( face );
 	}
 	integratedVertex.push_back( vertices );
 	integratedIndex.push_back( indices );
