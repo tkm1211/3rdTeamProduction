@@ -29,6 +29,8 @@ ArcherKokim::ArcherKokim()
 	}
 
 	SetBehaviorTree(&aiTree);
+
+	bodyCol= std::make_unique<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 }
 
 void ArcherKokim::Update()
@@ -47,4 +49,6 @@ void ArcherKokim::Update()
 
 	recast++;
 	AI::Update();
+	bodyCol->SetPos(modelData.GetPos());
 }
+

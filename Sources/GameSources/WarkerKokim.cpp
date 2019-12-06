@@ -26,7 +26,7 @@ WarkerKokim::WarkerKokim()
 	}
 
 	SetBehaviorTree(&aiTree);
-
+	bodyCol = std::make_unique<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 }
 
 void WarkerKokim::Update()
@@ -44,4 +44,5 @@ void WarkerKokim::Update()
 	SetEtoPdis(dis);
 
 	AI::Update();
+	bodyCol->SetPos(modelData.GetPos());
 }

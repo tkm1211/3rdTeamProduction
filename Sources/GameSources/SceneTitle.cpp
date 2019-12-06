@@ -35,14 +35,17 @@ void SceneTitle::Update()
 	bg->Update();
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
-	ParticleSystem::GetInstance()->Update();
-
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
 		CameraSystem::GetInstance()->mainView.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
 			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
 			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
 		));
+		ParticleSystem::GetInstance()->Update();
+	}
+	if (xInput[0].bBt)
+	{
+		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
 	}
 	if (xInput[0].bBt)
 	{
@@ -61,7 +64,10 @@ void SceneTitle::Render()
 	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
-	ParticleSystem::GetInstance()->Draw();
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		ParticleSystem::GetInstance()->Draw();
+	}
 
 }
 
@@ -81,10 +87,11 @@ void SceneTitle::ImGui()
 	{
 		Editer::GetInstance()->SetNowEditer(true);
 
-		CameraSystem::GetInstance()->mainView.Set(DirectX::XMFLOAT3(0, 500, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
+		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
+		/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
+		CameraSystem::GetInstance()->enemyEditorView.SetPerspectiveMatrix(DirectX::XMConvertToRadians(30.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000000.0f);
 
 	}
-
 	ImGui::End();
 }
 

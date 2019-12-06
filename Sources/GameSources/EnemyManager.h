@@ -21,7 +21,8 @@ class EnemyManager
 {
 public:
 	EnemyManager();
-	~EnemyManager() {};
+	~EnemyManager();
+
 
 	std::vector<bool> nowCatch;
 

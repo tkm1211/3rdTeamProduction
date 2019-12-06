@@ -9,7 +9,7 @@
 #include "ObjectSystem.h"
 #include "ParticleSystem.h"
 #include "CameraSystem.h"
-
+#include "Editer.h"
 
 void SceneGame::Init()
 {
@@ -26,12 +26,14 @@ void SceneGame::Update()
 	bg->Update();
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
-	ParticleSystem::GetInstance()->Update();
-	CameraSystem::GetInstance()->mainView.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
-		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
-		                               ) );
-
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		CameraSystem::GetInstance()->mainView.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
+			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
+			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
+		));
+		ParticleSystem::GetInstance()->Update();
+	}
 	if (xInput[0].bBt)
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
@@ -46,7 +48,10 @@ void SceneGame::Render()
 	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
-	ParticleSystem::GetInstance()->Draw();
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		ParticleSystem::GetInstance()->Draw();
+	}
 
 }
 

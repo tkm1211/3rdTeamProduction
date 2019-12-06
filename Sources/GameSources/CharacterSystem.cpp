@@ -17,13 +17,23 @@ void CharacterSystem::UnInit()
 
 void CharacterSystem::Update()
 {
-	player->Update();
-	EnemyManager::GetInstance()->Update();
-	Editer::GetInstance()->Update();
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		player->Update();
+		EnemyManager::GetInstance()->Update();
+	}
+	else
+	{
+		EnemyManager::GetInstance()->Update();
+		Editer::GetInstance()->Update();
+	}
 }
 
 void CharacterSystem::Draw()
 {
-	player->Draw();
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		player->Draw();
+	}
 	EnemyManager::GetInstance()->Draw();
 }
