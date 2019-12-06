@@ -42,12 +42,19 @@ private:
 
 	struct PlayerAttackInfo
 	{
-		int inputAttackButton;
+		int   inputStartTime;
+		int   inputEndTime;
+		int   nextAttakTime;
+		int   atkCollisionStart;
+		int   atkCollisionEnd;
 		float power;
+		float speed;
 	};
 
 	int MAX_SPEED  = 10;
 	int ATK_NUMBER = PlayerAtkCountImGui::ATTACK_1ST;
+	// 何段攻撃目か
+	int attackCnt;
 
 	ModelState motionState;
 
@@ -64,27 +71,24 @@ private:
 	// 移動スピード
 	DirectX::XMFLOAT3 moveSpeed;
 
+	//段階攻撃別情報
 	PlayerAttackInfo attackInfo[3];
+
+	//攻撃ステート
+	AttackState attackState;
 
 	// 移動していたらtrue
 	bool isMove;
 	// 攻撃してたらtrue
 	bool isAttack;
-	//次の攻撃をするかどうか
+	// 次の攻撃をするかどうか
 	bool enableNextAttack;
-	// 何段攻撃目か
-	int attackCnt;
-	//攻撃ステート
-	AttackState attackState;
-
-	DirectX::XMFLOAT3 addModelPos = {};
-	int vectexPosNo = 0;
-
-	//Collision
+	// collisionを表示するかどうか
+	bool onAtkCollision;
+public:
 	std::unique_ptr<CollisionPrimitive> atkCollision;
 	std::unique_ptr<CollisionPrimitive> bodyCollision;
-	std::unique_ptr<CollisionPrimitive> SSS;
-	float hosei;
+
 private:
 	//モーションの切り替え関数
 	void SwitchMotion(ModelState state);
@@ -110,47 +114,72 @@ public:
 	{
 		archive(
 			cereal::make_nvp("移動スピード", MAX_SPEED),
+
 			cereal::make_nvp("攻撃力1", attackInfo[0].power),
 			cereal::make_nvp("攻撃力2", attackInfo[1].power),
-			cereal::make_nvp("攻撃力3", attackInfo[2].power)
+			cereal::make_nvp("攻撃力3", attackInfo[2].power),
+
+			cereal::make_nvp("入力開始時間1", attackInfo[0].inputStartTime),
+			cereal::make_nvp("入力開始時間2", attackInfo[1].inputStartTime),
+			cereal::make_nvp("入力開始時間3", attackInfo[2].inputStartTime),
+
+			cereal::make_nvp("入力終了時間1", attackInfo[0].inputEndTime),
+			cereal::make_nvp("入力終了時間2", attackInfo[1].inputEndTime),
+			cereal::make_nvp("入力終了時間3", attackInfo[2].inputEndTime),
+
+			cereal::make_nvp("次の攻撃に行く時間1", attackInfo[0].nextAttakTime),
+			cereal::make_nvp("次の攻撃に行く時間2", attackInfo[1].nextAttakTime),
+			cereal::make_nvp("次の攻撃に行く時間3", attackInfo[2].nextAttakTime),
+
+			cereal::make_nvp("攻撃当たり判定開始1", attackInfo[0].atkCollisionStart),
+			cereal::make_nvp("攻撃当たり判定開始2", attackInfo[1].atkCollisionStart),
+			cereal::make_nvp("攻撃当たり判定開始3", attackInfo[2].atkCollisionStart),
+
+			cereal::make_nvp("攻撃当たり判定終了1", attackInfo[0].atkCollisionEnd),
+			cereal::make_nvp("攻撃当たり判定終了2", attackInfo[1].atkCollisionEnd),
+			cereal::make_nvp("攻撃当たり判定終了3", attackInfo[2].atkCollisionEnd),
+
+			cereal::make_nvp("速度1", attackInfo[0].speed),
+			cereal::make_nvp("速度2", attackInfo[1].speed),
+			cereal::make_nvp("速度3", attackInfo[2].speed)
 			);
 	}
 
 	OBJ3D GetModelData() { return modelData; }
 
-	DirectX::XMFLOAT3 SphereLinear(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, float t)
-	{
-		DirectX::XMVECTOR s = DirectX::XMLoadFloat3(&start);
-		s = DirectX::XMVector3Normalize(s);
-		DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&end);
-		e = DirectX::XMVector3Normalize(e);
-
-		// 2ベクトル間の角度（鋭角側）
-		DirectX::XMVECTOR vecAngle = DirectX::XMVector3Dot(s, e);
-		float angle = 0;
-		DirectX::XMStoreFloat(&angle, vecAngle);
-		// sinθ
-		float SinTh = sin(angle);
-		DirectX::XMVECTOR vecSinTh = DirectX::XMLoadFloat(&SinTh);
-		// 補間係数
-		float Ps = sin(angle * (1 - t));
-		float Pe = sin(angle * t);
-
-		DirectX::XMVECTOR vecPs = DirectX::XMLoadFloat(&Ps);
-		DirectX::XMVECTOR vecPe = DirectX::XMLoadFloat(&Pe);
-		vecPs = DirectX::XMVectorMultiply(s, vecPs);
-		vecPe = DirectX::XMVectorMultiply(e, vecPe);
-
-		DirectX::XMVECTOR ansAdd = DirectX::XMVectorAdd(vecPs, vecPe);
-		ansAdd = DirectX::XMVectorDivide(ansAdd, vecSinTh);
-		// 一応正規化して球面線形補間に
-		ansAdd = DirectX::XMVector3Normalize(ansAdd);
-		DirectX::XMFLOAT3 out;
-		DirectX::XMStoreFloat3(&out, ansAdd);
-		return out;
-	}
-
 
 	void ImGui();
+
+	DirectX::XMFLOAT3 SphereLinear // 戻り値 : 補間座標
+	(
+		DirectX::XMFLOAT3 _start, // ベクトル
+		DirectX::XMFLOAT3 _end,   // ベクトル
+		float t					  // 補間値（0.0f ～ 1.0f）
+	)
+	{
+		DirectX::XMVECTOR start, end;
+		start = DirectX::XMVector3Normalize(DirectX::XMVectorSet(_start.x, _start.y, _start.z, 1.0f));
+		end = DirectX::XMVector3Normalize(DirectX::XMVectorSet(_end.x, _end.y, _end.z, 1.0f));
+
+		float angle = acosf(DirectX::XMVectorGetX(DirectX::XMVector3Dot(start, end)));
+
+		float sinSita = sinf(angle);
+
+		float startPoint = sinf(angle * (1 - t));
+		float endPoint = sinf(angle * t);
+
+		DirectX::XMFLOAT3 startFloat3, endFloat3;
+		DirectX::XMStoreFloat3(&startFloat3, start);
+		DirectX::XMStoreFloat3(&endFloat3, end);
+
+		float len = sqrtf(_start.x * _start.x + _start.y * _start.y + _start.z * _start.z);
+
+		DirectX::XMFLOAT3 out;
+		out.x = ((startPoint * startFloat3.x + endPoint * endFloat3.x) / sinSita) * len;
+		out.y = ((startPoint * startFloat3.y + endPoint * endFloat3.y) / sinSita) * len;
+		out.z = ((startPoint * startFloat3.z + endPoint * endFloat3.z) / sinSita) * len;
+
+		return out;
+	}
 
 };

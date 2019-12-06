@@ -4,7 +4,7 @@
 #include "InputDevice.h"
 #include "Shader.h"
 #include "CameraSystem.h"
-
+#include "CameraControl.h"
 #include <fstream>
 #include <string>
 
@@ -25,31 +25,50 @@ void Player::Init()
 	atkCollision->SetColor({ 0, 1, 0, 1 });
 	bodyCollision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(30, 160, 30));
 	bodyCollision->SetColor({ 0, 1, 0, 1 });
-	SSS = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
-	SSS->SetColor({ 0, 1, 1, 1 });
 
 	leftStickVec                    = {0, 0};
-						            
+
 	moveSpeed                       = {0, 0, 0};
-						            
+
+	// 攻撃カウント( 0 ~ 2 )
 	attackCnt                       = 0;
-						            
+	// ダメージ量
 	attackInfo[0].power             = 0.0f;
 	attackInfo[1].power             = 0.0f;
 	attackInfo[2].power             = 0.0f;
-	attackInfo[0].inputAttackButton = 5;
-	attackInfo[1].inputAttackButton = 5;
-	attackInfo[2].inputAttackButton = 5;
+	// 入力開始時間
+	attackInfo[0].inputStartTime    = 5;
+	attackInfo[1].inputStartTime    = 5;
+	attackInfo[2].inputStartTime    = 0;
+	// 入力終了時間
+	attackInfo[0].inputEndTime      = 20;
+	attackInfo[1].inputEndTime      = 20;
+	attackInfo[2].inputEndTime      = 0;
+	// 次の攻撃に行く時間
+	attackInfo[0].nextAttakTime     = 20;
+	attackInfo[1].nextAttakTime     = 20;
+	attackInfo[2].nextAttakTime     = 30;
+	// 攻撃当たり判定開始
+	attackInfo[0].atkCollisionStart = 10;
+	attackInfo[1].atkCollisionStart = 10;
+	attackInfo[2].atkCollisionStart = 10;
+	// 攻撃当たり判定終了
+	attackInfo[0].atkCollisionEnd   = 20;
+	attackInfo[1].atkCollisionEnd   = 30;
+	attackInfo[2].atkCollisionEnd   = 20;
+	// 攻撃時の移動スピード
+	attackInfo[0].speed             = 1;
+	attackInfo[1].speed             = 3;
+	attackInfo[2].speed             = 5;
 
 	attackState         = AttackState::ATK1ST;
 
 	isMove              = false;
 	isAttack            = false;
 	enableNextAttack    = false;
+	onAtkCollision      = false;
 
-
-	hosei = 0;
-	//json読み込み
+	// json読み込み
 	std::ifstream ifs;
 	ifs.open("./Data/Document/Player.json", std::ios::binary);
 	{
@@ -82,35 +101,30 @@ void Player::Update()
 	modelData.SetPosX( modelData.GetPos().x + moveSpeed.x );
 	modelData.SetPosZ( modelData.GetPos().z + moveSpeed.z );
 
-	//Collsion
+	// Collsion
 	switch (motionState)
 	{
 	case ModelState::WAIT:
-		atkCollision->SetPos(pWait->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
-		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
+		atkCollision->SetPos (     pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::RUN:
-		atkCollision->SetPos(pRun->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
-		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
+		atkCollision->SetPos(       pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::ATTACK1:
-		atkCollision->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
-		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
+		atkCollision->SetPos( pAttack[0]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::ATTACK2:
-		atkCollision->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
-		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
+		atkCollision->SetPos( pAttack[1]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::ATTACK3:
-		atkCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
-		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
+		atkCollision->SetPos( pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 		break;
 	}
 
 
-	DirectX::XMFLOAT3 out = {};
-	SphereLinear({ 50, 70, 50 }, atkCollision->GetPos(), hosei);
-	SSS->SetPos(out);
+	bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1688));
+
+	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
 
 #if _DEBUG
 	ImGui();
@@ -154,9 +168,8 @@ void Player::Draw()
 		break;
 	}
 
-	atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	if(onAtkCollision) atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-	SSS->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
 }
 
@@ -279,6 +292,7 @@ void Player::Attack()
 	if (xInput[0].bXt && !isAttack)
 	{
 		isAttack = true;
+		moveSpeed = { 0, 0, 0 };
 	}
 
 	if (isAttack)
@@ -288,14 +302,32 @@ void Player::Attack()
 		case AttackState::ATK1ST:
 			SwitchMotion(ModelState::ATTACK1);
 			attackCnt = 0;
-			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputAttackButton && pAttack[attackCnt]->GetAnimationFrame() <= 20)
+			// 入力
+			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 			{
 				if (xInput[0].bXt)
 				{
 					enableNextAttack = true;
 				}
 			}
-			if (pAttack[0]->GetAnimationFrame() == 20)
+
+			moveSpeed.x = sinf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
+			moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
+
+			// Collision表示
+			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart && pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
+			{
+				onAtkCollision = true;
+			}
+			else if(pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
+			{
+				onAtkCollision = false;
+				moveSpeed.x = 0.0f;
+				moveSpeed.z = 0.0f;
+			}
+
+			// 2段目にいくかどうか
+			if (pAttack[0]->GetAnimationFrame() == attackInfo[attackCnt].nextAttakTime)
 			{
 				if (enableNextAttack)
 				{
@@ -308,19 +340,38 @@ void Player::Attack()
 					enableNextAttack = false;
 					attackState = AttackState::ATK1ST;
 				}
+				onAtkCollision = false;
 			}
 			break;
 		case AttackState::ATK2ND:
 				SwitchMotion(ModelState::ATTACK2);
 				attackCnt = 1;
-				if (pAttack[1]->GetAnimationFrame() > attackInfo[attackCnt].inputAttackButton && pAttack[attackCnt]->GetAnimationFrame() <= 20)
+				// 入力
+				if (pAttack[1]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 				{
 					if (xInput[0].bXt)
 					{
 						enableNextAttack = true;
 					}
 				}
-				if (pAttack[1]->GetAnimationFrame() == 20)
+
+				moveSpeed.x = sinf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
+				moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
+
+				// Collision表示
+				if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart&& pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
+				{
+					onAtkCollision = true;
+				}
+				else if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
+				{
+					onAtkCollision = false;
+					moveSpeed.x = 0.0f;
+					moveSpeed.z = 0.0f;
+				}
+
+				// 3段目にいくかどうか
+				if (pAttack[1]->GetAnimationFrame() == attackInfo[attackCnt].nextAttakTime)
 				{
 					if (enableNextAttack)
 					{
@@ -333,12 +384,29 @@ void Player::Attack()
 						enableNextAttack = false;
 						attackState = AttackState::ATK1ST;
 					}
+					onAtkCollision = false;
 				}
 			break;
 		case AttackState::ATK3RD:
 			SwitchMotion(ModelState::ATTACK3);
 			attackCnt = 2;
-			if (pAttack[attackCnt]->GetAnimationFrame() == 20)
+
+			moveSpeed.x = sinf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
+			moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
+
+			// Collision表示
+			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart&& pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
+			{
+				onAtkCollision = true;
+			}
+			else if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
+			{
+				onAtkCollision = false;
+				moveSpeed.x = 0.0f;
+				moveSpeed.z = 0.0f;
+			}
+
+			if (pAttack[attackCnt]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
 			{
 				attackCnt = 0;
 				isAttack = false;
@@ -353,22 +421,16 @@ void Player::Attack()
 void Player::ImGui()
 {
 	ImGui::Begin(u8"Player");
+	
+	ImGui::Text (u8"アニメーションフレーム   : %d" , pAttack[attackCnt]->GetAnimationFrame());
 
 	ImGui::Text("angleY : %f", modelData.GetAngle().y);
 	ImGui::Text("posX   : %f", modelData.GetPos().x);
+	ImGui::Text("posY   : %f", modelData.GetPos().y);
 	ImGui::Text("posZ   : %f", modelData.GetPos().z);
-	ImGui::Text("AnimationFrame   : %d", pAttack[1]->GetAnimationFrame());
 
-	ImGui::DragInt("MAX_SPEED##Player", &MAX_SPEED);
+	ImGui::DragInt(u8"スピード##Player", &MAX_SPEED);
 
-	ImGui::DragFloat("HOSEI##Player", &hosei);
-	ImGui::DragFloat("ATTACKPOWER1##Player", &attackInfo[0].power);
-	ImGui::DragFloat("ATTACKPOWER2##Player", &attackInfo[1].power);
-	ImGui::DragFloat("ATTACKPOWER3##Player", &attackInfo[2].power);
-
-	ImGui::DragFloat3("addModelPos##Player", &addModelPos.x);
-
-	ImGui::DragInt("VERTEXNUM##Player", &vectexPosNo);
 
 	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_1ST);
 	ImGui::SameLine();
@@ -378,15 +440,37 @@ void Player::ImGui()
 
 	if (ATK_NUMBER == PlayerAtkCountImGui::ATTACK_1ST)
 	{
-		ImGui::Text("posX   : %f", modelData.GetPos().z);
+
+		ImGui::DragFloat(u8"攻撃力##Player"                , &attackInfo[0].power);
+		ImGui::DragInt  (u8"入力開始##Player"              , &attackInfo[0].inputStartTime);
+		ImGui::DragInt  (u8"入力終了##Player"              , &attackInfo[0].inputEndTime);
+		ImGui::DragInt  (u8"次の攻撃へいく時間##Player"    , &attackInfo[0].nextAttakTime);
+		ImGui::DragInt  (u8"当たり判定表示開始##Player"    , &attackInfo[0].atkCollisionStart);
+		ImGui::DragInt  (u8"当たり判定表示終了##Player"    , &attackInfo[0].atkCollisionEnd);
+		ImGui::DragFloat(u8"攻撃の時のスピード##Player"    , &attackInfo[0].speed);
+
 	}
 	else if (ATK_NUMBER == PlayerAtkCountImGui::ATTACK_2ND)
 	{
-		ImGui::Text("posY   : %f", modelData.GetPos().z);
+
+		ImGui::DragFloat(u8"攻撃力##Player"               , &attackInfo[1].power);
+		ImGui::DragInt  (u8"入力開始##Player"             , &attackInfo[1].inputStartTime);
+		ImGui::DragInt  (u8"入力終了##Player"             , &attackInfo[1].inputEndTime);
+		ImGui::DragInt  (u8"次の攻撃へいく時間##Player"   , &attackInfo[1].nextAttakTime);
+		ImGui::DragInt  (u8"当たり判定表示開始##Player"   , &attackInfo[1].atkCollisionStart);
+		ImGui::DragInt  (u8"当たり判定表示終了##Player"   , &attackInfo[1].atkCollisionEnd);
+		ImGui::DragFloat(u8"攻撃の時のスピード##Player"   , &attackInfo[1].speed);
 	}
 	else if (ATK_NUMBER == PlayerAtkCountImGui::ATTACK_3RD)
 	{
-		ImGui::Text("posZ   : %f", modelData.GetPos().z);
+
+		ImGui::DragFloat(u8"攻撃力##Player"               , &attackInfo[2].power);
+		ImGui::DragInt  (u8"入力開始##Player"             , &attackInfo[2].inputStartTime);
+		ImGui::DragInt  (u8"入力終了##Player"             , &attackInfo[2].inputEndTime);
+		ImGui::DragInt  (u8"次の攻撃へいく時間##Player"   , &attackInfo[2].nextAttakTime);
+		ImGui::DragInt  (u8"当たり判定表示開始##Player"   , &attackInfo[2].atkCollisionStart);
+		ImGui::DragInt  (u8"当たり判定表示終了##Player"   , &attackInfo[2].atkCollisionEnd);
+		ImGui::DragFloat(u8"攻撃の時のスピード##Player"   , &attackInfo[2].speed);
 	}
 
 	//cereal でjson とbinary に保存
@@ -403,5 +487,7 @@ void Player::ImGui()
 		ofs.close();
 	}
 
+
 	ImGui::End();
+	ImGui::ShowDemoWindow();
 }
