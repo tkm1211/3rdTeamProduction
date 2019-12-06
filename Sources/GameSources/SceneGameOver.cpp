@@ -1,7 +1,7 @@
 #include <FrameWork.h>
 
 #include "SceneGameOver.h"
-
+#include "SceneResult.h"
 
 void SceneGameOver::Init()
 {
