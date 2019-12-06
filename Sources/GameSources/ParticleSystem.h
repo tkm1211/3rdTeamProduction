@@ -32,13 +32,13 @@ public:
 	void SetBuffAreaParticle(DirectX::XMFLOAT3 pos, float rad)
 	{
 		float angle = rand() % 361 * 0.01745f;
-		float _rad = 0;
-		if(rad >= 1) _rad = rand() % (int)(rad);
+		int _rad = 0;
+		if(rad >= 1.0f) _rad = rand() % (int)(rad);
 		else return;
 		
 		for (int i = 0; i < MAX; i++)
 		{
-			DirectX::XMFLOAT3 _p = { pos.x + sinf(angle)*_rad, pos.y, pos.z + cosf(angle)*_rad };
+			DirectX::XMFLOAT3 _p = { pos.x + sinf(angle)*(float)(_rad), pos.y, pos.z + cosf(angle)* (float)(_rad) };
 
 			if (ptc.SetBuffAreaParticle(&bap[i], _p)) return;
 		} 

@@ -79,7 +79,10 @@ private:
 
 	DirectX::XMFLOAT3 addModelPos = {};
 	int vectexPosNo = 0;
+
+	//Collision
 	std::unique_ptr<CollisionPrimitive> atkCollision;
+	std::unique_ptr<CollisionPrimitive> bodyCollision;
 	std::unique_ptr<CollisionPrimitive> SSS;
 	float hosei;
 private:
@@ -135,8 +138,8 @@ public:
 
 		DirectX::XMVECTOR vecPs = DirectX::XMLoadFloat(&Ps);
 		DirectX::XMVECTOR vecPe = DirectX::XMLoadFloat(&Pe);
-		vecPs = DirectX::XMVectorMultiply(vecPs, s);
-		vecPe = DirectX::XMVectorMultiply(vecPe, e);
+		vecPs = DirectX::XMVectorMultiply(s, vecPs);
+		vecPe = DirectX::XMVectorMultiply(e, vecPe);
 
 		DirectX::XMVECTOR ansAdd = DirectX::XMVectorAdd(vecPs, vecPe);
 		ansAdd = DirectX::XMVectorDivide(ansAdd, vecSinTh);

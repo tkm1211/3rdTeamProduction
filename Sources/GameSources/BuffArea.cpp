@@ -28,7 +28,7 @@ void BuffArea::Update()
 		switch (ba.state)
 		{
 		case 0: //oŒ»
-			s = easing::OutQuint(ba.timer, 30.0f, ba.radius, 0.0f); //”CˆÓ‚Ì‘å‚«‚³‚Ü‚Å‘å‚«‚­‚·‚é
+			s = easing::OutQuint((float)(ba.timer), 30.0f, ba.radius, 0.0f); //”CˆÓ‚Ì‘å‚«‚³‚Ü‚Å‘å‚«‚­‚·‚é
 			ba.modelData.SetScale({s, s ,s});
 			ba.timer++;
 			if (ba.timer > 30)

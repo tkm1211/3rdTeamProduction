@@ -21,6 +21,8 @@ void Player::Init()
 
 	atkCollision = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(50, 50, 50));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
+	bodyCollision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(30, 160, 30));
+	bodyCollision->SetColor({ 0, 1, 0, 1 });
 	SSS = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
 	SSS->SetColor({ 0, 1, 1, 1 });
 
@@ -33,9 +35,9 @@ void Player::Init()
 	attackInfo[0].power             = 0.0f;
 	attackInfo[1].power             = 0.0f;
 	attackInfo[2].power             = 0.0f;
-	attackInfo[0].inputAttackButton = 5.0f;
-	attackInfo[1].inputAttackButton = 5.0f;
-	attackInfo[2].inputAttackButton = 5.0f;
+	attackInfo[0].inputAttackButton = 5;
+	attackInfo[1].inputAttackButton = 5;
+	attackInfo[2].inputAttackButton = 5;
 
 	attackState         = AttackState::ATK1ST;
 
@@ -83,20 +85,26 @@ void Player::Update()
 	{
 	case ModelState::WAIT:
 		atkCollision->SetPos(pWait->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
 		break;
 	case ModelState::RUN:
 		atkCollision->SetPos(pRun->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
 		break;
 	case ModelState::ATTACK1:
 		atkCollision->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
 		break;
 	case ModelState::ATTACK2:
 		atkCollision->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
 		break;
 	case ModelState::ATTACK3:
 		atkCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 1688));
 		break;
 	}
+
 
 	DirectX::XMFLOAT3 out = {};
 	SphereLinear({ 50, 70, 50 }, atkCollision->GetPos(), hosei);
@@ -145,6 +153,7 @@ void Player::Draw()
 	}
 
 	atkCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	bodyCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	SSS->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
 }
