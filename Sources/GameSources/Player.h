@@ -18,24 +18,18 @@
 class Player
 {
 private:
-	enum PlayerAtkCount
+	enum PlayerAtkCountImGui
 	{
 		ATTACK_1ST,
 		ATTACK_2ND,
 		ATTACK_3RD
 	};
-
-
-	int MAX_SPEED  = 10;
-	int ATK_NUMBER = PlayerAtkCount::ATTACK_1ST;
-	struct PlayerAttackInfo
+	enum class AttackState
 	{
-		// 攻撃中何フレーム入力を受け付けるか
-		int inputAttackTime;
-		float power;
-
+		ATK1ST,
+		ATK2ND,
+		ATK3RD
 	};
-
 	enum class ModelState
 	{
 		T,
@@ -45,8 +39,17 @@ private:
 		ATTACK2,
 		ATTACK3
 	};
-	ModelState motionState;
 
+	struct PlayerAttackInfo
+	{
+		int inputAttackButton;
+		float power;
+	};
+
+	int MAX_SPEED  = 10;
+	int ATK_NUMBER = PlayerAtkCountImGui::ATTACK_1ST;
+
+	ModelState motionState;
 
 	std::unique_ptr<Model> pT;
 	std::unique_ptr<Model> pWait;
@@ -61,22 +64,25 @@ private:
 	// 移動スピード
 	DirectX::XMFLOAT3 moveSpeed;
 
-	// 何段攻撃目か
-	int attackCnt;
 	PlayerAttackInfo attackInfo[3];
 
 	// 移動していたらtrue
 	bool isMove;
 	// 攻撃してたらtrue
 	bool isAttack;
-	bool nextAttack;
+	//次の攻撃をするかどうか
+	bool enableNextAttack;
+	// 何段攻撃目か
+	int attackCnt;
+	//攻撃ステート
+	AttackState attackState;
 
 	DirectX::XMFLOAT3 addModelPos = {};
 	int vectexPosNo = 0;
 	std::unique_ptr<CollisionPrimitive> atkCollision;
-
+	std::unique_ptr<CollisionPrimitive> SSS;
+	float hosei;
 private:
-
 	//モーションの切り替え関数
 	void SwitchMotion(ModelState state);
 	//左スティックの傾いてる方向を取得
@@ -108,6 +114,38 @@ public:
 	}
 
 	OBJ3D GetModelData() { return modelData; }
+
+	DirectX::XMFLOAT3 SphereLinear(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, float t)
+	{
+		DirectX::XMVECTOR s = DirectX::XMLoadFloat3(&start);
+		s = DirectX::XMVector3Normalize(s);
+		DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&end);
+		e = DirectX::XMVector3Normalize(e);
+
+		// 2ベクトル間の角度（鋭角側）
+		DirectX::XMVECTOR vecAngle = DirectX::XMVector3Dot(s, e);
+		float angle = 0;
+		DirectX::XMStoreFloat(&angle, vecAngle);
+		// sinθ
+		float SinTh = sin(angle);
+		DirectX::XMVECTOR vecSinTh = DirectX::XMLoadFloat(&SinTh);
+		// 補間係数
+		float Ps = sin(angle * (1 - t));
+		float Pe = sin(angle * t);
+
+		DirectX::XMVECTOR vecPs = DirectX::XMLoadFloat(&Ps);
+		DirectX::XMVECTOR vecPe = DirectX::XMLoadFloat(&Pe);
+		vecPs = DirectX::XMVectorMultiply(vecPs, s);
+		vecPe = DirectX::XMVectorMultiply(vecPe, e);
+
+		DirectX::XMVECTOR ansAdd = DirectX::XMVectorAdd(vecPs, vecPe);
+		ansAdd = DirectX::XMVectorDivide(ansAdd, vecSinTh);
+		// 一応正規化して球面線形補間に
+		ansAdd = DirectX::XMVector3Normalize(ansAdd);
+		DirectX::XMFLOAT3 out;
+		DirectX::XMStoreFloat3(&out, ansAdd);
+		return out;
+	}
 
 
 	void ImGui();

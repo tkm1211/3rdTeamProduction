@@ -19,25 +19,32 @@ void Player::Init()
 	modelData.Init();
 	SwitchMotion(ModelState::WAIT);
 
-	atkCollision = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(20, 20, 20));
+	atkCollision = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(50, 50, 50));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
+	SSS = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
+	SSS->SetColor({ 0, 1, 1, 1 });
 
-	leftStickVec = {0, 0};
-	
-	moveSpeed = {0, 0, 0};
+	leftStickVec                    = {0, 0};
+						            
+	moveSpeed                       = {0, 0, 0};
+						            
+	attackCnt                       = 0;
+						            
+	attackInfo[0].power             = 0.0f;
+	attackInfo[1].power             = 0.0f;
+	attackInfo[2].power             = 0.0f;
+	attackInfo[0].inputAttackButton = 5.0f;
+	attackInfo[1].inputAttackButton = 5.0f;
+	attackInfo[2].inputAttackButton = 5.0f;
 
-	attackCnt  = 0;
-	attackInfo[0].inputAttackTime = 0;
-	attackInfo[1].inputAttackTime = 0;
-	attackInfo[2].inputAttackTime = 0;
-	attackInfo[0].power = 0.0f;
-	attackInfo[1].power = 0.0f;
-	attackInfo[2].power = 0.0f;
+	attackState         = AttackState::ATK1ST;
 
-	isMove     = false;
-	isAttack   = false;
-	nextAttack = false;
+	isMove              = false;
+	isAttack            = false;
+	enableNextAttack    = false;
 
+
+	hosei = 0;
 	//jsonì«Ç›çûÇ›
 	std::ifstream ifs;
 	ifs.open("./Data/Document/Player.json", std::ios::binary);
@@ -74,23 +81,26 @@ void Player::Update()
 	//Collsion
 	switch (motionState)
 	{
-	case Player::ModelState::WAIT:
-		atkCollision->SetPos(pWait->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+	case ModelState::WAIT:
+		atkCollision->SetPos(pWait->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
 		break;
-	case Player::ModelState::RUN:
-		atkCollision->SetPos(pRun->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+	case ModelState::RUN:
+		atkCollision->SetPos(pRun->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
 		break;
-	case Player::ModelState::ATTACK1:
-		atkCollision->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+	case ModelState::ATTACK1:
+		atkCollision->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
 		break;
-	case Player::ModelState::ATTACK2:
-		atkCollision->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+	case ModelState::ATTACK2:
+		atkCollision->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
 		break;
-	case Player::ModelState::ATTACK3:
-		atkCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), vectexPosNo));
+	case ModelState::ATTACK3:
+		atkCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), addModelPos, modelData.GetWorldMatrix(), 9));
 		break;
 	}
 
+	DirectX::XMFLOAT3 out = {};
+	SphereLinear({ 50, 70, 50 }, atkCollision->GetPos(), hosei);
+	SSS->SetPos(out);
 
 #if _DEBUG
 	ImGui();
@@ -102,31 +112,31 @@ void Player::Draw()
 {
 	switch ( motionState )
 	{
-	case Player::ModelState::WAIT:
+	case ModelState::WAIT:
 		pWait->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
 		pWait->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
-	case Player::ModelState::RUN:
+	case ModelState::RUN:
 		pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false) ;
 
 		pRun->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
-	case Player::ModelState::ATTACK1:
+	case ModelState::ATTACK1:
 		pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
 		pAttack[0]->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
-	case Player::ModelState::ATTACK2:
+	case ModelState::ATTACK2:
 		pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
 		pAttack[1]->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
-	case Player::ModelState::ATTACK3:
+	case ModelState::ATTACK3:
 		pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
 		pAttack[2]->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
@@ -135,6 +145,7 @@ void Player::Draw()
 	}
 
 	atkCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	SSS->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
 }
 
@@ -254,115 +265,92 @@ void Player::Move()
 
 void Player::Attack()
 {
-	if (xInput[0].bXt)
+	if (xInput[0].bXt && !isAttack)
 	{
 		isAttack = true;
-		// çUåÇÇPÉÇÅ[ÉVÉáÉìÇ…êÿÇËë÷Ç¶
-		if (attackCnt == 0 && attackInfo[0].inputAttackTime == 0 && attackInfo[1].inputAttackTime == 0 && attackInfo[2].inputAttackTime == 0)
-		{
-			modelData.SetAngle(DirectX::XMFLOAT3(0, camera.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
-
-			moveSpeed = { 0, 0, 0 };
-
-			SwitchMotion(ModelState::ATTACK1);
-			attackInfo[0].inputAttackTime = 45;
-			attackCnt++;
-		}
-		else if (attackCnt == 1 && attackInfo[0].inputAttackTime <= 30 && attackInfo[1].inputAttackTime == 0 && attackInfo[2].inputAttackTime == 0)
-		{
-			modelData.SetAngle(DirectX::XMFLOAT3(0, camera.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
-
-			moveSpeed = { 0, 0, 0 };
-
-			SwitchMotion(ModelState::ATTACK2);
-			attackInfo[0].inputAttackTime = 0;
-			attackInfo[1].inputAttackTime = 60;
-			nextAttack = true;
-			attackCnt++;
-		}
-		else if (attackCnt == 2 && attackInfo[0].inputAttackTime == 0 && attackInfo[1].inputAttackTime <= 25 && attackInfo[2].inputAttackTime == 0)
-		{
-			modelData.SetAngle(DirectX::XMFLOAT3(0, camera.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
-
-			moveSpeed = { 0, 0, 0 };
-
-			SwitchMotion(ModelState::ATTACK3);
-			attackInfo[0].inputAttackTime = 0;
-			attackInfo[1].inputAttackTime = 0;
-			attackInfo[2].inputAttackTime = 80;
-			nextAttack = true;
-			attackCnt++;
-		}
-		else if (attackCnt == 0)
-		{
-			attackInfo[0].inputAttackTime = 0;
-			attackInfo[1].inputAttackTime = 0;
-			attackInfo[2].inputAttackTime = 0;
-		}
 	}
 
 	if (isAttack)
 	{
-		if (attackCnt == 0)
+		switch (attackState)
 		{
-		}
-		else if (attackCnt == 1)
-		{
-			attackInfo[0].inputAttackTime--;
-			if (attackInfo[0].inputAttackTime <= 0 && nextAttack)
+		case AttackState::ATK1ST:
+			SwitchMotion(ModelState::ATTACK1);
+			attackCnt = 0;
+			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputAttackButton && pAttack[attackCnt]->GetAnimationFrame() <= 20)
 			{
-
+				if (xInput[0].bXt)
+				{
+					enableNextAttack = true;
+				}
+			}
+			if (pAttack[0]->GetAnimationFrame() == 20)
+			{
+				if (enableNextAttack)
+				{
+					attackState = AttackState::ATK2ND;
+					enableNextAttack = false;
+				}
+				else
+				{
+					isAttack = false;
+					enableNextAttack = false;
+					attackState = AttackState::ATK1ST;
+				}
+			}
+			break;
+		case AttackState::ATK2ND:
 				SwitchMotion(ModelState::ATTACK2);
-				attackInfo[0].inputAttackTime = 0;
-				attackInfo[1].inputAttackTime = 30;
-				nextAttack = false;
-			}
-			else if (attackInfo[0].inputAttackTime <= 0 && !nextAttack)
+				attackCnt = 1;
+				if (pAttack[1]->GetAnimationFrame() > attackInfo[attackCnt].inputAttackButton && pAttack[attackCnt]->GetAnimationFrame() <= 20)
+				{
+					if (xInput[0].bXt)
+					{
+						enableNextAttack = true;
+					}
+				}
+				if (pAttack[1]->GetAnimationFrame() == 20)
+				{
+					if (enableNextAttack)
+					{
+						attackState = AttackState::ATK3RD;
+						enableNextAttack = false;
+					}
+					else
+					{
+						isAttack = false;
+						enableNextAttack = false;
+						attackState = AttackState::ATK1ST;
+					}
+				}
+			break;
+		case AttackState::ATK3RD:
+			SwitchMotion(ModelState::ATTACK3);
+			attackCnt = 2;
+			if (pAttack[attackCnt]->GetAnimationFrame() == 20)
 			{
+				attackCnt = 0;
 				isAttack = false;
+				enableNextAttack = false;
+				attackState = AttackState::ATK1ST;
 			}
+			break;
 		}
-		else if (attackCnt == 2)
-		{
-			attackInfo[1].inputAttackTime--;
-			if (attackInfo[1].inputAttackTime <= 0 && nextAttack)
-			{
-
-				SwitchMotion(ModelState::ATTACK3);
-				attackInfo[0].inputAttackTime = 0;
-				attackInfo[1].inputAttackTime = 0;
-				attackInfo[2].inputAttackTime = 60;
-				nextAttack = false;
-			}
-			else if (attackInfo[1].inputAttackTime <= 0 && !nextAttack)
-			{
-				isAttack = false;
-			}
-		}
-		else if (attackCnt == 3)
-		{
-			attackInfo[2].inputAttackTime--;
-			if (attackInfo[2].inputAttackTime <= 0) isAttack = false;
-		}
-	}
-	else
-	{
-		attackInfo[0].inputAttackTime = 0;
-		attackInfo[1].inputAttackTime = 0;
-		attackInfo[2].inputAttackTime = 0;
 	}
 }
 
 void Player::ImGui()
 {
-	ImGui::Begin(u8"Plyer");
+	ImGui::Begin(u8"Player");
 
 	ImGui::Text("angleY : %f", modelData.GetAngle().y);
 	ImGui::Text("posX   : %f", modelData.GetPos().x);
 	ImGui::Text("posZ   : %f", modelData.GetPos().z);
+	ImGui::Text("AnimationFrame   : %d", pAttack[1]->GetAnimationFrame());
 
 	ImGui::DragInt("MAX_SPEED##Player", &MAX_SPEED);
 
+	ImGui::DragFloat("HOSEI##Player", &hosei);
 	ImGui::DragFloat("ATTACKPOWER1##Player", &attackInfo[0].power);
 	ImGui::DragFloat("ATTACKPOWER2##Player", &attackInfo[1].power);
 	ImGui::DragFloat("ATTACKPOWER3##Player", &attackInfo[2].power);
@@ -371,21 +359,21 @@ void Player::ImGui()
 
 	ImGui::DragInt("VERTEXNUM##Player", &vectexPosNo);
 
-	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCount::ATTACK_1ST);
+	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_1ST);
 	ImGui::SameLine();
-	ImGui::RadioButton("2nd##Player", &ATK_NUMBER, PlayerAtkCount::ATTACK_2ND);
+	ImGui::RadioButton("2nd##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_2ND);
 	ImGui::SameLine();
-	ImGui::RadioButton("3rd##Player", &ATK_NUMBER, PlayerAtkCount::ATTACK_3RD);
+	ImGui::RadioButton("3rd##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_3RD);
 
-	if (ATK_NUMBER == ATTACK_1ST)
+	if (ATK_NUMBER == PlayerAtkCountImGui::ATTACK_1ST)
 	{
 		ImGui::Text("posX   : %f", modelData.GetPos().z);
 	}
-	else if (ATK_NUMBER == PlayerAtkCount::ATTACK_2ND)
+	else if (ATK_NUMBER == PlayerAtkCountImGui::ATTACK_2ND)
 	{
 		ImGui::Text("posY   : %f", modelData.GetPos().z);
 	}
-	else if (ATK_NUMBER == PlayerAtkCount::ATTACK_3RD)
+	else if (ATK_NUMBER == PlayerAtkCountImGui::ATTACK_3RD)
 	{
 		ImGui::Text("posZ   : %f", modelData.GetPos().z);
 	}
