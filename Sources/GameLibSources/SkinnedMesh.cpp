@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Light.h"
 #include "Camera.h"
+#include "CameraSystem.h"
 
 using namespace fbxsdk;
 
@@ -131,7 +132,7 @@ void SkinnedMesh::Preparation( ID3D11DeviceContext* immediateContext, Shader sha
 	cb.ambientColor = Light::GetInstance()->ambient;
 	cb.lightDir = Light::GetInstance()->lightDir;
 	cb.lightColor = Light::GetInstance()->lightColor;
-	DirectX::XMFLOAT3 _viewPos = camera.GetPos();
+	DirectX::XMFLOAT3 _viewPos = CameraSystem::GetInstance()->mainView.GetPos();
 	cb.eyePos.x = _viewPos.x;
 	cb.eyePos.y = _viewPos.y;
 	cb.eyePos.z = _viewPos.z;

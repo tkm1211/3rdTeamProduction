@@ -1,4 +1,5 @@
 #include "CollisionJudge.h"
+#include "Collision.h"
 #include "CharacterSystem.h"
 #include "BG.h"
 
@@ -15,6 +16,12 @@ void CollisionJudge::AllJudge()
 
 void CollisionJudge::PlayerAttackVsEnemies()
 {
+	Player* player;
+	player = CharacterSystem::GetInstance()->GetPlayerAddress();
+
+	CollisionPrimitive* hitPlayerAttack;
+	// hitPlayerAttack = player->GetPlayerAttackAddress();
+
 
 }
 

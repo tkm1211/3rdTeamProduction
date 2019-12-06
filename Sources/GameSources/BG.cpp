@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "FrameWork.h"
 #include "Shader.h"
+#include "CameraSystem.h"
 
 
 void BG::Init()
@@ -26,9 +27,9 @@ void BG::Update()
 void BG::Draw()
 {
 	ground->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
-	ground->Render(modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	ground->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 	wall->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	wall->Render(modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	wall->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 }

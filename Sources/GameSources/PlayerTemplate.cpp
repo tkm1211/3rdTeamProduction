@@ -2,6 +2,8 @@
 #include "Camera.h"
 #include "FrameWork.h"
 #include "Shader.h"
+#include "CameraSystem.h"
+#include "CameraControl.h"
 
 
 void PlayerTemplate::Init()
@@ -35,24 +37,24 @@ void PlayerTemplate::Draw()
 	{
 	case PlayerTemplate::WAIT:
 		pWait->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-		pWait->Render(modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pWait->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	case PlayerTemplate::RUN:
 		pRun->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-		pRun->Render(modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pRun->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	case PlayerTemplate::ATTACK:
 		pAttack->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-		pAttack->Render(modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pAttack->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	default: break;
 	}
 
 	pItem->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	pItem->Render(itemData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pItem->Render(itemData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), itemData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 }
 void PlayerTemplate::ImGui()

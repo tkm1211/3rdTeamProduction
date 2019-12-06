@@ -3,8 +3,12 @@
 #include "FrameWork.h"
 #include "Camera.h"
 #include "directxmath.h"
+#include "CameraSystem.h"
+
+
 #define PLAYER_SPEED 10
 _Player _player;
+
 
 EnemyManager::EnemyManager()
 {
@@ -74,22 +78,22 @@ void EnemyManager::Draw()
 	pArcher->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	for (auto &arc : archer)
 	{
-		pArcher->Render(arc.GetModelData()->GetWorldMatrix(), camera.GetViewMatrix(),camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0,1,0,1), DirectX::XMFLOAT4(1,1,1,1), FrameWork::GetInstance().GetElapsedTime());
+		pArcher->Render(arc.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0,1,0,1), DirectX::XMFLOAT4(1,1,1,1), FrameWork::GetInstance().GetElapsedTime());
 		if (arc.GetNowShot())
 		{
 			pShot->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-			pShot->Render(arc.GetArrow()->GetModelData().GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+			pShot->Render(arc.GetArrow()->GetModelData().GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 		}
 	}
 	pWarker->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	for (auto &wrk : warker)
 	{
-		pWarker->Render(wrk.GetModelData()->GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+		pWarker->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 	}
 	pEliteWarker->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	for (auto &ewrk : eliteWarker)
 	{
-		pEliteWarker->Render(ewrk.GetModelData()->GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+		pEliteWarker->Render(ewrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 	}
 	pPlayer->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 
@@ -103,7 +107,7 @@ void EnemyManager::Draw()
 
 		worldM = scaleM * rotateM*translateM;
 	}
-	pPlayer->Render(worldM, camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+	pPlayer->Render(worldM, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 }
 
 void EnemyManager::ImGui()

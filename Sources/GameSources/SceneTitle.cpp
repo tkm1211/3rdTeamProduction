@@ -10,6 +10,8 @@
 #include "ObjectSystem.h"
 #include "ParticleSystem.h"
 #include "Editer.h"
+#include "CameraSystem.h"
+
 
 void SceneTitle::Init()
 {
@@ -37,7 +39,7 @@ void SceneTitle::Update()
 
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
-		camera.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
+		CameraSystem::GetInstance()->mainView.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
 			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
 			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
 		));
@@ -79,7 +81,7 @@ void SceneTitle::ImGui()
 	{
 		Editer::GetInstance()->SetNowEditer(true);
 
-		camera.Set(DirectX::XMFLOAT3(0, 500, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
+		CameraSystem::GetInstance()->mainView.Set(DirectX::XMFLOAT3(0, 500, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
 
 	}
 

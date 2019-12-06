@@ -5,6 +5,8 @@
 #include "FrameWork.h"
 #include "Shader.h"
 #include "Light.h"
+#include "CameraSystem.h"
+#include "CameraControl.h"
 
 
 void SceneManager::Init()
@@ -15,6 +17,7 @@ void SceneManager::Init()
 	Light::GetInstance()->Init();
 	//Fade‚Ì‰Šú‰»ˆ—
 	Fade::GetInstance()->Init();
+	CameraSystem::GetInstance()->Init();
 }
 
 void SceneManager::Update()
@@ -32,13 +35,14 @@ void SceneManager::Update()
 
 #if DEBUG_MODE
 
-	assetLoader.Update();
+	//assetLoader.Update();
 
 #endif // DEBUG_MODE
 
-	camera.Update();
 	Light::GetInstance()->Update();
 	GoToSceneLaboCommand();
+
+	CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
 
 	// XVˆ—
 	if (pStackScene)
@@ -64,7 +68,7 @@ void SceneManager::Render()
 	// •`‰æˆ—
 #if DEBUG_MODE
 
-	assetLoader.Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), elapsedTime);
+	//assetLoader.Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), elapsedTime);
 
 #endif // DEBUG_MODE
 

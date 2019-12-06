@@ -2,6 +2,7 @@
 #include "FrameWork.h"
 #include "StaticMesh.h"
 #include "SkinnedMesh.h"
+#include "CameraSystem.h"
 
 
 Model::Model
@@ -78,10 +79,10 @@ void Model::Render
 
 bool Model::JudgeInCamera( DirectX::XMFLOAT3 pos )
 {
-	DirectX::XMFLOAT3 _cameraFoward = camera.GetFoward();
+	DirectX::XMFLOAT3 _cameraFoward = CameraSystem::GetInstance()->mainView.GetFoward();
 	DirectX::XMVECTOR cameraFowardVec = DirectX::XMLoadFloat2( &DirectX::XMFLOAT2( _cameraFoward.x, _cameraFoward.z ) );
 
-	DirectX::XMFLOAT3 _cameraPos = camera.GetPos();
+	DirectX::XMFLOAT3 _cameraPos = CameraSystem::GetInstance()->mainView.GetPos();
 	DirectX::XMVECTOR modelToCamaraVec = DirectX::XMLoadFloat2( &DirectX::XMFLOAT2( pos.x - _cameraPos.x, pos.z - _cameraPos.z ) );
 
 	// ベクトルの長さ
@@ -110,7 +111,7 @@ bool Model::JudgeInCamera( DirectX::XMFLOAT3 pos )
 	float degreeSita = sita * 180.0f / PI;
 
 	// カメラに映っているか判定
-	float degreeFov = ( camera.GetFov() * 180.0f / PI );
+	float degreeFov = ( CameraSystem::GetInstance()->mainView.GetFov() * 180.0f / PI );
 	if ( -degreeFov <= degreeSita && degreeSita <= degreeFov )
 	{
 		return true;

@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "Blender.h"
 #include "Light.h"
+#include "CameraSystem.h"
 
 
 void ShadowMap::Init()
@@ -101,10 +102,10 @@ void ShadowMap::Draw()
 	vp.TopLeftY = 0;
 	immediateContext->RSSetViewports(1, &vp);
 
-	camera.Set(p, DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
-	camera.SetOrthographicMatrix(10.0f, 10.0f, 1.0f, 100.0f);
+	CameraSystem::GetInstance()->mainView.Set(p, DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
+	CameraSystem::GetInstance()->mainView.SetOrthographicMatrix(10.0f, 10.0f, 1.0f, 100.0f);
 
-	DirectX::XMStoreFloat4x4(&lightViewProjection, camera.GetViewMatrix() * camera.GetProjectionMatrix());
+	DirectX::XMStoreFloat4x4(&lightViewProjection, CameraSystem::GetInstance()->mainView.GetViewMatrix() * CameraSystem::GetInstance()->mainView.GetProjectionMatrix());
 
 
 }

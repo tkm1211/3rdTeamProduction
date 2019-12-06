@@ -4,12 +4,13 @@
 #include "Camera.h"
 #include "SkinnedMesh.h"
 #include "Blender.h"
+#include "CameraSystem.h"
 
 
 void SceneLabo::Init()
 {
 	//player.Init();
-	pPlayer = std::make_unique<Model>("Data/Assets/Model/danbo_fbx/danbo_atk.fbx", false);
+	pPlayer = std::make_unique<Model>("Data/Assets/val/Player_attack01.fbx", false);
 	playerData.Init();
 	radius = 5.0f;
 
@@ -17,7 +18,9 @@ void SceneLabo::Init()
 	itemData.Init();
 	itemData.SetScale({ 10.0f,10.0f,10.0f });
 
-	pPlayerCube = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CUBE, false, DirectX::XMFLOAT3( 10.0f, 5.0f, 10.0f ));
+	pPlayerAttackCollision = std::make_unique<CollisionPrimitive>(CollisionPrimitive::SPHERE, false, DirectX::XMFLOAT3(100.0f, 100.0f, 100.0f));
+
+	pPlayerCube = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CUBE, false, DirectX::XMFLOAT3( 100.0f, 50.0f, 100.0f ));
 	pGroundCube = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CUBE, false, DirectX::XMFLOAT3( 100.0f, 5.0f, 200.0f ));
 
 	pPlayerCylinder = std::make_unique<CollisionPrimitive>(CollisionPrimitive::CYLINDER, false, DirectX::XMFLOAT3(20.0f, 50.0f, 20.0f));
@@ -43,16 +46,18 @@ void SceneLabo::Update()
 	DirectX::XMFLOAT3 addModelPos = _pos;
 	DirectX::XMFLOAT3 modelPos = playerData.GetPos();
 	DirectX::XMFLOAT3 oldModelPos = playerData.GetPos();
+	static int animNo = 0;
 
 	ImGui::Begin("Test Model");
 	ImGui::DragFloat3("pos", &_pos.x);
 	ImGui::DragFloat3("model pos", &modelPos.x);
 	ImGui::DragInt("Vectex Pos No", &vectexPosNo);
 	ImGui::DragFloat("draw radius", &radius);
+	ImGui::InputInt("animNo", &animNo);
 
 	if (ImGui::Button("Anim Start"))
 	{
-		pPlayer->StartAnimation(0, true);
+		pPlayer->StartAnimation(animNo, true);
 	}
 	if (ImGui::Button("Anim ReStart"))
 	{
@@ -115,7 +120,7 @@ void SceneLabo::Update()
 #endif
 
 #if 1
-	itemData.SetPos(pPlayer->GetVectexPos(std::string("pCube2"), addModelPos, playerData.GetWorldMatrix(), vectexPosNo));
+	pPlayerAttackCollision->SetPos(pPlayer->GetVectexPos(std::string("model1"), addModelPos, playerData.GetWorldMatrix(), vectexPosNo));
 #else
 	DirectX::XMFLOAT4X4 M = pPlayer->GetBoneTransform(std::string("R_arm"), playerData.GetWorldMatrix());
 
@@ -144,23 +149,26 @@ void SceneLabo::Render()
 	//player.Draw();
 
 	pPlayer->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	pPlayer->Render(playerData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pPlayer->Render(playerData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), playerData.GetColor(), FrameWork::GetInstance().GetElapsedTime(), radius);
 
 	pItem->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	pItem->Render(itemData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pItem->Render(itemData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), itemData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 
-	pPlayerCube->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pPlayerAttackCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
-	pGroundCube->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pPlayerCube->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
-	pPlayerCylinder->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pGroundCube->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
-	pGroundCylinder->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+	pPlayerCylinder->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+
+	pGroundCylinder->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 }
 void SceneLabo::ImGui()

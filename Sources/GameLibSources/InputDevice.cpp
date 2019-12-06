@@ -415,8 +415,8 @@ bool GetXInputState(XINPUT *xinput, int _num)
 		normalizedMagnitude = 0.0f;
 	}//repeat for right thumb stick
 
-	xinput->sX = static_cast<int>(normalizedLX);
-	xinput->sY = static_cast<int>(-normalizedLY);
+	xinput->sLX = static_cast<int>(normalizedLX);
+	xinput->sLY = static_cast<int>(-normalizedLY);
 
 
 	//XINPUT_STATE state = g_Controllers[i].state;
@@ -509,8 +509,8 @@ bool GetDInputState(DINPUT *dinput, int _num)
 	if (-DEADZONE <= joy.lZ  && joy.lZ  <= DEADZONE) joy.lZ  = 0;
 	if (-DEADZONE <= joy.lRz && joy.lRz <= DEADZONE) joy.lRz = 0;
 
-	dinput->sX = joy.lX;
-	dinput->sY = joy.lY;
+	dinput->sLX = joy.lX;
+	dinput->sLY = joy.lY;
 	dinput->sRX = joy.lZ;
 	dinput->sRY = joy.lRz;
 
@@ -543,8 +543,8 @@ bool GetDInputState(DINPUT *dinput, int _num)
 	dinput->bR2s = joy.lRx;
 	dinput->bL2s = joy.lRy;
 #else
-	dinput->bR2s = (joy.lRx + 1000) / 2000.0f * 255.0f;
-	dinput->bL2s = (joy.lRy + 1000) / 2000.0f * 255.0f;
+	dinput->bR2s = static_cast<int>((static_cast<float>(joy.lRx) + 1000.0f) / 2000.0f * 255.0f);
+	dinput->bL2s = static_cast<int>((static_cast<float>(joy.lRy) + 1000.0f) / 2000.0f * 255.0f);
 #endif
 
 	//BUTTONS TRG

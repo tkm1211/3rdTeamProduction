@@ -2,6 +2,9 @@
 #include "Camera.h"
 #include "EnemyManager.h"
 #include "Collision.h"
+#include "CameraSystem.h"
+
+
 Editer::Editer()
 {
 	nowEditer = false;
@@ -20,8 +23,8 @@ void Editer::Update()
 
 
 	{
-		DirectX::XMMATRIX view = camera.GetViewMatrix();
-		DirectX::XMMATRIX proj = camera.GetProjectionMatrix();
+		DirectX::XMMATRIX view = CameraSystem::GetInstance()->mainView.GetViewMatrix();
+		DirectX::XMMATRIX proj = CameraSystem::GetInstance()->mainView.GetProjectionMatrix();
 		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 		DirectX::XMVECTOR screen_start = DirectX::XMVectorSet(newCursor.x, newCursor.y, 0.0f, 0.0f);
 		DirectX::XMVECTOR screen_end = DirectX::XMVectorSet(newCursor.x, newCursor.y, 1.0f, 0.0f);
@@ -44,7 +47,7 @@ void Editer::Update()
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			nowCatch = false;
-			for (int i =0; i< EnemyManager::GetInstance()->GetEnemyList().size();i++)
+			for (size_t i =0; i< EnemyManager::GetInstance()->GetEnemyList().size();i++)
 			{
 				EnemyManager::GetInstance()->nowCatch.at(i) = false;
 			}
@@ -55,7 +58,7 @@ void Editer::Update()
 		float distance = NULL;
 		if (::GetAsyncKeyState(VK_MENU) == 0)
 		{
-			for (int i =0; i<EnemyManager::GetInstance()->GetEnemyList().size();i++)
+			for (size_t i =0; i<EnemyManager::GetInstance()->GetEnemyList().size();i++)
 			{
 				if (::GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 				{

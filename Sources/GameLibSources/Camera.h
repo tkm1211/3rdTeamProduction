@@ -8,11 +8,13 @@
 class Camera
 {
 private:
-	const DirectX::XMFLOAT3	originPos = DirectX::XMFLOAT3(270.0f, 500.0f, 1414.0f);
-	const DirectX::XMFLOAT3	originTarget = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	const DirectX::XMFLOAT3	originUp = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-	const DirectX::XMFLOAT3	originRight = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT3	originPos;
+	DirectX::XMFLOAT3	originTarget;
 
+	const DirectX::XMFLOAT3	originUp     = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	const DirectX::XMFLOAT3	originRight  = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+public:
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 up;
 	DirectX::XMFLOAT3 right;
@@ -30,11 +32,10 @@ private:
 	float fov;
 
 public:
-	Camera();
+	Camera() {}
+	~Camera() {}
 
-	void Init();
-	void Update();
-	void PadUpdate();
+	void Init( const DirectX::XMFLOAT3& _pos, const DirectX::XMFLOAT3& _target );
 
 public: // Getä÷êî
 	DirectX::XMMATRIX	GetViewMatrix();
@@ -56,6 +57,3 @@ public: // Setä÷êî
 	void SetRotateX( float _rotateX ) { rotateX = _rotateX; }
 	void SetRotateY( float _rotateY ) { rotateY = _rotateY; }
 };
-
-int GetJoystickAngle();
-extern Camera camera;

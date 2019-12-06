@@ -3,6 +3,8 @@
 #include "FrameWork.h"
 #include "InputDevice.h"
 #include "Shader.h"
+#include "CameraSystem.h"
+
 #include <fstream>
 #include <string>
 
@@ -123,38 +125,38 @@ void Player::Draw()
 	case ModelState::WAIT:
 		pWait->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
-		pWait->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pWait->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::RUN:
 		pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false) ;
 
-		pRun->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pRun->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK1:
 		pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
-		pAttack[0]->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pAttack[0]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK2:
 		pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
-		pAttack[1]->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pAttack[1]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK3:
 		pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
 
-		pAttack[2]->Render( modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pAttack[2]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	}
 
-	atkCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-	bodyCollision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-	SSS->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	SSS->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
 }
 
@@ -162,10 +164,10 @@ void Player::Draw()
 DirectX::XMFLOAT2 Player::GetLeftStickVector()
 {
 
-	if ( abs( xInput[0].sX ) < 250 && abs( xInput[0].sY ) < 250 ) return leftStickVec;
+	if ( abs( xInput[0].sLX ) < 250 && abs( xInput[0].sLY ) < 250 ) return leftStickVec;
 
-	leftStickVec.x = static_cast<float> ( xInput[0].sX ) /  1000;
-	leftStickVec.y = static_cast<float> ( xInput[0].sY ) / -1000;
+	leftStickVec.x = static_cast<float> ( xInput[0].sLX ) /  1000;
+	leftStickVec.y = static_cast<float> ( xInput[0].sLY ) / -1000;
 
 	float len = sqrtf( leftStickVec.x * leftStickVec.x + leftStickVec.y * leftStickVec.y );
 
@@ -236,14 +238,14 @@ void Player::Move()
 {
 	if ( isAttack ) return;
 
-	if ( abs( xInput[0].sX ) > 250 || abs( xInput[0].sY ) > 250)
+	if ( abs( xInput[0].sLX ) > 250 || abs( xInput[0].sLY ) > 250)
 	{
 		if ( xInput->bL3s )
 		{
 			// 走りモーションに切り替え
 			SwitchMotion(ModelState::RUN);
 
-			modelData.SetAngle(DirectX::XMFLOAT3(0, camera.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
+			modelData.SetAngle(DirectX::XMFLOAT3(0, CameraSystem::GetInstance()->mainView.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
 			moveSpeed.x = sinf(modelData.GetAngle().y) /** ( abs( xInput[0].sX ) / 1000.0f */ * MAX_SPEED * 2;
 			moveSpeed.z = cosf(modelData.GetAngle().y) /** ( abs( xInput[0].sY ) / 1000.0f */ * MAX_SPEED * 2;
 			isMove = true;
@@ -253,7 +255,7 @@ void Player::Move()
 			// 走りモーションに切り替え
 			SwitchMotion(ModelState::RUN);
 
-			modelData.SetAngle(DirectX::XMFLOAT3(0, camera.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
+			modelData.SetAngle(DirectX::XMFLOAT3(0, CameraSystem::GetInstance()->mainView.GetRotateY() + DirectX::XM_PI + GetLeftStickAngle(), 0));
 			moveSpeed.x = sinf(modelData.GetAngle().y) /** ( abs( xInput[0].sX ) / 1000.0f */ * MAX_SPEED;
 			moveSpeed.z = cosf(modelData.GetAngle().y) /** ( abs( xInput[0].sY ) / 1000.0f */ * MAX_SPEED;
 			isMove = true;

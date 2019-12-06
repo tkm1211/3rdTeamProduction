@@ -5,6 +5,8 @@
 #include "Blender.h"
 #include "ParticleSystem.h"
 #include "Light.h"
+#include "CameraSystem.h"
+
 
 void BuffArea::Init()
 {
@@ -76,7 +78,7 @@ void BuffArea::Draw()
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;
-		pArea->Render(ba.modelData.GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+		pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 	}
 	SetBlenderMode(BM_ALPHA);

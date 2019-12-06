@@ -2,6 +2,9 @@
 #include "FrameWork.h"
 #include "Camera.h"
 #include "Blender.h"
+#include "CameraSystem.h"
+
+
 void ParticleSystem::Init()
 {
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/Effect_Aura_Cloud1.png");
@@ -24,7 +27,7 @@ void ParticleSystem::Draw()
 	{
 		if (bap[i].data.isExist)
 		{
-			texture->Render(FrameWork::GetInstance().GetContext().Get(), camera.GetViewMatrix(), camera.GetProjectionMatrix(),
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				bap[i].data.pos, bap[i].data.tex.x, bap[i].data.tex.y, bap[i].data.tex.sx, bap[i].data.tex.sy,
 				bap[i].data.angle, bap[i].data.scale, { 1.0f, 1.0f, 1.0f, bap[i].data.alpha });
 		}

@@ -8,6 +8,7 @@
 #include "CharacterSystem.h"
 #include "ObjectSystem.h"
 #include "ParticleSystem.h"
+#include "CameraSystem.h"
 
 
 void SceneGame::Init()
@@ -26,7 +27,7 @@ void SceneGame::Update()
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update();
-	camera.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x, 
+	CameraSystem::GetInstance()->mainView.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
 		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
 		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
 		                               ) );

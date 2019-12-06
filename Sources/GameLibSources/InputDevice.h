@@ -71,8 +71,8 @@ struct XINPUT
 	int bL3t; // val : 0 or 1
 
 	// stick
-	int  sX; // val : -1000 ~ 1000 (-1000 : LEFT , 1000 : RIGHT)
-	int  sY; // val : -1000 ~ 1000 (-1000 : UP   , 1000 : DOWN)
+	int sLX; // val : -1000 ~ 1000 (-1000 : LEFT , 1000 : RIGHT)
+	int sLY; // val : -1000 ~ 1000 (-1000 : UP   , 1000 : DOWN)
 	int sRX; // val : -1000 ~ 1000 (-1000 : LEFT , 1000 : RIGHT)
 	int sRY; // val : -1000 ~ 1000 (-1000 : UP   , 1000 : DOWN)
 
@@ -138,8 +138,8 @@ struct DINPUT
 	int bL3t; // val : 0 or 1
 
 	// stick
-	int sX;
-	int sY;
+	int sLX;
+	int sLY;
 	int sRX;
 	int sRY;
 

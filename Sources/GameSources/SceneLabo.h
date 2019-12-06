@@ -19,6 +19,8 @@ private:
 	std::unique_ptr<Model> pItem;
 	OBJ3D itemData;
 
+	std::unique_ptr<CollisionPrimitive> pPlayerAttackCollision;
+
 	std::unique_ptr<CollisionPrimitive> pPlayerCube;
 	std::unique_ptr<CollisionPrimitive> pGroundCube;
 
