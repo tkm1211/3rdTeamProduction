@@ -1,5 +1,6 @@
 #include "CharacterSystem.h"
-
+#include "EnemyManager.h"
+#include "Editer.h"
 #undef max
 #undef min
 
@@ -17,9 +18,12 @@ void CharacterSystem::UnInit()
 void CharacterSystem::Update()
 {
 	player->Update();
+	EnemyManager::GetInstance()->Update();
+	Editer::GetInstance()->Update();
 }
 
 void CharacterSystem::Draw()
 {
 	player->Draw();
+	EnemyManager::GetInstance()->Draw();
 }

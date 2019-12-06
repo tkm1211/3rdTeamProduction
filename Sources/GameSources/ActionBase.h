@@ -1,6 +1,7 @@
 #ifndef ACTION_BASE_H_
 #define ACTION_BASE_H_
 
+class Job;
 class AI;
 // s“®ˆ—Šî’êƒNƒ‰ƒX
 class ActionBase

@@ -1,18 +1,17 @@
 #pragma once
 
 #include "ExecJudgementBase.h"
-
-
+#include "EliteWarkerGoToPlayer.h"
 
 class AI;
 
-class WarkerMoveJudge: 
+class EliteWarkerMoveJudge :
 	public ExecJudgementBase
 {
 public:
-	static WarkerMoveJudge *GetInstance()
+	static EliteWarkerMoveJudge *GetInstance()
 	{
-		static WarkerMoveJudge instance;
+		static EliteWarkerMoveJudge instance;
 		return &instance;
 	}
 	virtual bool Judgement(AI *obj);

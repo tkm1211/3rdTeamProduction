@@ -33,6 +33,7 @@ NodeBase *NodeBase::Inference(AI *obj, BehaviorData *data)
 {
 	std::vector<NodeBase*> list;
 	NodeBase *result = NULL;
+	NodeBase *tresult = this;
 
 	// 子ノードで実行可能なノードを探す
 	for (size_t i = 0; i < m_Child.size(); i++)
@@ -71,6 +72,8 @@ NodeBase *NodeBase::Inference(AI *obj, BehaviorData *data)
 		break;
 	}
 
+	
+
 	if (result != NULL)
 	{
 		// 行動があれば終了
@@ -82,7 +85,13 @@ NodeBase *NodeBase::Inference(AI *obj, BehaviorData *data)
 			result = result->Inference(obj, data);
 		}
 	}
-
+	if (BehaviorTree::SELECT_RULE::SEQUENCE == m_SelectRule)
+	{
+		if (result == NULL)
+		{
+			result = tresult->GetParent()->Inference(obj, data);
+		}
+	}
 	return result;
 }
 

@@ -10,7 +10,7 @@ extern _Player _player;
 
 WarkerKokim::WarkerKokim()
 {
-	brain.SetObj(&modelData);
+	SetObj(&modelData);
 
 	static BehaviorTree aiTree;
 
@@ -25,7 +25,7 @@ WarkerKokim::WarkerKokim()
 		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, WarkerWaitAction::GetInstance());
 	}
 
-	brain.SetBehaviorTree(&aiTree);
+	SetBehaviorTree(&aiTree);
 
 }
 
@@ -41,7 +41,7 @@ void WarkerKokim::Update()
 	DirectX::XMStoreFloat(&dis,DirectX::XMVector3Length(
 		DirectX::XMLoadFloat3(&vec)));
 
-	brain.SetEtoPdis(dis);
+	SetEtoPdis(dis);
 
-	brain.Update();
+	AI::Update();
 }

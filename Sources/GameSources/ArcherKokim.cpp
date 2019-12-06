@@ -3,24 +3,32 @@
 #include "BehaviorTree.h"
 #include "ArcherMove.h"
 #include "ArcherTurn.h"
+#include "ArcherAttack.h"
+#include "ArcherShot.h"
+#include "ArcherWait.h"
 
 extern _Player _player;
 
 ArcherKokim::ArcherKokim()
 {
-	brain.SetObj(&modelData);
+	SetObj(&modelData);
 
 	static BehaviorTree aiTree;
 
-	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::SEQUENTIAL_LOOPING, NULL, NULL);
 	{
-		aiTree.AddNode("Root", "Move", 1, BehaviorTree::SELECT_RULE::PRIORITY, ArcherMoveJudge::GetInstance(), NULL);
+		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::SEQUENTIAL_LOOPING, ArcherAttackJudge::GetInstance(), NULL);
+		{
+			aiTree.AddNode("Attack", "ArcherShot", 1, BehaviorTree::SELECT_RULE::NON, ArcherShotJudge::GetInstance(), ArcherShotAction::GetInstance());
+		}
+		aiTree.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::SEQUENTIAL_LOOPING, ArcherMoveJudge::GetInstance(), NULL);
 		{
 			aiTree.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, ArcherTurnJudge::GetInstance(), ArcherTurnAction::GetInstance());
 		}
+		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, ArcherWaitJudge::GetInstance(), NULL);
 	}
 
-	brain.SetBehaviorTree(&aiTree);
+	SetBehaviorTree(&aiTree);
 }
 
 void ArcherKokim::Update()
@@ -35,7 +43,8 @@ void ArcherKokim::Update()
 	DirectX::XMStoreFloat(&dis, DirectX::XMVector3Length(
 		DirectX::XMLoadFloat3(&vec)));
 
-	brain.SetEtoPdis(dis);
+	SetEtoPdis(dis);
 
-	brain.Update();
+	recast++;
+	AI::Update();
 }

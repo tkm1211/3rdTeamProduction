@@ -9,6 +9,7 @@
 #include "ObjectSystem.h"
 #include "ParticleSystem.h"
 
+
 void SceneGame::Init()
 {
 	bg = std::make_unique<BG>();
@@ -35,6 +36,8 @@ void SceneGame::Update()
 		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
 	}
 
+
+	SceneGame::ImGui();
 }
 
 void SceneGame::Render()
@@ -57,7 +60,12 @@ void SceneGame::ImGui()
 	{
 		ParticleSystem::GetInstance()->SetBuffAreaParticle({ 50.0f, 100.0f, 50.0f }, 200);
 	}
+
+
+
 	ImGui::End();
+
+
 
 }
 

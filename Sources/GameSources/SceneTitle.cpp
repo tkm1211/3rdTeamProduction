@@ -9,6 +9,7 @@
 #include "CharacterSystem.h"
 #include "ObjectSystem.h"
 #include "ParticleSystem.h"
+#include "Editer.h"
 
 void SceneTitle::Init()
 {
@@ -33,14 +34,22 @@ void SceneTitle::Update()
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update();
-	camera.SetTarget( DirectX::XMFLOAT3( CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x, 
-		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-		                                 CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z 
-		                               ) );
 
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		camera.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
+			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
+			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
+		));
+	}
 	if (xInput[0].bBt)
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
+	}
+
+	if (Editer::GetInstance()->GetNowEditer())
+	{
+		Editer::GetInstance()->Update();
 	}
 
 }
@@ -65,6 +74,15 @@ void SceneTitle::ImGui()
 	{
 		ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
 	}
+
+	if (ImGui::Button("Editer"))
+	{
+		Editer::GetInstance()->SetNowEditer(true);
+
+		camera.Set(DirectX::XMFLOAT3(0, 500, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
+
+	}
+
 	ImGui::End();
 }
 

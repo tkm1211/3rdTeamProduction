@@ -37,7 +37,10 @@ public:
 		adjust( 0.0f, 0.0f, 0.0f ),
 		exists( false )
 	{}
-	~OBJ3D() {}
+	~OBJ3D() 
+	{
+	
+	}
 
 public:
 	void Init()

@@ -3,6 +3,7 @@
 #include <vector>
 #include "ArcherKokim.h"
 #include "WarkerKokim.h"
+#include "EliteWarkerKokim.h"
 
 class _Player
 {
@@ -22,10 +23,17 @@ public:
 	EnemyManager();
 	~EnemyManager() {};
 
+	std::vector<bool> nowCatch;
+
 	void Update();
 	void Draw();
 
 	void ImGui();
+
+	std::vector<std::shared_ptr<OBJ3D>> GetEnemyList()
+	{
+		return enmList;
+	}
 
 	static EnemyManager* GetInstance()
 	{
@@ -35,10 +43,17 @@ public:
 private:
 	std::unique_ptr<Model> pArcher;
 	std::unique_ptr<Model> pWarker;
+	std::unique_ptr<Model> pEliteWarker;
 	std::unique_ptr<Model> pPlayer;
+	std::unique_ptr<Model> pShot;
 
 
 	std::vector<ArcherKokim> archer;
 	std::vector<WarkerKokim> warker;
+	std::vector<EliteWarkerKokim> eliteWarker;
+
+	std::vector<std::shared_ptr<OBJ3D>> enmList;
+	
+
 };
 
