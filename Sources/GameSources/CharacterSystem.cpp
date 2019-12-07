@@ -1,5 +1,4 @@
 #include "CharacterSystem.h"
-#include "EnemyManager.h"
 #include "Editer.h"
 #undef max
 #undef min
@@ -7,6 +6,7 @@
 void CharacterSystem::Init()
 {
 	player = std::make_unique<Player>();
+	enmMgr = std::make_unique<EnemyManager>();
 	player->Init();
 }
 
@@ -20,11 +20,11 @@ void CharacterSystem::Update()
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
 		player->Update();
-		EnemyManager::GetInstance()->Update();
+		enmMgr->Update();
 	}
 	else
 	{
-		EnemyManager::GetInstance()->Update();
+		enmMgr->Update();
 		Editer::GetInstance()->Update();
 	}
 }
@@ -35,5 +35,5 @@ void CharacterSystem::Draw()
 	{
 		player->Draw();
 	}
-	EnemyManager::GetInstance()->Draw();
+	enmMgr->Draw();
 }

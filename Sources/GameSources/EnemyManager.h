@@ -46,11 +46,11 @@ public:
 		return enmList;
 	}
 
-	static EnemyManager* GetInstance()
+	/*static EnemyManager* GetInstance()
 	{
 		static EnemyManager instance;
 		return &instance;
-	}
+	}*/
 private:
 	std::unique_ptr<Model> pArcher;
 	std::unique_ptr<Model> pWarker;

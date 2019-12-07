@@ -1,9 +1,8 @@
 #include "Editer.h"
 #include "Camera.h"
-#include "EnemyManager.h"
 #include "Collision.h"
 #include "CameraSystem.h"
-
+#include "CharacterSystem.h"
 
 Editer::Editer()
 {
@@ -48,9 +47,9 @@ void Editer::Update()
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			nowCatch = false;
-			for (size_t i =0; i< EnemyManager::GetInstance()->GetEnemyList().size();i++)
+			for (size_t i =0; i<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetEnemyList().size();i++)
 			{
-				EnemyManager::GetInstance()->nowCatch.at(i) = false;
+				CharacterSystem::GetInstance()->GetEnemyManagerAddress()->nowCatch.at(i) = false;
 			}
 		}
 	}
@@ -59,14 +58,14 @@ void Editer::Update()
 		float distance = NULL;
 		if (::GetAsyncKeyState(VK_MENU) == 0)
 		{
-			for (size_t i =0; i<EnemyManager::GetInstance()->GetEnemyList().size();i++)
+			for (size_t i =0; i<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetEnemyList().size();i++)
 			{
 				if (::GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 				{
 					DirectX::XMFLOAT2 screenEnm;
 					DirectX::XMStoreFloat2(&screenEnm,
 						DirectX::XMVector3Project(
-							DirectX::XMLoadFloat3(&EnemyManager::GetInstance()->GetEnemyList().at(i).modelData->GetPos()),
+							DirectX::XMLoadFloat3(&CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetEnemyList().at(i).modelData->GetPos()),
 							0, 0, 1920, 1080, 0.1f, 1000000.0f,
 							proj, view, world));
 					/*for (int j = 0; (unsigned)j < EnemyManager::GetInstance()->GetEnemyList().size(); j++)
