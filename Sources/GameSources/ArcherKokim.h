@@ -18,7 +18,7 @@ public:
 	void Update();
 
 	Shot* GetArrow() { return arrow.get(); };
-	OBJ3D *GetModelData() { return &modelData; };
+	std::shared_ptr<OBJ3D> GetModelData() { return modelData; };
 	CollisionPrimitive* GetBodyCollision() { return bodyCol.get(); };
 	bool GetNowShot() { return nowShot; };
 	int	 GetRecast() { return recast; };
@@ -31,7 +31,7 @@ private:
 
 	std::shared_ptr<CollisionPrimitive> bodyCol;
 	std::unique_ptr<Shot> arrow;
-	OBJ3D modelData = {};
+	std::shared_ptr<OBJ3D> modelData = {};
 	bool nowShot=false;
 	int recast = NULL;
 };

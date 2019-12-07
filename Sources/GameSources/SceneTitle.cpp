@@ -11,7 +11,7 @@
 #include "ParticleSystem.h"
 #include "Editer.h"
 #include "CameraSystem.h"
-
+#include "EnemyManager.h"
 
 void SceneTitle::Init()
 {
@@ -43,6 +43,11 @@ void SceneTitle::Update()
 		));
 		ParticleSystem::GetInstance()->Update();
 	}
+	else
+	{
+		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -1));
+	}
+
 	if (xInput[0].bBt)
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
@@ -61,7 +66,7 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
-	bg->Draw();
+	//bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -87,9 +92,13 @@ void SceneTitle::ImGui()
 	{
 		Editer::GetInstance()->SetNowEditer(true);
 
+
+		CameraSystem::GetInstance()->enemyEditorView.Init(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0));
 		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
-		/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
+
 		CameraSystem::GetInstance()->enemyEditorView.SetPerspectiveMatrix(DirectX::XMConvertToRadians(30.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000000.0f);
+		/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
+		
 
 	}
 	ImGui::End();

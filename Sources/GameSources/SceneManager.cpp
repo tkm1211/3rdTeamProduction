@@ -7,7 +7,7 @@
 #include "Light.h"
 #include "CameraSystem.h"
 #include "CameraControl.h"
-
+#include "Editer.h"
 
 void SceneManager::Init()
 {
@@ -42,7 +42,15 @@ void SceneManager::Update()
 	Light::GetInstance()->Update();
 	GoToSceneLaboCommand();
 
-	CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
+	if (!Editer::GetInstance()->GetNowEditer())
+	{
+		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
+	}
+	else
+	{
+		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->enemyEditorView);
+
+	}
 
 	// XVˆ—
 	if (pStackScene)

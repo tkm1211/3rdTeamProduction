@@ -15,7 +15,16 @@ public:
 };
 
 
+class EditEnemy
+{
+public:
+	EditEnemy(std::shared_ptr<OBJ3D> modelData):
+		nowCatch(false), modelData(modelData){};
+	~EditEnemy() {};
 
+	std::shared_ptr<OBJ3D> modelData;
+	bool nowCatch;
+};
 
 class EnemyManager
 {
@@ -23,6 +32,7 @@ public:
 	EnemyManager();
 	~EnemyManager();
 
+	
 
 	std::vector<bool> nowCatch;
 
@@ -31,7 +41,7 @@ public:
 
 	void ImGui();
 
-	std::vector<std::shared_ptr<OBJ3D>> GetEnemyList()
+	std::vector<EditEnemy> GetEnemyList()
 	{
 		return enmList;
 	}
@@ -53,7 +63,7 @@ private:
 	std::vector<WarkerKokim> warker;
 	std::vector<EliteWarkerKokim> eliteWarker;
 
-	std::vector<std::shared_ptr<OBJ3D>> enmList;
+	std::vector<EditEnemy> enmList;
 	
 
 };

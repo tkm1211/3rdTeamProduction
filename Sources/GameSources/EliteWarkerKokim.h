@@ -15,11 +15,11 @@ public:
 
 	void Update();
 
-	OBJ3D* GetModelData() { return &modelData; };
+	std::shared_ptr<OBJ3D> GetModelData() { return modelData; };
 	CollisionPrimitive* GetBodyCollision() { return bodyCol.get(); };
 
 private:
 
 	std::unique_ptr<CollisionPrimitive> bodyCol;
-	OBJ3D modelData = {};
+	std::shared_ptr<OBJ3D> modelData;
 };

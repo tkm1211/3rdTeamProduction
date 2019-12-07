@@ -21,22 +21,22 @@ EnemyManager::EnemyManager()
 	warker.emplace_back();
 	eliteWarker.emplace_back();
 
-	/*for (auto &ewrk : eliteWarker)
+	for (auto &ewrk : eliteWarker)
 	{
 		ewrk.GetModelData()->SetScale(DirectX::XMFLOAT3(5, 5, 5));
 	}
 	for (auto &arc : archer)
 	{
 		enmList.emplace_back(arc.GetModelData());
-	}*/
-	/*for (auto &wrk : warker)
+	}
+	for (auto &wrk : warker)
 	{
 		enmList.emplace_back(wrk.GetModelData());
 	}
 	for (auto &ewrk : eliteWarker)
 	{
 		enmList.emplace_back(ewrk.GetModelData());
-	}*/
+	}
 	/*enowCatch.resize(enmList.size());*/
 }
 
@@ -103,6 +103,19 @@ void EnemyManager::Draw()
 		{
 			pEliteWarker->Render(ewrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 		}
+
+		for (auto &arc : archer)
+		{
+			arc.GetBodyCollision()->Render(CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
+		for (auto &wrk : warker)
+		{
+			wrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
+		for (auto &ewrk : eliteWarker)
+		{
+			ewrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
 	}
 	else
 	{
@@ -139,20 +152,22 @@ void EnemyManager::Draw()
 			worldM = scaleM * rotateM*translateM;
 		}
 		pPlayer->Render(worldM, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+
+		for (auto &arc : archer)
+		{
+			arc.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
+		for (auto &wrk : warker)
+		{
+			wrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
+		for (auto &ewrk : eliteWarker)
+		{
+			ewrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
 	}
 
-	for (auto &arc : archer)
-	{
-		arc.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
-	}
-	for (auto &wrk : warker)
-	{
-		wrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
-	}
-	for (auto &ewrk : eliteWarker)
-	{
-		ewrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
-	}
+
 }
 
 void EnemyManager::ImGui()

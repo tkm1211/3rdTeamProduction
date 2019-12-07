@@ -11,7 +11,9 @@ extern _Player _player;
 
 ArcherKokim::ArcherKokim()
 {
-	SetObj(&modelData);
+	modelData = std::make_shared<OBJ3D>();
+
+	SetObj(modelData.get());
 
 	static BehaviorTree aiTree;
 
@@ -39,7 +41,7 @@ void ArcherKokim::Update()
 	DirectX::XMStoreFloat3(&vec,
 		DirectX::XMVectorSubtract(
 			DirectX::XMLoadFloat3(&_player.pos),
-			DirectX::XMLoadFloat3(&modelData.GetPos())));
+			DirectX::XMLoadFloat3(&modelData->GetPos())));
 
 	float dis;
 	DirectX::XMStoreFloat(&dis, DirectX::XMVector3Length(
@@ -49,6 +51,6 @@ void ArcherKokim::Update()
 
 	recast++;
 	AI::Update();
-	bodyCol->SetPos(modelData.GetPos());
+	bodyCol->SetPos(modelData->GetPos());
 }
 
