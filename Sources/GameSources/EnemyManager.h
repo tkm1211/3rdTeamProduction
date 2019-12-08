@@ -65,6 +65,9 @@ private:
 
 	std::vector<EditEnemy> enmList;
 	
-
+public:
+	std::vector<ArcherKokim>& GetArcherKokim() { return archer; }
+	std::vector<WarkerKokim>& GetWarkerKokim() { return warker; }
+	std::vector<EliteWarkerKokim>& GetEliteWarkerKokim() { return eliteWarker; }
 };
 
