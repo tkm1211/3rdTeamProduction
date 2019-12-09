@@ -351,7 +351,8 @@ public:
 		const DirectX::XMFLOAT4 &lightDirection,
 		const DirectX::XMFLOAT4 &materialColor,
 		float elapsedTime,
-		bool inCamera
+		bool inCamera,
+		bool solid = true
 	);
 	void StartAnimation( u_int _animationNumber, bool _isloopAnimation )
 	{

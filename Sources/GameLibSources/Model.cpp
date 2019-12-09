@@ -45,6 +45,7 @@ void Model::Render
 	const DirectX::XMFLOAT4& lightDirection,
 	const DirectX::XMFLOAT4& color,
 	float elapsedTime,
+	bool solid,
 	float radius )
 {
 
@@ -72,7 +73,7 @@ void Model::Render
 	//	•`‰æ
 	if ( pMesh )
 	{
-		pMesh->Render( immediateContext.Get(), wvp, _world, lightDirection, color, elapsedTime, inCamera );
+		pMesh->Render( immediateContext.Get(), wvp, _world, lightDirection, color, elapsedTime, inCamera, solid );
 	}
 
 }

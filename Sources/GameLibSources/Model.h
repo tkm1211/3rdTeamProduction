@@ -36,6 +36,7 @@ public:
 		const DirectX::XMFLOAT4& lightDirection,
 		const DirectX::XMFLOAT4& color,
 		float elapsedTime,
+		bool solid = true,
 		float radius = 0.0f
 	);
 

@@ -110,10 +110,6 @@ void SkinnedMesh::Preparation( ID3D11DeviceContext* immediateContext, Shader sha
 	// プリミティブモードの設定
 	immediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-	// ラスタライザーの設定
-	if ( wireframe )	immediateContext->RSSetState( wireframeRasterizerState.Get() );
-	else				immediateContext->RSSetState( solidRasterizerState.Get() );
-
 	// シェーダーの設定
 	immediateContext->VSSetShader( shader.GetVertexShader().Get(), nullptr, 0 );
 	immediateContext->PSSetShader( shader.GetPixelShader().Get(), nullptr, 0 );
@@ -153,7 +149,8 @@ void SkinnedMesh::Render
 	const DirectX::XMFLOAT4 &lightDirection,
 	const DirectX::XMFLOAT4 &materialColor,
 	float elapsedTime,
-	bool inCamara )
+	bool inCamara,
+	bool solid )
 {
 
 	int cnt = 0;
@@ -168,6 +165,10 @@ void SkinnedMesh::Render
 
 		//インデックスバッファのバインド
 		immediateContext->IASetIndexBuffer( mesh.indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0 );
+
+		// ラスタライザーの設定
+		if ( !solid )	immediateContext->RSSetState( wireframeRasterizerState.Get() );
+		else				immediateContext->RSSetState( solidRasterizerState.Get() );
 
 		//プリミティブの描画(index付き)
 		for ( auto &subset : mesh.subsets )
