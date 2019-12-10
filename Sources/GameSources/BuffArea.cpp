@@ -11,9 +11,10 @@
 void BuffArea::Init()
 {
 	//モデルのロード
-	pArea = std::make_unique<Model>("Data/Assets/Model/val/auraeffect.fbx", false);
+	pArea = std::make_unique<Model>("Data/Assets/Model/val/AreaFrame.fbx", false);
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
 	onceLightNum = 0;
+	onCollision  = false;
 }
 
 void BuffArea::UnInit()
@@ -40,12 +41,12 @@ void BuffArea::Update()
 		case 1:	 //更新
 
 			//if( rand() % 100 == 33 ) ParticleSystem::GetInstance()->SetBuffAreaParticle(ba.pos, ba.radius);
-			if(rand() % 100 >= 80) ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos() .x, ba.modelData.GetPos() .y + 20, ba.modelData.GetPos().z}, ba.modelData.GetScale().x*1.8f);
+			if(rand() % 100 >= 80) ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos() .x, ba.modelData.GetPos() .y + 20, ba.modelData.GetPos().z}, ba.modelData.GetScale().x);
 
 			if (ba.stopFlg) break;	//即break
 
 			ba.pArea_collision->SetPos(ba.modelData.GetPos());
-			ba.pArea_collision->SetScale({ba.modelData.GetScale().x * 1.8f, 200, ba.modelData.GetScale().z * 1.8f });
+			ba.pArea_collision->SetScale({ba.modelData.GetScale().x , 200, ba.modelData.GetScale().z });
 
 
 			s = ba.subRadius;
@@ -66,38 +67,46 @@ void BuffArea::Update()
 		//Light::GetInstance()->pointLight[ba.lightNum].range = ba.modelData.GetScale().x * 1.8f;
 		//常時回転させる
 		ba.modelData.SetAngleY(ba.modelData.GetAngle().y + ba.addRota);
-		ba.modelData.SetPos(ba.pos);
+		ba.modelData.SetPos({ ba.pos.x, ba.pos.y + 20, ba.pos.z });
 	}
+
+#ifdef _DEBUG
+	ImGui();
+#endif // _DEBUG
+
+
 }
 
 void BuffArea::Draw()
 {
-	
-	//pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	//SetBlenderMode(BM_ALPHA);
-	//for (auto& ba : buffArea)
-	//{
-	//	if (!ba.isExist) continue;
-	//	pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-	//		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
-	//	ba.pArea_collision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), false);
-	//}
+	pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+	SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
+	SetBlenderMode(BM_ALPHA);
+	for (auto& ba : buffArea)
+	{
+		if (!ba.isExist || ba.stopFlg) continue;
+		//if (ba.stopFlg) continue;
+		pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+	}
+	SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
 
-	SetBlenderMode(BM_ADD);
+	//SetBlenderMode(BM_ADD);
 	texture->Begin(FrameWork::GetInstance().GetContext().Get());
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;
 		{
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-				{ba.pos.x, ba.pos.y+20, ba.pos.z}, 1024 * 2, 0, 1024, 1024,
-				{ DirectX::XMConvertToRadians(90) + CameraSystem::GetInstance()->mainView.GetRotateX(), 0, 0 }, {ba.modelData.GetScale().x * 8.0f, ba.modelData.GetScale().y * 8.0f}, { 1.0f, 1.0f, 1.0f, 1.0f });
+				{ba.pos.x, ba.pos.y + 10, ba.pos.z}, 1024 * 2, 0, 1024, 1024,
+				{ DirectX::XMConvertToRadians(90) + CameraSystem::GetInstance()->mainView.GetRotateX(), 0, 0 }, {ba.modelData.GetScale().x * 3.0f, ba.modelData.GetScale().y * 3.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+			if(onCollision) ba.pArea_collision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), false);
 		}
 	}
 	texture->End();
 
 
-	SetBlenderMode(BM_ALPHA);
+	//SetBlenderMode(BM_ALPHA);
 
 
 }
@@ -143,4 +152,14 @@ void BuffArea::BreakBuffArea()
 		if (!ba.isExist) continue;
 		ba.isExist = false;
 	}
+}
+
+void BuffArea::ImGui()
+{
+	ImGui::Begin(u8"BuffArea");
+
+	ImGui::Checkbox(u8"当たり判定表示##BuffArea", &onCollision);
+
+	ImGui::End();
+
 }

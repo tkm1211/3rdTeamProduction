@@ -50,7 +50,7 @@ void SceneTitle::Update()
 
 	if (xInput[0].bBt)
 	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
+		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 400, 1);
 	}
 
 	if (Editer::GetInstance()->GetNowEditer())

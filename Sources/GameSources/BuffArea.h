@@ -83,6 +83,7 @@ private:
 
 	int onceLightNum;
 
+	bool onCollision;
 public:
 	std::vector<BuffAreaInfo> buffArea;
 	std::unique_ptr<Billboard> texture;
@@ -100,6 +101,8 @@ public:
 	void Update();
 	void Draw();
 	void UnInit();
+
+	void ImGui();
 
 	void SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad);//pos : ’†SÀ•W, rad : ”¼Œa, subRad : 1ƒtƒŒ[ƒ€‚Ék‚Ş”¼Œa
 

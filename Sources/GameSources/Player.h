@@ -128,7 +128,7 @@ public:
 
 	// ダメージを受ける : _damage ダメージ量
 	void SufferDamage(int _damage);
-
+	bool GetOnAtkCollision() { return onAtkCollision; }
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
