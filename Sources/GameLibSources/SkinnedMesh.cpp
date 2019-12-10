@@ -167,8 +167,8 @@ void SkinnedMesh::Render
 		immediateContext->IASetIndexBuffer( mesh.indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0 );
 
 		// ラスタライザーの設定
-		if ( !solid )	immediateContext->RSSetState( wireframeRasterizerState.Get() );
-		else				immediateContext->RSSetState( solidRasterizerState.Get() );
+		//if ( !solid )	immediateContext->RSSetState( wireframeRasterizerState.Get() );
+		//else				immediateContext->RSSetState( solidRasterizerState.Get() );
 
 		//プリミティブの描画(index付き)
 		for ( auto &subset : mesh.subsets )

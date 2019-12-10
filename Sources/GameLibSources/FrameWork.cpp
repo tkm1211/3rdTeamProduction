@@ -197,6 +197,142 @@ bool FrameWork::Initialize( bool enableMsaa, int subSamples )
 
 // *******************************************************************************
 
+// Set Rasterizer State **********************************************************
+
+	D3D11_RASTERIZER_DESC rd;
+	for (int state = 0; state < 8; state++)
+	{
+		switch (state)
+		{
+		case RS_CULL_BACK_FALSE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_SOLID;
+			rd.CullMode = D3D11_CULL_BACK;
+			rd.FrontCounterClockwise = FALSE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+
+			break;
+
+		case RS_WIRE_FALSE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_WIREFRAME;
+			rd.CullMode = D3D11_CULL_BACK;
+			rd.FrontCounterClockwise = FALSE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+			break;
+
+		case RS_CULL_FRONT_FALSE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_SOLID;
+			rd.CullMode = D3D11_CULL_FRONT;
+			rd.FrontCounterClockwise = FALSE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+
+			break;
+
+		case RS_CULL_NONE_FALSE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_SOLID;
+			rd.CullMode = D3D11_CULL_NONE;
+			rd.FrontCounterClockwise = FALSE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+
+			break;
+
+		case RS_CULL_BACK_TRUE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_SOLID;
+			rd.CullMode = D3D11_CULL_BACK;
+			rd.FrontCounterClockwise = TRUE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+
+			break;
+
+		case RS_WIRE_TRUE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_WIREFRAME;
+			rd.CullMode = D3D11_CULL_BACK;
+			rd.FrontCounterClockwise = TRUE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+			break;
+
+		case RS_CULL_FRONT_TRUE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_SOLID;
+			rd.CullMode = D3D11_CULL_FRONT;
+			rd.FrontCounterClockwise = TRUE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+
+			break;
+
+		case RS_CULL_NONE_TRUE:
+			ZeroMemory(&rd, sizeof(rd));
+			rd.FillMode = D3D11_FILL_SOLID;
+			rd.CullMode = D3D11_CULL_NONE;
+			rd.FrontCounterClockwise = TRUE;
+			rd.DepthBias = 0;
+			rd.DepthBiasClamp = 0;
+			rd.SlopeScaledDepthBias = 0;
+			rd.DepthClipEnable = TRUE;
+			rd.ScissorEnable = FALSE;
+			rd.MultisampleEnable = FALSE;
+			rd.AntialiasedLineEnable = FALSE;
+
+			break;
+		}
+		HRESULT hr = device->CreateRasterizerState(&rd, rasterizerState[state].GetAddressOf());
+		//assert(FAILED(hr));
+
+		if (FAILED(hr))
+		{
+			return false;
+		}
+	}
+
+// *******************************************************************************
+
 // Set View Port *****************************************************************
 	
 	D3D11_VIEWPORT viewPort;
@@ -248,6 +384,12 @@ void FrameWork::Render( float elapsedTime )
 	//static Blender blender(device.Get());
 	//immediateContext->OMSetBlendState(blender.states[Blender::BS_ALPHA].Get(), nullptr, 0xFFFFFFFF);
 
+	// ラスタライザ―設定
+
+	//RasterizerState
+	//enum { RS_CULL_BACK_FALSE, RS_WIRE_FALSE, RS_CULL_FRONT_FALSE, RS_CULL_NONE_FALSE,
+	//		 RS_CULL_BACK_TRUE , RS_WIRE_TRUE , RS_CULL_FRONT_TRUE , RS_CULL_NONE_TRUE  };
+	immediateContext->RSSetState(FrameWork::GetInstance().GetRasterizerState(RS_CULL_BACK_TRUE).Get());
 
 	SceneManager::GetInstance()->Render();
 

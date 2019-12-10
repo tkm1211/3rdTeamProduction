@@ -51,8 +51,13 @@ public:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>			swapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	renderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	depthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	rasterizerState[8];
 
 	float elapsedTime = 0.0f;
+
+	//RasterizerState
+	enum { RS_CULL_BACK_FALSE, RS_WIRE_FALSE, RS_CULL_FRONT_FALSE, RS_CULL_NONE_FALSE,
+		   RS_CULL_BACK_TRUE , RS_WIRE_TRUE , RS_CULL_FRONT_TRUE , RS_CULL_NONE_TRUE  };
 
 public:
 	FrameWork( HWND hwnd ) : hwnd( hwnd )
@@ -219,5 +224,6 @@ public:
 	inline static Microsoft::WRL::ComPtr<ID3D11Device> GetDevice()						{ return FrameWork::GetInstance().device; };
 	inline static Microsoft::WRL::ComPtr<ID3D11DeviceContext> GetContext()				{ return FrameWork::GetInstance().immediateContext; };
 	inline static Microsoft::WRL::ComPtr<ID3D11DepthStencilView> GetDepthStencilView()	{ return FrameWork::GetInstance().depthStencilView; };
+	inline static Microsoft::WRL::ComPtr<ID3D11RasterizerState> GetRasterizerState(int state) { return FrameWork::GetInstance().rasterizerState[state]; }
 	float GetElapsedTime() { return elapsedTime; }
 };
