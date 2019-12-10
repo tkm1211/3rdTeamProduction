@@ -12,8 +12,7 @@ void BuffArea::Init()
 {
 	//モデルのロード
 	pArea = std::make_unique<Model>("Data/Assets/Model/val/auraeffect.fbx", false);
-	pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8*200, 200, 1.8*200));
-	pArea_collision->SetColor({ 1, 0, 0, 1 });
+	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
 	onceLightNum = 0;
 }
 
@@ -40,12 +39,14 @@ void BuffArea::Update()
 			break;
 		case 1:	 //更新
 
+			//if( rand() % 100 == 33 ) ParticleSystem::GetInstance()->SetBuffAreaParticle(ba.pos, ba.radius);
+			if(rand() % 100 >= 80) ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos() .x, ba.modelData.GetPos() .y + 20, ba.modelData.GetPos().z}, ba.modelData.GetScale().x*1.8f);
+
 			if (ba.stopFlg) break;	//即break
 
-			pArea_collision->SetPos(ba.modelData.GetPos());
-			pArea_collision->SetScale({ba.modelData.GetScale().x * 1.8f, 200, ba.modelData.GetScale().z * 1.8f });
+			ba.pArea_collision->SetPos(ba.modelData.GetPos());
+			ba.pArea_collision->SetScale({ba.modelData.GetScale().x * 1.8f, 200, ba.modelData.GetScale().z * 1.8f });
 
-			ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos() .x, ba.modelData.GetPos() .y + 20, ba.modelData.GetPos().z}, ba.modelData.GetScale().x*1.8f);
 
 			s = ba.subRadius;
 			ba.modelData.SetScale({ ba.modelData.GetScale().x - s, ba.modelData.GetScale().y - s ,ba.modelData.GetScale().z - s }); //縮む処理
@@ -62,32 +63,46 @@ void BuffArea::Update()
 			break;
 		}
 
-		Light::GetInstance()->pointLight[ba.lightNum].range = ba.modelData.GetScale().x * 1.8f;
+		//Light::GetInstance()->pointLight[ba.lightNum].range = ba.modelData.GetScale().x * 1.8f;
 		//常時回転させる
 		ba.modelData.SetAngleY(ba.modelData.GetAngle().y + ba.addRota);
 		ba.modelData.SetPos(ba.pos);
 	}
-
 }
 
 void BuffArea::Draw()
 {
-	pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	
+	//pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+	//SetBlenderMode(BM_ALPHA);
+	//for (auto& ba : buffArea)
+	//{
+	//	if (!ba.isExist) continue;
+	//	pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+	//		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+	//	ba.pArea_collision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), false);
+	//}
+
 	SetBlenderMode(BM_ADD);
+	texture->Begin(FrameWork::GetInstance().GetContext().Get());
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;
-		pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				{ba.pos.x, ba.pos.y+20, ba.pos.z}, 1024 * 2, 0, 1024, 1024,
+				{ DirectX::XMConvertToRadians(90) + CameraSystem::GetInstance()->mainView.GetRotateX(), 0, 0 }, {ba.modelData.GetScale().x * 8.0f, ba.modelData.GetScale().y * 8.0f}, { 1.0f, 1.0f, 1.0f, 1.0f });
+		}
 	}
+	texture->End();
+
+
 	SetBlenderMode(BM_ALPHA);
 
-	//pArea_collision->Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
 }
 
-void BuffArea::SetBuffArea(BuffAreaInfo &b)
+void BuffArea::SetBuffArea(BuffAreaInfo b)
 {
 	//これから生成するやつ以外は動きを止める
 	for (auto& ba : buffArea)
@@ -95,12 +110,12 @@ void BuffArea::SetBuffArea(BuffAreaInfo &b)
 		if (!ba.isExist) continue;
 		ba.stopFlg = true;
 	}
-	if (onceLightNum < 96)
-	{
-		Light::GetInstance()->SetPointLight(onceLightNum, { b.pos.x, b.pos.y + 11, b.pos.z }, { 54.0f, 96.0f, 110.0f }, 0);
-		b.lightNum = onceLightNum;
-		onceLightNum++;
-	}
+	//if (onceLightNum < 96)
+	//{
+	//	Light::GetInstance()->SetPointLight(onceLightNum, { b.pos.x, b.pos.y + 11, b.pos.z }, { 54.0f, 96.0f, 110.0f }, 0);
+	//	b.lightNum = onceLightNum;
+	//	onceLightNum++;
+	//}
 	//生成
 	for (auto& ba : buffArea)
 	{

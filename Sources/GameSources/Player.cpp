@@ -17,6 +17,7 @@ void Player::Init()
 	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack01.fbx", false);
 	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack02.fbx", false);
 	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack03.fbx", false);
+	pDamage    = std::make_unique<Model>("Data/Assets/Model/val/Player_hidame.fbx", false);
 
 	modelData.Init();
 	SwitchMotion(ModelState::WAIT);
@@ -25,6 +26,10 @@ void Player::Init()
 	atkCollision->SetColor({ 0, 1, 0, 1 });
 	bodyCollision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(30, 160, 30));
 	bodyCollision->SetColor({ 0, 1, 0, 1 });
+
+	hp                              = 10000;
+	damage                          = 0;
+	damageTimer                     = DAMAGE_TIMER;
 
 	leftStickVec                    = {0, 0};
 
@@ -67,6 +72,9 @@ void Player::Init()
 	isAttack            = false;
 	enableNextAttack    = false;
 	onAtkCollision      = false;
+	isDamageCalc        = false;
+	isDamage            = false;
+	enableCollision     = false;
 
 	// json読み込み
 	std::ifstream ifs;
@@ -119,12 +127,18 @@ void Player::Update()
 	case ModelState::ATTACK3:
 		atkCollision->SetPos( pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 		break;
+	case ModelState::DAMAGE:
+		atkCollision->SetPos(    pDamage->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		break;
+
 	}
 
 
 	bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1688));
 
 	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
+
+	DamageCalc();
 
 #if _DEBUG
 	ImGui();
@@ -137,40 +151,48 @@ void Player::Draw()
 	switch ( motionState )
 	{
 	case ModelState::WAIT:
-		pWait->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
+		pWait->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
 		pWait->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::RUN:
-		pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false) ;
+		pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false) ;
 
 		pRun->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK1:
-		pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
+		pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
 		pAttack[0]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK2:
-		pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
+		pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
 		pAttack[1]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK3:
-		pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::DEFAULT ), false );
+		pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
 
 		pAttack[2]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
+	case ModelState::DAMAGE:
+		pDamage->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+
+		pDamage->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		break;
 	}
 
-	if(onAtkCollision) atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-	bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-
+	if (enableCollision)
+	{
+		if (onAtkCollision) atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	}
 }
 
 
@@ -244,12 +266,18 @@ void Player::SwitchMotion( ModelState state )
 		pAttack[2]->StartAnimation( 0, false );
 
 		break;
+	case Player::ModelState::DAMAGE:
+
+		motionState = ModelState::DAMAGE;
+		pDamage->StartAnimation( 0, false );
+
+		break;
 	}
 }
 
 void Player::Move()
 {
-	if ( isAttack ) return;
+	if ( isAttack || isDamage ) return;
 
 	if ( abs( xInput[0].sLX ) > 250 || abs( xInput[0].sLY ) > 250)
 	{
@@ -289,6 +317,8 @@ void Player::Move()
 
 void Player::Attack()
 {
+	if (isDamage) return;
+
 	if (xInput[0].bXt && !isAttack)
 	{
 		isAttack = true;
@@ -418,6 +448,37 @@ void Player::Attack()
 	}
 }
 
+void Player::SufferDamage(int _damage)
+{
+	// ダメージを受けている途中なら即Return
+	if (isDamage) return;
+	isDamageCalc = true;
+	isDamage     = true;
+	// 受けるダメージ量を代入
+	damage       = _damage;
+}
+
+void Player::DamageCalc()
+{
+	if (isDamage)
+	{
+		damageTimer--;
+		if (damageTimer <= 0)
+		{
+			isDamage = false;
+			damageTimer = DAMAGE_TIMER;
+		}
+	}
+
+	if (!isDamageCalc) return;
+	// 被ダメモーションに切り替え
+	SwitchMotion(ModelState::DAMAGE);
+	moveSpeed = { 0.0f, 0.0f, 0.0f };
+	hp -= damage;
+	isDamageCalc = false;
+}
+
+
 void Player::ImGui()
 {
 	ImGui::Begin(u8"Player");
@@ -429,7 +490,10 @@ void Player::ImGui()
 	ImGui::Text("posY   : %f", modelData.GetPos().y);
 	ImGui::Text("posZ   : %f", modelData.GetPos().z);
 
-	ImGui::DragInt(u8"スピード##Player", &MAX_SPEED);
+	ImGui::Text("HP   : %d", hp);
+
+	ImGui::DragInt(u8"スピード##Player"                  , &MAX_SPEED);
+	ImGui::DragInt(u8"次のダメージを受けれるまで##Player", &DAMAGE_TIMER);
 
 
 	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_1ST);
@@ -472,6 +536,8 @@ void Player::ImGui()
 		ImGui::DragInt  (u8"当たり判定表示終了##Player"   , &attackInfo[2].atkCollisionEnd);
 		ImGui::DragFloat(u8"攻撃の時のスピード##Player"   , &attackInfo[2].speed);
 	}
+
+	ImGui::Checkbox(u8"プレイヤーの当たり判定 on / off ##Player", &enableCollision);
 
 	//cereal でjson とbinary に保存
 	static std::string data_name;

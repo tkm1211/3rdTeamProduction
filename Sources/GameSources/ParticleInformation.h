@@ -32,5 +32,20 @@ struct Data
 struct BuffAreaParticleInfo
 {
 	Data data;
+	DirectX::XMFLOAT3 speed;
+};
+
+struct PlayerAttackSlashParticleInfo
+{
+	Data data;
 	float maxScale;
 };
+
+struct PlayerAttackSparkParticleInfo
+{
+	Data data;
+	float maxScale;
+	DirectX::XMFLOAT3 speed;
+	DirectX::XMFLOAT3 accel;
+};
+

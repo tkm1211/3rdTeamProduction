@@ -52,10 +52,6 @@ void SceneTitle::Update()
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
 	}
-	if (xInput[0].bBt)
-	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
-	}
 
 	if (Editer::GetInstance()->GetNowEditer())
 	{
@@ -66,9 +62,10 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
-	//bg->Draw();
+	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
+	
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
 		ParticleSystem::GetInstance()->Draw();
@@ -85,7 +82,9 @@ void SceneTitle::ImGui()
 	}
 	if (ImGui::Button("Particle  POP "))
 	{
-		ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
+		//ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
+		ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({0, 100, 0});
+		CharacterSystem::GetInstance()->GetPlayerAddress()->SufferDamage(60);
 	}
 
 	if (ImGui::Button("Editer"))

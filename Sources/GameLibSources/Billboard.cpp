@@ -55,7 +55,7 @@ void Billboard::Init(ID3D11Device* device)
 	//ソリッド
 	ZeroMemory(&rasterizer_desc, sizeof(rasterizer_desc));
 	rasterizer_desc.FillMode = D3D11_FILL_SOLID;
-	rasterizer_desc.CullMode = D3D11_CULL_BACK;
+	rasterizer_desc.CullMode = D3D11_CULL_NONE;
 	rasterizer_desc.FrontCounterClockwise = FALSE;
 	rasterizer_desc.DepthClipEnable = TRUE;
 	hr = device->CreateRasterizerState(&rasterizer_desc, solidRasterizerState.GetAddressOf());
@@ -199,25 +199,17 @@ void Billboard::Render
 	//定数バッファのバインド
 	//定数バッファの作成
 	CBuffer cb;
+#if 0
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX S, R, T;
 
-#if 0
-	DirectX::XMFLOAT4X4	_view;
-	DirectX::XMMATRIX	inverseView;
-	DirectX::XMStoreFloat4x4(&_view, view);
-	_view._41 = 0.0f; _view._42 = 0.0f; 								//	位置情報だけを削除
-	_view._43 = 0.0f; _view._44 = 1.0f;
-	inverseView = DirectX::XMLoadFloat4x4(&_view);						//	Matrix型へ再変換
-	inverseView = DirectX::XMMatrixInverse(nullptr, inverseView);		//	view行列の逆行列作成
-#else
 	// Extract camera's position and direction from view matrix.
 	DirectX::XMVECTOR P;	// camera_position
 	DirectX::XMMATRIX M;
 
 	DirectX::XMMATRIX V = view;
 	DirectX::XMMATRIX C = XMMatrixTranspose(V);
-	P = DirectX::XMVectorSetW(DirectX::XMVector3Transform(V.r[3], C), 1);
+	P = DirectX::XMVectorSetW(DirectX::XMVector3Transform(DirectX::XMVectorNegate(V.r[3]), C), 1);
 
 	bool fixed_up_vector = true;
 	DirectX::XMVECTOR Y = fixed_up_vector ? DirectX::XMVectorSet(0, 1, 0, 0) : DirectX::XMVector3Normalize(C.r[1]);
@@ -230,7 +222,6 @@ void Billboard::Render
 	M.r[1] = DirectX::XMVectorSetW(Y, 0);
 	M.r[2] = DirectX::XMVectorSetW(Z, 0);
 	M.r[3] = DirectX::XMVectorSetW(DirectX::XMLoadFloat3(&position), 1);
-#endif
 	//	初期化
 	world = DirectX::XMMatrixIdentity();
 
@@ -243,6 +234,36 @@ void Billboard::Render
 
 	//	平行移動
 	T = M;
+
+	//	ワールド変換行列
+	world = S * R * T;
+
+	DirectX::XMStoreFloat4x4(&cb.wvp, world * view * projection);
+	cb.color = color;
+
+#else
+	DirectX::XMMATRIX W, S, R, T;
+
+	float aspect_ratio = static_cast<float>(texture2dDesc.Width) / texture2dDesc.Height;
+	S = DirectX::XMMatrixScaling(scale.x * aspect_ratio, scale.y, 1);
+
+	R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+
+	DirectX::XMMATRIX C = XMMatrixTranspose(view);
+	T = DirectX::XMMatrixIdentity();
+	T.r[0] = DirectX::XMVectorSetW(DirectX::XMVectorNegate(C.r[0]), 0);
+	T.r[1] = DirectX::XMVectorSetW(C.r[1], 0);
+	T.r[2] = DirectX::XMVectorSetW(DirectX::XMVectorNegate(C.r[2]), 0);
+	T.r[3] = DirectX::XMVectorSetW(DirectX::XMLoadFloat3(&position), 1);
+
+	//	ワールド変換行列
+	W = S * R * T;
+
+	DirectX::XMStoreFloat4x4(&cb.wvp, W * view * projection);
+	cb.color = color;
+
+#endif
+
 	//
 	//DirectX::XMFLOAT4X4 v;
 	//DirectX::XMStoreFloat4x4(&v, view);
@@ -259,12 +280,6 @@ void Billboard::Render
 	//C.r[2] = DirectX::XMVectorNegate(C.r[2]);
 	//T.r[2] = DirectX::XMVectorSetW(C.r[2], 0);
 	//T.r[3] = DirectX::XMVectorSetW(DirectX::XMLoadFloat3(&position), 1);
-
-	//	ワールド変換行列
-	world = S * R * T;
-
-	DirectX::XMStoreFloat4x4(&cb.wvp, world * view * projection);
-	cb.color = color;
 
 	deviceContext->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 	deviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
