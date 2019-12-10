@@ -389,7 +389,7 @@ void FrameWork::Render( float elapsedTime )
 	//RasterizerState
 	//enum { RS_CULL_BACK_FALSE, RS_WIRE_FALSE, RS_CULL_FRONT_FALSE, RS_CULL_NONE_FALSE,
 	//		 RS_CULL_BACK_TRUE , RS_WIRE_TRUE , RS_CULL_FRONT_TRUE , RS_CULL_NONE_TRUE  };
-	immediateContext->RSSetState(FrameWork::GetInstance().GetRasterizerState(RS_CULL_BACK_TRUE).Get());
+	SetRasterizerState(RS_CULL_BACK_TRUE);
 
 	SceneManager::GetInstance()->Render();
 
@@ -397,4 +397,14 @@ void FrameWork::Render( float elapsedTime )
 
 // *******************************************************************************
 
+}
+
+void SetRasterizerState(int state)
+{
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();
+
+	//RasterizerState
+	//enum { RS_CULL_BACK_FALSE, RS_WIRE_FALSE, RS_CULL_FRONT_FALSE, RS_CULL_NONE_FALSE,
+	//		 RS_CULL_BACK_TRUE , RS_WIRE_TRUE , RS_CULL_FRONT_TRUE , RS_CULL_NONE_TRUE  };
+	immediateContext->RSSetState(FrameWork::GetInstance().GetRasterizerState(state).Get());
 }

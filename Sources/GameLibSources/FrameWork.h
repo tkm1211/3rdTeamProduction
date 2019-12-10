@@ -227,3 +227,5 @@ public:
 	inline static Microsoft::WRL::ComPtr<ID3D11RasterizerState> GetRasterizerState(int state) { return FrameWork::GetInstance().rasterizerState[state]; }
 	float GetElapsedTime() { return elapsedTime; }
 };
+
+void SetRasterizerState(int state);
