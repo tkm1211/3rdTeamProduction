@@ -12,9 +12,13 @@
 #include "Editer.h"
 #include "CameraSystem.h"
 #include "EnemyManager.h"
+#include "SoundLoader.h"
+
 
 void SceneTitle::Init()
 {
+	//PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
+
 	bg = std::make_unique<BG>();
 	bg->Init();
 	CharacterSystem::GetInstance()->Init();

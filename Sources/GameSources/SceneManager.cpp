@@ -8,6 +8,7 @@
 #include "CameraSystem.h"
 #include "CameraControl.h"
 #include "Editer.h"
+#include "SoundLoader.h"
 
 void SceneManager::Init()
 {
@@ -18,6 +19,8 @@ void SceneManager::Init()
 	//Fadeの初期化処理
 	Fade::GetInstance()->Init();
 	CameraSystem::GetInstance()->Init();
+	//Soundのロード
+	SoundLoader::GetInstance()->load();
 }
 
 void SceneManager::Update()
@@ -64,7 +67,8 @@ void SceneManager::Update()
 		pScene->Init();
 	}
 	pScene->Update();
-
+	//Soundの更新処理
+	SoundLoader::GetInstance()->Update();
 	//Fadeの更新処理
 	Fade::GetInstance()->Update();
 }
@@ -145,6 +149,8 @@ void SceneManager::UnInit()
 	pNext = nullptr;
 	pStackScene = nullptr;
 	
+	//Soundの解放処理
+	SoundLoader::GetInstance()->Release();
 	//Fadeの解放処理
 	Fade::GetInstance()->UnInit();
 	

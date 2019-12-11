@@ -91,7 +91,7 @@ void Player::Init()
 	makeLeftFoot        = false;
 	// jsonì«Ç›çûÇ›
 	std::ifstream ifs;
-	ifs.open("./Data/Document/Player.json", std::ios::binary);
+	ifs.open("./Data/Document/Player.json", std::ios::out);
 	{
 		cereal::JSONInputArchive i_archive(ifs);
 		i_archive(*this);
@@ -634,7 +634,7 @@ void Player::ImGui()
 	{
 		data_name = "./Data/Document/Player.json";
 		std::ofstream ofs;
-		ofs.open(data_name.c_str(), std::ios::binary);
+		ofs.open(data_name.c_str(), std::ios::out);
 		{
 			cereal::JSONOutputArchive o_archive(ofs);
 			o_archive(*this);

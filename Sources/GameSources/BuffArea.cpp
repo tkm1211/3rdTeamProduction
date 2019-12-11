@@ -6,6 +6,7 @@
 #include "ParticleSystem.h"
 #include "Light.h"
 #include "CameraSystem.h"
+#include "SoundLoader.h"
 
 
 void BuffArea::Init()
@@ -53,6 +54,7 @@ void BuffArea::Update()
 			ba.modelData.SetScale({ ba.modelData.GetScale().x - s, ba.modelData.GetScale().y - s ,ba.modelData.GetScale().z - s }); //k‚Şˆ—
 			if (ba.modelData.GetScale().x <= 0) //‘å‚«‚³‚ª‚OˆÈ‰º‚È‚ç‘¶İ‚ğÁ‚·
 			{
+				PlaySoundMem(SoundLoader::GetInstance()->magicDestroySe.get());
 				ba.isExist = false;
 				BreakBuffArea();
 				for (int i = 0; i < onceLightNum; i++)
@@ -113,6 +115,7 @@ void BuffArea::Draw()
 
 void BuffArea::SetBuffArea(BuffAreaInfo b)
 {
+	PlaySoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
 	//‚±‚ê‚©‚ç¶¬‚·‚é‚â‚ÂˆÈŠO‚Í“®‚«‚ğ~‚ß‚é
 	for (auto& ba : buffArea)
 	{
