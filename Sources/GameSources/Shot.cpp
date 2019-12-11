@@ -3,18 +3,20 @@
 Shot::Shot(DirectX::XMFLOAT3 pPos, DirectX::XMFLOAT3 ePos)
 {
 	DirectX::XMStoreFloat3(&pVec,
-		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&pPos),
-			DirectX::XMLoadFloat3(&ePos)));
+		DirectX::XMVector3Normalize(
+			DirectX::XMVectorSubtract(
+				DirectX::XMLoadFloat3(&pPos),
+				DirectX::XMLoadFloat3(&ePos))));
 
 	DirectX::XMFLOAT3 temp;
 	float speed = SPPED_ARROW;
 	DirectX::XMStoreFloat3(&temp,
-		DirectX::XMVectorSubtract(
+		DirectX::XMVectorMultiply(
 			DirectX::XMLoadFloat3(&pVec),
-			DirectX::XMLoadFloat(&speed)));
-
+			DirectX::XMLoadFloat3(&DirectX::XMFLOAT3(speed,speed,speed))));
+	
 	modelData.SetSpeed(temp);
+	
 }
 
 void Shot::Update()

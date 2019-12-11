@@ -1,6 +1,6 @@
 #pragma once
 #include "OBJ3D.h"
-#define SPPED_ARROW 30
+#define SPPED_ARROW 5
 
 class Shot
 {

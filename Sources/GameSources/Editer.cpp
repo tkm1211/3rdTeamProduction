@@ -3,7 +3,7 @@
 #include "Collision.h"
 #include "CameraSystem.h"
 #include "CharacterSystem.h"
-
+#include "Wave.h"
 Editer::Editer()
 {
 	nowEditer = false;
@@ -25,8 +25,8 @@ void Editer::Update()
 	DirectX::XMMATRIX view = CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix();
 	DirectX::XMMATRIX proj = CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix();
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
-	DirectX::XMVECTOR screen_start = DirectX::XMVectorSet(newCursor.x, newCursor.y, 0.0f, 0.0f);
-	DirectX::XMVECTOR screen_end = DirectX::XMVectorSet(newCursor.x, newCursor.y, 1.0f, 0.0f);
+	DirectX::XMVECTOR screen_start = DirectX::XMVectorSet(newCursor.x,newCursor.y,0.0f, 0.0f);
+	DirectX::XMVECTOR screen_end = DirectX::XMVectorSet(newCursor.x, newCursor.y,1.f, 0.0f);
 	/*const D3D11_VIEWPORT& vp = camera;*/
 	DirectX::XMVECTOR world_start = DirectX::XMVector3Unproject(screen_start,
 		0, 0, 1920, 1080, 0.1f, 1000000.0f,
@@ -44,12 +44,67 @@ void Editer::Update()
 	
 	if (nowCatch)
 	{
+
+
+		for (int a =0; a<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().size(); a++)
+		{
+			if (CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).nowCatch)
+			{
+				DirectX::XMVECTOR mworld_enm = DirectX::XMVector3Unproject(
+					DirectX::XMLoadFloat3(
+						&DirectX::XMFLOAT3(newCursor.x, newCursor.y, 0.5f)),
+					0, 0, 1920, 1080, 0.1f, 1000000.0f,
+					proj, view, world);
+				DirectX::XMFLOAT3 world_enm;
+				DirectX::XMStoreFloat3(&world_enm, mworld_enm);
+
+				CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).modelData->SetPos(DirectX::XMFLOAT3(world_enm.x*adjust.x*CameraSystem::GetInstance()->enemyEditorView.distance,0,world_enm.z*adjust.y*CameraSystem::GetInstance()->enemyEditorView.distance));
+		
+				WaveManager* waveMgr = CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager();
+				if (GetAsyncKeyState('A') & 1)
+				{
+					switch (CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).type)
+					{
+					case ENEMY_TYPE::WARKER:
+						for (int i = 0; i < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size(); i++)
+						{
+							if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(i).index== (int)CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).index)
+							{
+								waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().begin()+i);
+							}
+						}
+						break;
+					case ENEMY_TYPE::ARCHER:
+						for (int i = 0; i < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size(); i++)
+						{
+							if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(i).index == (int)CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).index)
+							{
+								waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().begin() + i);
+							}
+						}
+						break;
+					case ENEMY_TYPE::ELITE_WARKER:
+						for (int i = 0; i < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().size(); i++)
+						{
+							if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().at(i).index == (int)CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).index)
+							{
+								waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().begin() + i);
+							}
+						}
+						break;
+					}
+					CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().erase(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().begin() + a);
+					nowCatch = false;
+				}
+			}
+		}
+
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			nowCatch = false;
-			for (size_t i =0; i<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetEnemyList().size();i++)
+			for (size_t i =0; i<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().size();i++)
 			{
-				CharacterSystem::GetInstance()->GetEnemyManagerAddress()->nowCatch.at(i) = false;
+				CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(i).nowCatch = false;
 			}
 		}
 	}
@@ -58,83 +113,25 @@ void Editer::Update()
 		float distance = NULL;
 		if (::GetAsyncKeyState(VK_MENU) == 0)
 		{
-			for (size_t i =0; i<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetEnemyList().size();i++)
+			for (size_t i =0; i<CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().size();i++)
 			{
 				if (::GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 				{
-					DirectX::XMFLOAT2 screenEnm;
+					
 					DirectX::XMStoreFloat2(&screenEnm,
 						DirectX::XMVector3Project(
-							DirectX::XMLoadFloat3(&CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetEnemyList().at(i).modelData->GetPos()),
+							DirectX::XMLoadFloat3(&CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(i).modelData->GetPos()),
 							0, 0, 1920, 1080, 0.1f, 1000000.0f,
 							proj, view, world));
-					/*for (int j = 0; (unsigned)j < EnemyManager::GetInstance()->GetEnemyList().size(); j++)
-					{*/
-						if (collision.SphereVsSphere(DirectX::XMFLOAT3(newCursor.x,0, newCursor.y),
-							DirectX::XMFLOAT3(screenEnm.x, 0, screenEnm.y),1,100))
-						{
-
-							int i = 0;
-
-							//DirectX::XMFLOAT3 point;
-							//DirectX::XMStoreFloat3(&point,
-							//	DirectX::XMVectorSubtract(
-							//		DirectX::XMLoadFloat3(&RayCastHitCoordinate(screenWorld, screenWorld2, vertexScale[0], vertexScale[1], vertexScale[2])),
-							//		DirectX::XMLoadFloat3(&camera.GetEye())));
-
-							//float pointLar = point.x*point.x + point.y*point.y + point.z*point.z;
-
-							//if (distance > pointLar)
-							//{
-							//	for (auto&o : objMgr.obj)
-							//	{
-							//		o->nowCatch = false;
-							//	}
-
-							//	distance = pointLar;
-
-							//	target = point;
-							//	DirectX::XMFLOAT3 v = {};
-
-							//	v.x = o->GetComponent<Transform>()->position.x - camera.GetEye().x;
-							//	v.y = o->GetComponent<Transform>()->position.y - camera.GetEye().y;
-							//	v.z = o->GetComponent<Transform>()->position.z - camera.GetEye().z;
-
-							//	float vLar = sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
-
-							//	/*camera.SetDistance(vLar);*/
-							//	nowCatch = true;
-
-
-							//	o->nowCatch = true;
-							//	break;
-							//}
-							//else if (distance <= 0)
-							//{
-							//	distance = pointLar;
-
-							//	target = point;
-							//	DirectX::XMFLOAT3 v = {};
-
-							//	v.x = o->GetComponent<Transform>()->position.x - camera.GetEye().x;
-							//	v.y = o->GetComponent<Transform>()->position.y - camera.GetEye().y;
-							//	v.z = o->GetComponent<Transform>()->position.z - camera.GetEye().z;
-
-							//	float vLar = sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
-
-							//	/*camera.SetDistance(vLar);*/
-							//	nowCatch = true;
-
-
-							//	o->nowCatch = true;
-							//	break;
-							//}
-						}
-						else
-						{
-						/*	o->nowCatch = false;*/
-						}
-					
+					if (collision.SphereVsSphere(DirectX::XMFLOAT3(newCursor.x,0, newCursor.y),
+						DirectX::XMFLOAT3(screenEnm.x, 0, screenEnm.y),1,100))
+					{
+						CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(i).nowCatch = true;
+						nowCatch = true;
+						break;
+						
+					}
+				
 				}
 			}
 		}
@@ -142,32 +139,7 @@ void Editer::Update()
 		
 	}
 
-	/*for (int i = 0; (unsigned)i < objMgr.obj.size(); i++)
-	{
-		if (!objMgr.obj.at(i)->nowCatch) { continue; }
-
-		if (GetAsyncKeyState(VK_MENU) < 0&&GetAsyncKeyState('A') < 0)
-		{
-			objMgr.obj.erase(objMgr.obj.begin()+i);
-			nowCatch = false;
-		}
-		if (GetAsyncKeyState(VK_MENU) < 0 && GetAsyncKeyState('S') & 1)
-		{
-			Object* a = new Object((char*)objMgr.obj.at(i)->GetResourceName(), (char*)objMgr.obj.at(i)->GetTag(), &objMgr);
-			objMgr.obj.emplace_back(a);
-		}
-	}
 	
-	if (GetAsyncKeyState('Q') < 0)
-	{
-		distance += 500;
-	}
-	if (GetAsyncKeyState('W') < 0)
-	{
-		distance -= 500;
-
-	}*/
-
 	Imgui();
 }
 
@@ -176,9 +148,7 @@ void Editer::Imgui()
 {
 	ImGui::Begin("edit");
 
-	ImGui::InputFloat3("ScreenWorld", &screenWorld.x);
-	ImGui::InputFloat3("ScreenWorld2", &screenWorld2.x);
-
+	ImGui::DragFloat2("Adjust", &adjust.x, 1.f);
 
 	ImGui::End();
 }

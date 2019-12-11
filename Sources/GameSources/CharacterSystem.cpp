@@ -25,7 +25,7 @@ void CharacterSystem::Update()
 	else
 	{
 		enmMgr->Update();
-		Editer::GetInstance()->Update();
+	/*	Editer::GetInstance()->Update();*/
 	}
 }
 

@@ -37,7 +37,9 @@ private:
 	float distance;
 	float objectLar;
 	DirectX::XMFLOAT2 oldCursor;
+	DirectX::XMFLOAT2 adjust = {10,10};
 	DirectX::XMFLOAT2 newCursor;
+	DirectX::XMFLOAT2 screenEnm;
 	DirectX::XMFLOAT3 screenWorld;
 	DirectX::XMFLOAT3 screenWorld2;
 	DirectX::XMFLOAT3 target;

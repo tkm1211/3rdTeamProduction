@@ -6,7 +6,17 @@ extern _Player _player;
 
 ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 {
-	OBJ3D &o = *obj->GetObj();
+
+#if defined(_DEBUG)
+	ArcherKokim* archer = dynamic_cast<ArcherKokim*>(obj);
+	if (archer == nullptr)
+	{
+		assert(0);
+	}
+#else
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+#endif
+	OBJ3D &o = *archer->GetModelData();
 
 	DirectX::XMVECTOR oVec = DirectX::XMVector3Normalize(
 		DirectX::XMVectorSet(sinf(o.GetAngle().y), 0, cosf(o.GetAngle().y), 0));
@@ -38,7 +48,16 @@ ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 
 bool ArcherTurnJudge::Judgement(AI * obj)
 {
-	OBJ3D &o = *obj->GetObj();
+#if defined(_DEBUG)
+	ArcherKokim* archer = dynamic_cast<ArcherKokim*>(obj);
+	if (archer == nullptr)
+	{
+		assert(0);
+	}
+#else
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+#endif
+	OBJ3D &o = *archer->GetModelData();
 
 	DirectX::XMVECTOR oVec = DirectX::XMVectorSet(cosf(o.GetAngle().y), 0, sinf(o.GetAngle().y), 0);
 

@@ -6,7 +6,16 @@ extern _Player _player;
 
 ActionBase::STATE EliteWarkerGotoPlayerAction::Update(AI * obj)
 {
-	OBJ3D&o = *obj->GetObj();
+#if defined(_DEBUG)
+	ArcherKokim* archer = dynamic_cast<ArcherKokim*>(obj);
+	if (archer == nullptr)
+	{
+		assert(0);
+	}
+#else
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+#endif
+	OBJ3D&o = *archer->GetModelData();
 
 	o.SetAngleY(atan2(_player.pos.x - o.GetPos().x, _player.pos.z - o.GetPos().z));
 
@@ -19,8 +28,6 @@ ActionBase::STATE EliteWarkerGotoPlayerAction::Update(AI * obj)
 			DirectX::XMLoadFloat3(&o.GetSpeed())));
 
 	o.SetPos(lPos);
-
-	obj->SetObj(&o);
 
 	return ActionBase::STATE::COMPLETE;
 }

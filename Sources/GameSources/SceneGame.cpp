@@ -10,6 +10,7 @@
 #include "ParticleSystem.h"
 #include "CameraSystem.h"
 #include "Editer.h"
+#include "Shot.h"
 
 void SceneGame::Init()
 {

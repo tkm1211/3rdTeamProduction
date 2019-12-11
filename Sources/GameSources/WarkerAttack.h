@@ -1,12 +1,11 @@
 #pragma once
 
-#include "ActionBase.h"
-
+#include "ExecJudgementBase.h"
 class AI;
-class WarkerAttackJudge;
 
 
-class WarkerAttackJudge
+class WarkerAttackJudge:
+	public ExecJudgementBase
 {
 public:
 	static WarkerAttackJudge *GetInstance()
@@ -15,5 +14,6 @@ public:
 		return &instance;
 	}
 
-	virtual ActionBase::STATE Update(AI *obj);
+	virtual bool Judgement(AI *obj);
 };
+

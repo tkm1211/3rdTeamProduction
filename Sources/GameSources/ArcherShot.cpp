@@ -35,7 +35,7 @@ ActionBase::STATE ArcherShotAction::Update(AI * obj)
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
 #endif
 
-	archer->CreateArrow(_player.pos, archer->GetObj()->GetPos());
+	archer->CreateArrow(_player.pos, archer->GetModelData()->GetPos());
 	archer->SetRecast(0);
 
 	return ActionBase::STATE::COMPLETE;

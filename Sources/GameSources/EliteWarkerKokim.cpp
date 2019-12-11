@@ -5,11 +5,9 @@
 #include "EliteWarkerWait.h"
 extern _Player _player;
 
-EliteWarkerKokim::EliteWarkerKokim()
+EliteWarkerKokim::EliteWarkerKokim(int num)
 {
 	modelData = std::make_shared<OBJ3D>();
-
-	SetObj(modelData.get());
 
 	static BehaviorTree aiTree;
 
@@ -24,7 +22,27 @@ EliteWarkerKokim::EliteWarkerKokim()
 
 	SetBehaviorTree(&aiTree);
 
-	bodyCol = std::make_unique<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(160, 160, 160));
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(160, 160, 160));
+
+	index = num;
+}
+
+void EliteWarkerKokim::Init()
+{
+	static BehaviorTree aiTree;
+
+	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+	{
+		aiTree.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, EliteWarkerMoveJudge::GetInstance(), NULL);
+		{
+			aiTree.AddNode("Move", "GoToPlayer", 2, BehaviorTree::SELECT_RULE::NON, EliteWarkerGotoPlayerJudge::GetInstance(), EliteWarkerGotoPlayerAction::GetInstance());
+		}
+		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, EliteWarkerWaitAction::GetInstance());
+	}
+
+	SetBehaviorTree(&aiTree);
+
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(160, 160, 160));
 }
 
 void EliteWarkerKokim::Update()

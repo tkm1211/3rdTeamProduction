@@ -1,26 +1,36 @@
 #pragma once
-#include "Model.h"
-#include "OBJ3D.h"
+
 #include "AI.h"
-#include "Collision.h"
+#include "Kokim.h"
+
 class Player;
 
+
+enum class WARKER_STATE
+{
+	RUN,
+	STRIKE
+};
+
 class WarkerKokim:
-	public AI
+	 public AI, public Kokim
 {
 public:
-	WarkerKokim();
-	WarkerKokim(const WarkerKokim&) {};
+	WarkerKokim() {};
+	WarkerKokim(int num);
 	~WarkerKokim() {};
+
+	void Init();
 
 	void Update();
 
-	std::shared_ptr<OBJ3D> GetModelData() { return modelData; };
-	CollisionPrimitive* GetBodyCollision() { return bodyCol.get(); };
+	WARKER_STATE const GetState() const { return state; };
+	float GetPlayerDot() { return plDot; };
 
+	void SetState(WARKER_STATE state) {this->state= state; };
 private:
 
-	std::unique_ptr<CollisionPrimitive> bodyCol;
-	std::shared_ptr<OBJ3D> modelData;
+	WARKER_STATE state = WARKER_STATE::RUN;
+	float plDot;
 };
 

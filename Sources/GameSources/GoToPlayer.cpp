@@ -16,7 +16,16 @@ bool GotoPlayerJudge::Judgement(AI* obj)
 
 ActionBase::STATE GotoPlayerAction::Update(AI*obj)
 {
-	OBJ3D&o=*obj->GetObj();
+#if defined(_DEBUG)
+	WarkerKokim* warker = dynamic_cast<WarkerKokim*>(obj);
+	if (warker == nullptr)
+	{
+		assert(0);
+	}
+#else
+	WarkerKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+#endif
+	OBJ3D &o = *warker->GetModelData();
 
 	o.SetAngleY(atan2(_player.pos.x - o.GetPos().x, _player.pos.z - o.GetPos().z));
 
@@ -30,7 +39,7 @@ ActionBase::STATE GotoPlayerAction::Update(AI*obj)
 
 	o.SetPos(lPos);
 
-	obj->SetObj(&o);
+	warker->SetState(WARKER_STATE::RUN);
 
 	return ActionBase::STATE::COMPLETE;
 }
