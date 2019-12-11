@@ -49,3 +49,9 @@ struct PlayerAttackSparkParticleInfo
 	DirectX::XMFLOAT3 accel;
 };
 
+struct PlayerAttackAfterImageParticleInfo
+{
+	Data data;
+	float maxScale;
+};
+

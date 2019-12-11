@@ -154,3 +154,42 @@ bool Particle::SetPlayerAttackSpark(PlayerAttackSparkParticleInfo* p, DirectX::X
 	return true;
 
 }
+
+// プレイヤーアタック (残像)
+void Particle::PlayerAttackAfterImageUpdate(PlayerAttackAfterImageParticleInfo* p)
+{
+
+	if (!p->data.isExist) return;
+	float s       = easing::InQuint(p->data.time, p->data.existTime, 0.0f, p->maxScale);
+	p->data.scale = { s, s };
+
+	p->data.time++;
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+
+}
+
+bool Particle::SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos       = pos;
+	p->maxScale       = 100.0f;
+	p->data.scale     = { p->maxScale, p->maxScale };
+
+	p->data.angle     = { 0, 0, 0 };
+
+	p->data.alpha     = 1.0f;
+	p->data.time      = 0;
+
+	p->data.isExist   = true;
+	p->data.existTime = 30.0f;
+
+	p->data.tex.Set(1024.0f * 1.0f, 1024.0f * 1, 1024.0f, 1024.0f);
+
+	return true;
+
+}
+

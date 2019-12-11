@@ -17,4 +17,7 @@ public:
 	void PlayerAttackSparkUpdate(PlayerAttackSparkParticleInfo *p);
 	bool SetPlayerAttackSpark(PlayerAttackSparkParticleInfo *p, DirectX::XMFLOAT3 pos);
 
+	void PlayerAttackAfterImageUpdate(PlayerAttackAfterImageParticleInfo*p);
+	bool SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo*p, DirectX::XMFLOAT3 pos);
+
 };
