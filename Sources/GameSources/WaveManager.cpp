@@ -9,24 +9,28 @@ WaveManager::WaveManager()
 		w.SetTimer(0);
 	}
 	std::ifstream ifs;
-	ifs.open("Waves.bin", std::ios::binary);
+	ifs.open("./Data/Document/Waves.bin", std::ios::binary);
+	if(ifs)
 	{
 		cereal::JSONInputArchive i_archive(ifs);
 		i_archive(wave);
 	}
 	ifs.close();
 
-	for (auto& w : wave.at(waveNowIndex).GetWarker())
+	if (wave.size() > 0)
 	{
-		w.Init();
-	}
-	for (auto& a : wave.at(waveNowIndex).GetArcher())
-	{
-		a.Init();
-	}
-	for (auto& ew : wave.at(waveNowIndex).GetEliteWarker())
-	{
-		ew.Init();
+		for (auto& w : wave.at(waveNowIndex).GetWarker())
+		{
+			w.Init();
+		}
+		for (auto& a : wave.at(waveNowIndex).GetArcher())
+		{
+			a.Init();
+		}
+		for (auto& ew : wave.at(waveNowIndex).GetEliteWarker())
+		{
+			ew.Init();
+		}
 	}
 }
 
@@ -40,7 +44,7 @@ WaveManager::~WaveManager()
 void WaveManager::Save()
 {
 	std::ofstream ofs;
-	ofs.open("Waves.bin", std::ios::binary);
+	ofs.open("./Data/Document/Waves.bin", std::ios::binary);
 	{
 		cereal::JSONOutputArchive o_archive(ofs);
 		o_archive(wave);
@@ -51,7 +55,7 @@ void WaveManager::Save()
 void WaveManager::Load()
 {
 	std::ifstream ifs;
-	ifs.open("Waves.bin", std::ios::binary);
+	ifs.open("./Data/Document/Waves.bin", std::ios::binary);
 	{
 		cereal::JSONInputArchive i_archive(ifs);
 		i_archive(wave);

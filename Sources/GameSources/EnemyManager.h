@@ -74,18 +74,21 @@ public:
 	void Draw();
 
 	void WarkerRenderer();
+	void AllDelete();
+
 
 	void ImGui();
 
 private:
-	std::unique_ptr<Model> pArcher;
-	std::unique_ptr<Model> pWarker;
-	std::unique_ptr<Model> pWarkerRun;
-	std::unique_ptr<Model> pWarkerAttack;
-
-	std::unique_ptr<Model> pEliteWarker;
-	std::unique_ptr<Model> pPlayer;
-	std::unique_ptr<Model> pShot;
+	std::shared_ptr<Model> pArcher;
+	std::shared_ptr<Model> pWarker;
+	std::shared_ptr<Model> pWarkerRun;
+	std::shared_ptr<Model> pWarkerAttack;
+	std::shared_ptr<Model> pWarkerWait;
+		
+	std::shared_ptr<Model> pEliteWarker;
+	std::shared_ptr<Model> pPlayer;
+	std::shared_ptr<Model> pShot;
 
 	std::unique_ptr<WaveManager> waveMgr;
 

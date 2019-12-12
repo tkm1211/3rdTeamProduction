@@ -16,7 +16,7 @@ WarkerKokim::WarkerKokim(int num)
 
 	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY,NULL,NULL);
 	{
-		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, WarkerAttackJudge::GetInstance(), NULL);
 		{
 			aiTree.AddNode("Attack", "WarkerStrike", 1, BehaviorTree::SELECT_RULE::NON, WarkerStrikeJudge::GetInstance(), WarkerStrikeAction::GetInstance());
 
@@ -33,7 +33,7 @@ WarkerKokim::WarkerKokim(int num)
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 	index = num;
-
+	state = WARKER_STATE::RUN;
 	
 }
 
@@ -63,32 +63,45 @@ void WarkerKokim::Init()
 
 void WarkerKokim::Update()
 {
-	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
+	if (!nowAsphyxia)
+	{
+		OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
-	DirectX::XMFLOAT3 vec;
-	DirectX::XMStoreFloat3(&vec,
-		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&pTrs.GetPos()),
-			DirectX::XMLoadFloat3(&modelData->GetPos())));
+		DirectX::XMFLOAT3 vec;
+		DirectX::XMStoreFloat3(&vec,
+			DirectX::XMVectorSubtract(
+				DirectX::XMLoadFloat3(&pTrs.GetPos()),
+				DirectX::XMLoadFloat3(&modelData->GetPos())));
 
-	float dis;
-	DirectX::XMStoreFloat(&dis,DirectX::XMVector3Length(
-		DirectX::XMLoadFloat3(&vec)));
-
-	SetEtoPdis(dis);
-
-	DirectX::XMVECTOR plForward = DirectX::XMVectorSet(sinf(modelData->GetAngle().y), 0, cosf(modelData->GetAngle().y), 1);
-
-	plForward = DirectX::XMVector3Normalize(plForward);
-	DirectX::XMStoreFloat3(&vec,
-		DirectX::XMVector3Normalize(
+		float dis;
+		DirectX::XMStoreFloat(&dis, DirectX::XMVector3Length(
 			DirectX::XMLoadFloat3(&vec)));
 
-	DirectX::XMStoreFloat(&plDot,
-		DirectX::XMVector3Dot(
-			DirectX::XMLoadFloat3(&vec),
-			plForward));
+		SetEtoPdis(dis);
 
-	AI::Update();
-	bodyCol->SetPos(modelData->GetPos());
+		DirectX::XMVECTOR plForward = DirectX::XMVectorSet(sinf(modelData->GetAngle().y), 0, cosf(modelData->GetAngle().y), 1);
+
+		plForward = DirectX::XMVector3Normalize(plForward);
+		DirectX::XMStoreFloat3(&vec,
+			DirectX::XMVector3Normalize(
+				DirectX::XMLoadFloat3(&vec)));
+
+		DirectX::XMStoreFloat(&plDot,
+			DirectX::XMVector3Dot(
+				DirectX::XMLoadFloat3(&vec),
+				plForward));
+
+		AI::Update();
+		bodyCol->SetPos(modelData->GetPos());
+
+		if (hp <= 0)
+		{
+			ChangeNowAsphyxia();
+		}
+	}
+	else
+	{
+		state = WARKER_STATE::TPOSE;
+		modelData->SetPosY(110);
+	}
 }

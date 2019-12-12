@@ -15,10 +15,14 @@ bool WarkerMoveJudge::Judgement(AI *obj)
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(job);
 #endif
 
-	if (obj->GetEtoPdis() < 1000)
+	if (obj->GetEtoPdis() > 50&&obj->GetEtoPdis() < warker->GetFindPlayerDistance())
 	{
 		return true;
 	}
+	/*else if()
+	{
+
+	}*/
 
 	return false;
 }

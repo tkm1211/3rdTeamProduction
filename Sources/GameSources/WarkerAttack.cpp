@@ -13,9 +13,22 @@ bool WarkerAttackJudge::Judgement(AI * obj)
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(job);
 #endif
 
-	if (obj->GetEtoPdis() < 50 && warker->GetPlayerDot()> 0.99f)
+	if (obj->GetEtoPdis() < warker->GetAttackDistance() &&
+		warker->GetPlayerDot()> 0.99f&&
+		warker->GetStrikeRecastMax() <  warker->GetStrikeRecastCnt())
 	{
-		return true;
+
+		if (!pWarkerAttack->GetFinishAnimation())
+		{
+			return true;
+		}
+		else
+		{
+			warker->SetStrikeRecastCnt(0);
+			
+		}
 	}
+
+	warker->SetStrikeRecastCnt(warker->GetStrikeRecastCnt() + 1);
 	return false;
 }

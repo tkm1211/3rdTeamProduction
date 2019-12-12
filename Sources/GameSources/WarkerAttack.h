@@ -1,5 +1,6 @@
 #pragma once
-
+#include "Model.h"
+#include <memory>
 #include "ExecJudgementBase.h"
 class AI;
 
@@ -13,6 +14,8 @@ public:
 		static WarkerAttackJudge instance;
 		return &instance;
 	}
+
+	std::shared_ptr<Model> pWarkerAttack;
 
 	virtual bool Judgement(AI *obj);
 };

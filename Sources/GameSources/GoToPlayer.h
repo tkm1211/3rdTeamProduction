@@ -1,5 +1,5 @@
 #pragma once
-#define VELOCITY_WARKER 10
+
 
 #include "ExecJudgementBase.h"
 #include "ActionBase.h"

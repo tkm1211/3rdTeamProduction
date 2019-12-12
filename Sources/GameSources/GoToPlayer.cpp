@@ -29,7 +29,7 @@ ActionBase::STATE GotoPlayerAction::Update(AI*obj)
 	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 	o.SetAngleY(atan2(pTrs.GetPos().x - o.GetPos().x, pTrs.GetPos().z - o.GetPos().z));
 
-	o.SetSpeed(DirectX::XMFLOAT3(sinf(o.GetAngle().y)*VELOCITY_WARKER, 0, cosf(o.GetAngle().y)*VELOCITY_WARKER));
+	o.SetSpeed(DirectX::XMFLOAT3(sinf(o.GetAngle().y)*warker->GetVelocity(), 0, cosf(o.GetAngle().y)*warker->GetVelocity()));
 
 	DirectX::XMFLOAT3 lPos;
 	DirectX::XMStoreFloat3(&lPos,

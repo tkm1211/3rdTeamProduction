@@ -1,8 +1,5 @@
 #pragma once
-
 #include "ExecJudgementBase.h"
-
-
 
 class AI;
 

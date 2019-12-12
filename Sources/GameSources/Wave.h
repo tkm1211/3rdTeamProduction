@@ -29,6 +29,20 @@ public:
 	int& GetArcherHpForSet() { return setArcherHp; };
 	int& GetEliteWarkerHpForSet() { return setEliteWarkerHp; };
 
+	int& GetWarkerAttackDistanceForSet() { return setWarkerAttackDis; };
+	int& GetArcherAttackDistanceForSet() { return setArcherAttackDis; };
+	int& GetEliteWarkerAttackDistanceForSet() { return setEliteWarkerAttackDis; };
+
+	int& GetWarkerFindPlayerDistanceForSet() { return setWarkerFindPlayerDistance; };
+	int& GetArcherFindPlayerDistanceForSet() { return setArcherFindPlayerDistance; };
+	int& GetEliteWarkerFindPlayerDistanceForSet() { return setEliteWarkerFindPlayerDistance; };
+
+	int& GetWarkerStrikeRecastMaxForSet() { return setWarkerStrikeRecastMax; };
+
+	float& GetWarkerVelocityForSet() { return setWarkerVelocity; };
+	float& GetArcherVelocityForSet() { return setArcherVelocity; };
+	float& GetEliteWarkerVelocityForSet() { return setEliteWarkerVelocity; };
+
 	std::vector<WarkerKokim>& GetWarker() { return warker; };
 	std::vector<ArcherKokim>& GetArcher() { return archer; };
 	std::vector<EliteWarkerKokim>& GetEliteWarker() { return eliteWarker; };
@@ -40,11 +54,23 @@ private:
 	int timer=0;
 	int timerMax = 200;
 
-	int setWarkerHp=0;
-	int setArcherHp=0;
-	int setEliteWarkerHp=0;
+	int setWarkerHp=10;
+	int setArcherHp=10;
+	int setEliteWarkerHp=10;
 
+	int setWarkerAttackDis = 50;
+	int setArcherAttackDis = 50;
+	int setEliteWarkerAttackDis = 50;
 
+	int setWarkerFindPlayerDistance = 1000;
+	int setArcherFindPlayerDistance = 1000;
+	int setEliteWarkerFindPlayerDistance = 1000;
+
+	int setWarkerStrikeRecastMax = 120;
+
+	float setWarkerVelocity = 10;
+	float setArcherVelocity = 10;
+	float setEliteWarkerVelocity = 10;
 
 	std::vector<ArcherKokim> archer;
 	std::vector<WarkerKokim> warker;

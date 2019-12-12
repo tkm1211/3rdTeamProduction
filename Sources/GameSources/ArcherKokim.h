@@ -4,6 +4,8 @@
 #include "Kokim.h"
 
 #include "Shot.h"
+
+
 #define RECAST_MAX 300
 
 class Shot;
@@ -34,5 +36,13 @@ private:
 	int recast = NULL;
 	float plDot;
 
+public:
+	template<class Archive>
+	void serialize(Archive & archive)
+	{
+		archive(
+			cereal::make_nvp("modelData", modelData),
+			cereal::make_nvp("index", index));
+	}
 };
 

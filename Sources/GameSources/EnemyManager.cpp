@@ -11,31 +11,32 @@
 #include "WaveManager.h"
 #include "Wave.h"
 #include "CharacterSystem.h"
-#define PLAYER_SPEED 10
+#include "WarkerAttack.h"
 
 
 EnemyManager::EnemyManager()
 {
 	{
-		pWarker = std::make_unique<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
-		pWarkerAttack = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false);
-		pWarkerRun = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false);
+		pWarker =		std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
+		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false);
+		pWarkerRun =	std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false);
+		pWarkerWait =	std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false);
 	}
-	pEliteWarker = std::make_unique<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
+	pEliteWarker =		std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
 
 	{
-		pArcher = std::make_unique<Model>("Data/Assets/Model/Enemys/Archer.fbx", false);
-		pShot = std::make_unique<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false);
+		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false);
+		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false);
 	}
-	pPlayer = std::make_unique<Model>("Data/Assets/Model/Player/Player.fbx", false);
+	pPlayer = std::make_shared<Model>("Data/Assets/Model/Player/Player.fbx", false);
 
 	waveMgr = std::make_unique<WaveManager>();
+
+	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
 
 	///*enowCatch.resize(enmList.size());*/
 
 	pWarkerRun->StartAnimation(0, true);
-
-	
 
 	waveMgr->GetWaves().emplace_back();
 }
@@ -54,11 +55,12 @@ void EnemyManager::Update()
 	}
 	else
 	{
-		for (auto & wa : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+		for (auto &wa : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
 		{
 			wa.GetWeaponCollision()->SetPos(pWarkerAttack->GetVectexPos("polySurface4", vPoswa, wa.GetModelData()->GetWorldMatrix(),0));
 		}
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).Update();
+		
 	}
 	/*if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
 	{
@@ -129,7 +131,6 @@ void EnemyManager::Draw()
 		{
 			pEliteWarker->Render(ewrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 		}
-		
 		for (auto &arc : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
 		{
 			arc.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
@@ -157,6 +158,15 @@ void EnemyManager::WarkerRenderer()
 	{
 		switch (wrk.GetState())
 		{
+		case WARKER_STATE::WAIT:
+			if (!pWarkerWait->GetAnimatingFlg())
+			{
+				pWarkerWait->StartAnimation(0, true);
+			}
+			pWarkerWait->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+			pWarkerWait->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+			break;
 		case WARKER_STATE::RUN:
 			if (!pWarkerRun->GetAnimatingFlg())
 			{
@@ -175,26 +185,86 @@ void EnemyManager::WarkerRenderer()
 			pWarkerAttack->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 			break;
+		case WARKER_STATE::TPOSE:
+	
+			pWarker->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+			pWarker->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
+			break;
 		default: break;
 		}
 	}
 }
 
+void EnemyManager::AllDelete()
+{
+	/*waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().clear();
+	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().shrink_to_fit();*/
+
+	for (int i = 0; i < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size(); i++)
+	{
+		if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(i).GetNowAsphyxia())
+		{
+			bool con = false;
+			for (int j = 0; j < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().size(); j++)
+			{
+				
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().at(j).index == waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(i).GetIndex())
+				{
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().begin() + j);
+					con = true;
+					break;
+				}
+			}
+			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().begin()+i);
+			if (con)
+			{
+				i = -1;
+			}
+		}
+	}
+	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().clear();
+	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().shrink_to_fit();
+
+	////waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().clear();
+	////waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().shrink_to_fit();
+
+	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().clear();
+	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().shrink_to_fit();
+}
+
 void EnemyManager::ImGui()
 {
+
+
+	ImGui::Begin("AllDeleteE");
+	{
+
+		if (ImGui::Button("AllDelete"))
+		{
+			AllDelete();
+		}
+	}
+	ImGui::End();
 	if (Editer::GetInstance()->GetNowEditer())
 	{
 		ImGui::Begin("EnemyManager");
 		{
+
+			if (ImGui::Button("AllDelete"))
+			{
+				AllDelete();
+			}
+
 
 			if (ImGui::Button("Warker"))
 			{
 				WarkerKokim w(enmNum++);
 				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().emplace_back(w);
 				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().emplace_back(
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size()-1).GetModelData(),
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() - 1).GetModelData(),
 					ENEMY_TYPE::WARKER,
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size()-1).GetIndex());
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() - 1).GetIndex());
 
 			}
 			if (ImGui::Button("Archer"))
@@ -202,24 +272,64 @@ void EnemyManager::ImGui()
 				ArcherKokim a(enmNum++);
 				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().emplace_back(a);
 				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().emplace_back(
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size()-1).GetModelData(),
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() - 1).GetModelData(),
 					ENEMY_TYPE::ARCHER,
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size()-1).GetIndex());
-				
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() - 1).GetIndex());
+
 			}
 			if (ImGui::Button("EliteWarker"))
 			{
 				EliteWarkerKokim ew(enmNum++);
 				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().emplace_back(ew);
 				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().emplace_back(
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().size()-1).GetModelData(),
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().size() - 1).GetModelData(),
 					ENEMY_TYPE::ELITE_WARKER,
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().size()-1).GetIndex());
-				
-			}
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().size() - 1).GetIndex());
 
-			//ImGui::NewLine();
-			//ImGui::BulletText("SetHP");
+			}
+			ImGui::NewLine();
+			if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() > 0)
+			{
+				ImGui::DragInt(u8"攻撃しだす距離", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetAttackDistance() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet())
+				{
+					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+					{
+						w.SetAttackDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet());
+					}
+				}
+
+				ImGui::DragInt(u8"プレイヤーを見つける距離", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetFindPlayerDistance() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet())
+				{
+					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+					{
+						w.SetFindPlayerDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
+					}
+				}
+				ImGui::DragFloat(u8"エネミー　速度", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetVelocity() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet())
+				{
+					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+					{
+						w.SetVelocity(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
+					}
+				}
+				ImGui::DragFloat(u8"殴り　リキャスト時間", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetStrikeRecastMax() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerStrikeRecastMaxForSet())
+				{
+					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+					{
+						w.SetStrikeRecastMax(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerStrikeRecastMaxForSet());
+					}
+				}
+
+			}
+				
+
+
+			ImGui::NewLine();
+			ImGui::BulletText("SetHP");
 			{
 				ImGui::InputInt("WarkerHP", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerHpForSet());
 
@@ -288,6 +398,7 @@ void EnemyManager::ImGui()
 	ImGui::Begin("chinpo");
 	{
 		ImGui::DragFloat3("vPosWA", &vPoswa.x);
+		/*ImGui::DragFloat3("")*/
 	}
 	ImGui::End();
 }
