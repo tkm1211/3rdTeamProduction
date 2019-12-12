@@ -388,7 +388,15 @@ public:
 	}
 	int GetAnimationFrame()
 	{
-		return animationFrame;
+		if (animationFrame)
+		{
+			animationFrame = false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	bool GetFinishAnimation()
 	{
