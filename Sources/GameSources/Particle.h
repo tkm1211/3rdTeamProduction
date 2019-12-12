@@ -23,4 +23,7 @@ public:
 	void CrystalDestroyUpdate(CrystalDestroyParticleInfo* p);
 	bool SetCrystalDestroy(CrystalDestroyParticleInfo*p, DirectX::XMFLOAT3 pos);
 
+	void SmokeUpdate(SmokeParticleInfo* p);
+	bool SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos);
+
 };

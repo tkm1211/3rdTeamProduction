@@ -59,6 +59,15 @@ struct CrystalDestroyParticleInfo
 {
 	Data data;
 	DirectX::XMFLOAT3 speed;
+	DirectX::XMFLOAT3 accel;
 	float maxScale;
+};
+
+struct SmokeParticleInfo
+{
+	Data data;
+	DirectX::XMFLOAT3 speed;
+	float maxScale;
+	float originScale;
 };
 

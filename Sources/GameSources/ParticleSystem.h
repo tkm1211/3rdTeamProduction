@@ -13,6 +13,7 @@ private:
 	PlayerAttackSparkParticleInfo paspark[MAX];
 	PlayerAttackAfterImageParticleInfo plAfterImage[MAX];
 	CrystalDestroyParticleInfo crystalDestroy[MAX];
+	SmokeParticleInfo smoke[MAX];
 
 	Particle ptc;
 public:
@@ -98,7 +99,22 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			if (ptc.SetCrystalDestroy(&crystalDestroy[i], pos)) num++;
-			if (num >= 15) return;
+			if (num >= 15)
+			{
+				SetSmoke(pos);
+				return;
+			}
+		}
+	}
+
+	// ‰Œ
+	void SetSmoke(DirectX::XMFLOAT3 pos)
+	{
+		int num = 0;
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetSmoke(&smoke[i], pos)) num++;
+			if (num >= 2) return;
 		}
 	}
 

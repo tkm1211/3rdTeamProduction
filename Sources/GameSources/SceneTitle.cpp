@@ -19,8 +19,7 @@ void SceneTitle::Init()
 {
 	//PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
 
-	bg = std::make_unique<BG>();
-	bg->Init();
+
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
@@ -36,7 +35,7 @@ void SceneTitle::Update()
 		//SetScene(new SceneLabo(), false);
 	}
 
-	bg->Update();
+
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -67,9 +66,10 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
-	bg->Draw();
-	CharacterSystem::GetInstance()->Draw();
+
+	
 	ObjectSystem::GetInstance()->Draw();
+	CharacterSystem::GetInstance()->Draw();
 	
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
@@ -88,6 +88,7 @@ void SceneTitle::ImGui()
 	if (ImGui::Button("Particle  POP "))
 	{
 		//ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
+		ParticleSystem::GetInstance()->SetCrystalDestroy({0, 100, 0});
 		ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({0, 100, 0});
 		CharacterSystem::GetInstance()->GetPlayerAddress()->SufferDamage(60);
 	}

@@ -198,8 +198,12 @@ void Particle::CrystalDestroyUpdate(CrystalDestroyParticleInfo* p)
 {
 
 	if (!p->data.isExist) return;
-	float s       = easing::InQuint(p->data.time, p->data.existTime, 0.0f, p->maxScale);
-	p->data.scale = { s, s };
+	//float s       = easing::InQuint(p->data.time, p->data.existTime, 0.0f, p->maxScale);
+	//p->data.scale = { s, s };
+
+	p->data.pos = { p->data.pos.x + p->speed.x, p->data.pos.y + p->speed.y , p->data.pos.z + p->speed.z };
+
+	p->speed = { p->speed.x - p->accel.x, p->speed.y - p->accel.y , p->speed.z - p->accel.z };
 
 	p->data.time++;
 	if (p->data.time > p->data.existTime)
@@ -214,26 +218,79 @@ bool Particle::SetCrystalDestroy(CrystalDestroyParticleInfo* p, DirectX::XMFLOAT
 	if (p->data.isExist) return false;
 
 	p->data.pos       = pos;
-	p->maxScale       = 100.0f;
+	p->maxScale = rand() % 30 + 20;
 	p->data.scale     = { p->maxScale, p->maxScale };
 
 	int x = rand() % 1000 - 500;
-	int y = rand() % 300 + 200;
+	int y = rand() % 200 + 100;
 	int z = rand() % 1000 - 500;
 
-	p->speed = { x / 50.0f, y / 50.0f, z / 50.0f };
+	p->speed = { x / 50.0f, y / 10.0f, z / 50.0f };
 
-	p->data.angle     = { 0, 0, 0 };
+	p->data.angle     = { 0, 0, rand() % 361 * 0.01745f };
 
 	p->data.alpha     = 1.0f;
 	p->data.time      = 0;
 
 	p->data.isExist   = true;
-	p->data.existTime = 30.0f;
+	p->data.existTime = 50.0f;
 
-	p->data.tex.Set(1024.0f * 0.0f, 1024.0f * 1, 1024.0f, 1024.0f);
+	p->accel = { p->speed.x / (p->data.existTime * 1.3f), p->speed.y / (p->data.existTime * 0.3f) , p->speed.z / (p->data.existTime * 1.3f) };
+
+	int r = rand() % 2;
+	p->data.tex.Set(1024.0f * 2.0f + r, 1024.0f * 1, 1024.0f, 1024.0f);
 
 	return true;
 
 }
 
+// ‰Œ
+void Particle::SmokeUpdate(SmokeParticleInfo* p)
+{
+	if (!p->data.isExist) return;
+	float s       = easing::InQuint(p->data.time, p->data.existTime, p->maxScale, p->originScale);
+	p->data.scale = { s, s };
+
+	p->data.pos = { p->data.pos.x + p->speed.x, p->data.pos.y + p->speed.y , p->data.pos.z + p->speed.z };
+
+	p->data.alpha = easing::InSine(p->data.time, p->data.existTime, 0.0f, 1.0f);
+
+	p->data.time++;
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+}
+
+bool Particle::SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+
+	p->maxScale = rand() % 80 + 100;
+
+	p->originScale = rand() % 60 + 150;
+	p->data.scale = { p->originScale, p->originScale };
+	p->maxScale += p->originScale;
+
+
+	int x = rand() % 1000 - 500;
+	int y = rand() % 200 + 100;
+	int z = rand() % 1000 - 500;
+
+	p->speed = { x / 500.0f, y / 50.0f, z / 500.0f };
+
+	p->data.angle = { 0, 0, rand() % 361 * 0.01745f };
+
+	p->data.alpha = 0.0f;
+	p->data.time = 0;
+
+	p->data.existTime = rand() % 30 + 20;
+	p->data.isExist = true;
+
+	p->data.tex.Set(1024.0f * 4.0f, 1024.0f * 1, 1024.0f, 1024.0f);
+
+	return true;
+
+}

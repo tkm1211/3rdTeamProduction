@@ -12,18 +12,18 @@ void ObjectSystem::Init()
 
 void ObjectSystem::UnInit()
 {
-	buffAreaSystem->UnInit();
 	bg->UnInit();
+	buffAreaSystem->UnInit();
 }
 
 void ObjectSystem::Update()
 {
-	buffAreaSystem->Update();
 	bg->Update();
+	buffAreaSystem->Update();
 }
 
 void ObjectSystem::Draw()
 {
-	buffAreaSystem->Draw();
 	bg->Draw();
+	buffAreaSystem->Draw();
 }

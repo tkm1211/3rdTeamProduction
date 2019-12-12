@@ -12,13 +12,20 @@
 
 void Player::Init()
 {
-	pT         = std::make_unique<Model>("Data/Assets/Model/val/Player_Tpose.fbx"   , false);
-	pWait      = std::make_unique<Model>("Data/Assets/Model/val/Player_taiki.fbx"   , false);
-	pRun       = std::make_unique<Model>("Data/Assets/Model/val/Player_idou.fbx"    , false);
-	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack01.fbx", false);
-	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack02.fbx", false);
-	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/Player_attack03.fbx", false);
-	pDamage    = std::make_unique<Model>("Data/Assets/Model/val/Player_hidame.fbx", false);
+	//pT         = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerT.fbx"   , false);
+	//pWait      = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerWait.fbx"   , false);
+	//pRun       = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerRun.fbx"    , false);
+	//pAttack[0] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack1.fbx", false);
+	//pAttack[1] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack2.fbx", false);
+	//pAttack[2] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack3.fbx", false);
+	//pDamage    = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerHidame.fbx", false);
+	pT         = std::make_unique<Model>("Data/Assets/Model/val/PlayerT.fbx"   , false);
+	pWait      = std::make_unique<Model>("Data/Assets/Model/val/PlayerWait.fbx"   , false);
+	pRun       = std::make_unique<Model>("Data/Assets/Model/val/PlayerRun.fbx"    , false);
+	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack1.fbx", false);
+	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack2.fbx", false);
+	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack3.fbx", false);
+	pDamage    = std::make_unique<Model>("Data/Assets/Model/val/PlayerHidame.fbx", false);
 
 	modelData.Init();
 	SwitchMotion(ModelState::WAIT);

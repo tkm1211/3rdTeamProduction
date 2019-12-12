@@ -64,11 +64,7 @@ void SceneGame::ImGui()
 		ParticleSystem::GetInstance()->SetBuffAreaParticle({ 50.0f, 100.0f, 50.0f }, 200);
 	}
 
-
-
 	ImGui::End();
-
-
 
 }
 

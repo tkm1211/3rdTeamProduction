@@ -21,16 +21,16 @@ void ParticleSystem::Update()
 		ptc.PlayerAttackSparkUpdate(&paspark[i]);
 		ptc.PlayerAttackAfterImageUpdate(&plAfterImage[i]);
 		ptc.CrystalDestroyUpdate(&crystalDestroy[i]);
+		ptc.SmokeUpdate(&smoke[i]);
 	}
 }
 
 void ParticleSystem::Draw()
 {
-	SetBlenderMode(BM_ALPHA);
-	SetBlenderMode(BM_ADD);
 	texture->Begin(FrameWork::GetInstance().GetContext().Get());
 	for (int i = 0; i < MAX; i++)
 	{
+		SetBlenderMode(BM_ADD);
 		if (bap[i].data.isExist)
 		{
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
@@ -57,6 +57,14 @@ void ParticleSystem::Draw()
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				plAfterImage[i].data.pos, plAfterImage[i].data.tex.x, plAfterImage[i].data.tex.y, plAfterImage[i].data.tex.sx, plAfterImage[i].data.tex.sy,
 				plAfterImage[i].data.angle, plAfterImage[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
+		SetBlenderMode(BM_ALPHA);
+		if (smoke[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				smoke[i].data.pos, smoke[i].data.tex.x, smoke[i].data.tex.y, smoke[i].data.tex.sx, smoke[i].data.tex.sy,
+				smoke[i].data.angle, smoke[i].data.scale, { 1.0f, 1.0f, 1.0f, smoke[i].data.alpha });
 			popParticleNum++;
 		}
 		if (crystalDestroy[i].data.isExist)
