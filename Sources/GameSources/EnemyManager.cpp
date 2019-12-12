@@ -10,8 +10,8 @@
 #include "Shot.h"
 #include "WaveManager.h"
 #include "Wave.h"
+#include "CharacterSystem.h"
 #define PLAYER_SPEED 10
-_Player _player;
 
 
 EnemyManager::EnemyManager()
@@ -35,7 +35,7 @@ EnemyManager::EnemyManager()
 
 	pWarkerRun->StartAnimation(0, true);
 
-	//pWarkerAttack->GetVectexPos("polySurface4", );
+	
 
 	waveMgr->GetWaves().emplace_back();
 }
@@ -54,6 +54,10 @@ void EnemyManager::Update()
 	}
 	else
 	{
+		for (auto & wa : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+		{
+			wa.GetWeaponCollision()->SetPos(pWarkerAttack->GetVectexPos("polySurface4", vPoswa, wa.GetModelData()->GetWorldMatrix(),0));
+		}
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).Update();
 	}
 	/*if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
@@ -63,25 +67,6 @@ void EnemyManager::Update()
 		waveMgr->GetWaveNowIndex()++;
 		
 	}*/
-
-	if (GetAsyncKeyState(VK_UP) < 0)
-	{
-		_player.pos.z += PLAYER_SPEED;
-	}
-	if (GetAsyncKeyState(VK_DOWN) < 0)
-	{
-		_player.pos.z -= PLAYER_SPEED;
-	}
-	if (GetAsyncKeyState(VK_RIGHT) < 0)
-	{
-		_player.pos.x += PLAYER_SPEED;
-	}
-	if (GetAsyncKeyState(VK_LEFT) < 0)
-	{
-		_player.pos.x -= PLAYER_SPEED;
-	}
-
-
 	ImGui();
 }
 
@@ -121,6 +106,8 @@ void EnemyManager::Draw()
 		{
 			ewrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
 		}*/
+
+
 	}
 	else
 	{
@@ -142,21 +129,8 @@ void EnemyManager::Draw()
 		{
 			pEliteWarker->Render(ewrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 		}
-		pPlayer->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-
-		DirectX::XMMATRIX worldM;
-
-		DirectX::XMMATRIX scaleM, rotateM, translateM;
-		{
-			scaleM = DirectX::XMMatrixScaling(_player.scale.x, _player.scale.y, _player.scale.z);
-			rotateM = DirectX::XMMatrixRotationRollPitchYaw(_player.rotate.x, _player.rotate.y, _player.rotate.z);
-			translateM = DirectX::XMMatrixTranslation(_player.pos.x, _player.pos.y, _player.pos.z);
-
-			worldM = scaleM * rotateM*translateM;
-		}
-		pPlayer->Render(worldM, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
-
-		/*for (auto &arc : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
+		
+		for (auto &arc : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
 		{
 			arc.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
 		}
@@ -167,7 +141,12 @@ void EnemyManager::Draw()
 		for (auto &ewrk : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker())
 		{
 			ewrk.GetBodyCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
-		}*/
+		}
+
+		for (auto &wrk : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+		{
+			wrk.GetWeaponCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
+		}
 	}
 
 }
@@ -294,8 +273,15 @@ void EnemyManager::ImGui()
 				waveMgr->Load();
 			}
 
+			
 
 		}
 		ImGui::End();
 	}
+
+	ImGui::Begin("chinpo");
+	{
+		ImGui::DragFloat3("vPosWA", &vPoswa.x);
+	}
+	ImGui::End();
 }

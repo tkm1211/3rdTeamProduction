@@ -139,7 +139,7 @@ void Player::Update()
 		if (!makeRightFoot && footRStepSound->GetPos().y <= 0.4f)
 		{
 			makeRightFoot = true;
-			PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			//PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
 		}
 		else if (footRStepSound->GetPos().y > 0.4f)
 		{
@@ -149,7 +149,7 @@ void Player::Update()
 		if (!makeLeftFoot && footLStepSound->GetPos().y <= 0.95f)
 		{
 			makeLeftFoot = true;
-			PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			//PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
 		}
 		else if (footLStepSound->GetPos().y > 0.95f)
 		{

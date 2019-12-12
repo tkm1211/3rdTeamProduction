@@ -89,8 +89,10 @@ private:
 
 	std::unique_ptr<WaveManager> waveMgr;
 
-	
 	int enmNum = NULL;
+
+	DirectX::XMFLOAT3 vPoswa = {};
+
 
 	template<class Archive>
 	void serialize(Archive & archive)

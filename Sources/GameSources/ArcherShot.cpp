@@ -2,8 +2,7 @@
 #include "ArcherKokim.h"
 #include "AI.h"
 #include "EnemyManager.h"
-extern _Player _player;
-
+#include "CharacterSystem.h"
 bool ArcherShotJudge::Judgement(AI * obj)
 {
 #if defined(_DEBUG)
@@ -34,8 +33,9 @@ ActionBase::STATE ArcherShotAction::Update(AI * obj)
 #else
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
 #endif
+	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
-	archer->CreateArrow(_player.pos, archer->GetModelData()->GetPos());
+	archer->CreateArrow(pTrs.GetPos(), archer->GetModelData()->GetPos());
 	archer->SetRecast(0);
 
 	return ActionBase::STATE::COMPLETE;

@@ -20,7 +20,7 @@ void SceneManager::Init()
 	Fade::GetInstance()->Init();
 	CameraSystem::GetInstance()->Init();
 	//Soundのロード
-	SoundLoader::GetInstance()->load();
+	//SoundLoader::GetInstance()->load();
 }
 
 void SceneManager::Update()
@@ -68,7 +68,7 @@ void SceneManager::Update()
 	}
 	pScene->Update();
 	//Soundの更新処理
-	SoundLoader::GetInstance()->Update();
+	//SoundLoader::GetInstance()->Update();
 	//Fadeの更新処理
 	Fade::GetInstance()->Update();
 }
@@ -150,7 +150,7 @@ void SceneManager::UnInit()
 	pStackScene = nullptr;
 	
 	//Soundの解放処理
-	SoundLoader::GetInstance()->Release();
+	//SoundLoader::GetInstance()->Release();
 	//Fadeの解放処理
 	Fade::GetInstance()->UnInit();
 	

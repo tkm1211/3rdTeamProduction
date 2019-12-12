@@ -11,11 +11,14 @@ public:
 	int GetHp() { return hp; };
 	std::shared_ptr<OBJ3D> GetModelData() { return modelData; };
 	CollisionPrimitive* GetBodyCollision() { return bodyCol.get(); };
+	CollisionPrimitive* GetWeaponCollision() { return weaponCol.get(); };
+
 
 	int Damage(int damage) { hp-=damage; };
 	void SetHp(int hp) { this->hp = hp; };
 
 	std::shared_ptr<CollisionPrimitive> bodyCol;
+	std::shared_ptr<CollisionPrimitive> weaponCol;
 	std::shared_ptr<OBJ3D> modelData;
 
 	int index=0;

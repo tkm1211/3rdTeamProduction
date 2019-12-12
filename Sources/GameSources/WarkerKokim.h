@@ -3,8 +3,6 @@
 #include "AI.h"
 #include "Kokim.h"
 
-class Player;
-
 
 enum class WARKER_STATE
 {

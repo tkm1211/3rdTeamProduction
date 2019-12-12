@@ -6,8 +6,7 @@
 #include "ArcherAttack.h"
 #include "ArcherShot.h"
 #include "ArcherWait.h"
-extern _Player _player;
-
+#include "CharacterSystem.h"
 ArcherKokim::ArcherKokim(int num)
 {
 	modelData = std::make_shared<OBJ3D>();
@@ -58,10 +57,12 @@ void ArcherKokim::Init()
 
 void ArcherKokim::Update()
 {
+	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
+
 	DirectX::XMFLOAT3 vec;
 	DirectX::XMStoreFloat3(&vec,
 		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&_player.pos),
+			DirectX::XMLoadFloat3(&pTrs.GetPos()),
 			DirectX::XMLoadFloat3(&modelData->GetPos())));
 
 	float dis;

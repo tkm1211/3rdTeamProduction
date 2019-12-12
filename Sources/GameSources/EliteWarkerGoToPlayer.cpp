@@ -2,7 +2,7 @@
 #include "AI.h"
 #include "OBJ3D.h"
 #include "EnemyManager.h"
-extern _Player _player;
+#include "CharacterSystem.h"
 
 ActionBase::STATE EliteWarkerGotoPlayerAction::Update(AI * obj)
 {
@@ -16,8 +16,9 @@ ActionBase::STATE EliteWarkerGotoPlayerAction::Update(AI * obj)
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
 #endif
 	OBJ3D&o = *archer->GetModelData();
+	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
-	o.SetAngleY(atan2(_player.pos.x - o.GetPos().x, _player.pos.z - o.GetPos().z));
+	o.SetAngleY(atan2(pTrs.GetPos().x - o.GetPos().x, pTrs.GetPos().z - o.GetPos().z));
 
 	o.SetSpeed(DirectX::XMFLOAT3(sinf(o.GetAngle().y)*VELOCITY_ELITE_WARKER, 0, cosf(o.GetAngle().y)*VELOCITY_ELITE_WARKER));
 

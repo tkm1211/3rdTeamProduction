@@ -2,8 +2,7 @@
 #include "AI.h"
 #include "OBJ3D.h"
 #include "EnemyManager.h"
-extern _Player _player;
-
+#include "CharacterSystem.h"
 ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 {
 
@@ -17,6 +16,7 @@ ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
 #endif
 	OBJ3D &o = *archer->GetModelData();
+	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
 	DirectX::XMVECTOR oVec = DirectX::XMVector3Normalize(
 		DirectX::XMVectorSet(sinf(o.GetAngle().y), 0, cosf(o.GetAngle().y), 0));
@@ -24,7 +24,7 @@ ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 	DirectX::XMVECTOR vecEtoP =
 		DirectX::XMVector3Normalize(
 			DirectX::XMVectorSubtract(
-				DirectX::XMLoadFloat3(&_player.pos),
+				DirectX::XMLoadFloat3(&pTrs.GetPos()),
 				DirectX::XMLoadFloat3(&o.GetPos())));
 
 	DirectX::XMFLOAT3 cross;
@@ -58,12 +58,13 @@ bool ArcherTurnJudge::Judgement(AI * obj)
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
 #endif
 	OBJ3D &o = *archer->GetModelData();
+	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
 	DirectX::XMVECTOR oVec = DirectX::XMVectorSet(cosf(o.GetAngle().y), 0, sinf(o.GetAngle().y), 0);
 
 	DirectX::XMVECTOR vecEtoP =
 		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&_player.pos),
+			DirectX::XMLoadFloat3(&pTrs.GetPos()),
 			DirectX::XMLoadFloat3(&o.GetPos()));
 
 	float dot;

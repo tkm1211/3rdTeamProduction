@@ -7,8 +7,7 @@
 #include "WarkerWait.h"
 #include "GoToPlayer.h"
 #include "Turn.h"
-extern _Player _player;
-
+#include "CharacterSystem.h"
 WarkerKokim::WarkerKokim(int num)
 {
 	modelData = std::make_shared<OBJ3D>();
@@ -32,6 +31,7 @@ WarkerKokim::WarkerKokim(int num)
 
 	SetBehaviorTree(&aiTree);
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 	index = num;
 
 	
@@ -57,14 +57,18 @@ void WarkerKokim::Init()
 
 	SetBehaviorTree(&aiTree);
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+
 }
 
 void WarkerKokim::Update()
 {
+	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
+
 	DirectX::XMFLOAT3 vec;
 	DirectX::XMStoreFloat3(&vec,
 		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&_player.pos),
+			DirectX::XMLoadFloat3(&pTrs.GetPos()),
 			DirectX::XMLoadFloat3(&modelData->GetPos())));
 
 	float dis;

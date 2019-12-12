@@ -3,8 +3,7 @@
 #include "BehaviorTree.h"
 #include "EliteWarkerMove.h"
 #include "EliteWarkerWait.h"
-extern _Player _player;
-
+#include "CharacterSystem.h"
 EliteWarkerKokim::EliteWarkerKokim(int num)
 {
 	modelData = std::make_shared<OBJ3D>();
@@ -47,10 +46,12 @@ void EliteWarkerKokim::Init()
 
 void EliteWarkerKokim::Update()
 {
+	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
+
 	DirectX::XMFLOAT3 vec;
 	DirectX::XMStoreFloat3(&vec,
 		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&_player.pos),
+			DirectX::XMLoadFloat3(&pTrs.GetPos()),
 			DirectX::XMLoadFloat3(&modelData->GetPos())));
 
 	float dis;

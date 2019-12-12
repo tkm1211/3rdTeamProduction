@@ -1,5 +1,6 @@
 #include "WarkerAttack.h"
 #include "WarkerKokim.h"
+
 bool WarkerAttackJudge::Judgement(AI * obj)
 {
 #if defined(_DEBUG)
