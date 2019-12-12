@@ -179,6 +179,11 @@ void SkinnedMesh::Render
 			{
 				if ( animationNumber < mesh.skeletalAnimations.size() && mesh.skeletalAnimations.at( animationNumber ).skeletel.size() > 0 )
 				{
+					if (animationFrame == 0)
+					{
+						isFinishAnimation = false;
+					}
+
 					int frame = static_cast<int>( mesh.skeletalAnimations.at( animationNumber ).animationTick / mesh.skeletalAnimations.at( animationNumber ).samplingTime );
 					animationFrame = frame;
 					if ( frame > static_cast<int>( mesh.skeletalAnimations.at( animationNumber ).skeletel.size() ) - 1 )
@@ -187,6 +192,7 @@ void SkinnedMesh::Render
 						animationFrame = 0;
 						mesh.skeletalAnimations.at( animationNumber ).animationTick = 0.0f;
 						if ( !isLoopAnimation ) isAnimation = false;
+						isFinishAnimation = true;
 					}
 				
 					std::vector<Bone> &skeletal = mesh.skeletalAnimations.at( animationNumber ).skeletel.at( animationFrame ).bone;

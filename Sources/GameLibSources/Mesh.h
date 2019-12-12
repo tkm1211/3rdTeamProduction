@@ -90,6 +90,7 @@ public:
 	virtual void PauseAnimation() {}
 	virtual bool GetAnimatingFlg() { return false; }
 	virtual int GetAnimationFrame() { return 0; }
+	virtual bool GetFinishAnimation() { return false; }
 	virtual DirectX::XMFLOAT3 GetVectexPos( std::string name, const DirectX::XMFLOAT3& pos, int vectexPosNo ) { return DirectX::XMFLOAT3(); }
 	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform ) { return DirectX::XMFLOAT4X4(); }
 	virtual int RayPick

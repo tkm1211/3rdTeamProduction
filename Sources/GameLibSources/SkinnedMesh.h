@@ -258,6 +258,7 @@ private:
 	int animationFrame = 0;
 	bool isAnimation = false;
 	bool isLoopAnimation = false;
+	bool isFinishAnimation = false;
 
 public:
 	SkinnedMesh() = default;
@@ -388,6 +389,10 @@ public:
 	int GetAnimationFrame()
 	{
 		return animationFrame;
+	}
+	bool GetFinishAnimation()
+	{
+		return isFinishAnimation;
 	}
 
 	// レイピック関数

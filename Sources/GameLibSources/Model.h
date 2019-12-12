@@ -80,6 +80,12 @@ public: // アニメーション関数
 		return pMesh->GetAnimationFrame();
 	}
 
+	// アニメーションが終わった瞬間を取得する関数
+	bool GetFinishAnimation()
+	{
+		return pMesh->GetFinishAnimation();
+	}
+
 	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform )
 	{
 		return pMesh->GetBoneTransform( name, worldTransform );
