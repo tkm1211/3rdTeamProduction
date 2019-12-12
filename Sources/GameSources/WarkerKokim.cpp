@@ -34,6 +34,7 @@ WarkerKokim::WarkerKokim(int num)
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 	index = num;
 	state = WARKER_STATE::RUN;
+	Update();
 	
 }
 

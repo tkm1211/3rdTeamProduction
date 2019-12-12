@@ -22,13 +22,13 @@ void BuffAreaSystem::Init()
 	onCollision = false;
 	allArea = 0;
 	// jsonì«Ç›çûÇ›
-	std::ifstream ifs;
-	ifs.open("./Data/Document/BuffArea.json", std::ios::out);
-	{
-		cereal::JSONInputArchive i_archive(ifs);
-		i_archive(*this);
-	}
-	ifs.close();
+	//std::ifstream ifs;
+	//ifs.open("./Data/Document/BuffArea.json", std::ios::out);
+	//{
+	//	cereal::JSONInputArchive i_archive(ifs);
+	//	i_archive(*this);
+	//}
+	//ifs.close();
 
 }
 
