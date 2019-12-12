@@ -3,21 +3,27 @@
 
 void ObjectSystem::Init()
 {
-	buffarea = std::make_unique<BuffArea>();
-	buffarea->Init();
+	buffAreaSystem = std::make_unique<BuffAreaSystem>();
+	buffAreaSystem->Init();
+	bg = std::make_unique<BG>();
+	bg->Init();
+
 }
 
 void ObjectSystem::UnInit()
 {
-	buffarea->UnInit();
+	buffAreaSystem->UnInit();
+	bg->UnInit();
 }
 
 void ObjectSystem::Update()
 {
-	buffarea->Update();
+	buffAreaSystem->Update();
+	bg->Update();
 }
 
 void ObjectSystem::Draw()
 {
-	buffarea->Draw();
+	buffAreaSystem->Draw();
+	bg->Draw();
 }

@@ -14,8 +14,6 @@
 
 void SceneGame::Init()
 {
-	bg = std::make_unique<BG>();
-	bg->Init();
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
@@ -24,7 +22,6 @@ void SceneGame::Init()
 
 void SceneGame::Update()
 {
-	bg->Update();
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -37,7 +34,7 @@ void SceneGame::Update()
 	}
 	if (xInput[0].bBt)
 	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
+		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 0.1f);
 	}
 
 
@@ -46,7 +43,6 @@ void SceneGame::Update()
 
 void SceneGame::Render()
 {
-	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -61,7 +57,7 @@ void SceneGame::ImGui()
 	ImGui::Begin("Game");
 	if (ImGui::Button("BuffArea  POP "))
 	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
+		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
 	}
 	if (ImGui::Button("Particle  POP "))
 	{

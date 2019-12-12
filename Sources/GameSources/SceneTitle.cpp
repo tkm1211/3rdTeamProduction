@@ -19,8 +19,6 @@ void SceneTitle::Init()
 {
 	PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
 
-	bg = std::make_unique<BG>();
-	bg->Init();
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
@@ -36,7 +34,6 @@ void SceneTitle::Update()
 		//SetScene(new SceneLabo(), false);
 	}
 
-	bg->Update();
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -54,7 +51,7 @@ void SceneTitle::Update()
 
 	if (xInput[0].bBt)
 	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 400, 1);
+		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 400, 1);
 	}
 
 	if (Editer::GetInstance()->GetNowEditer())
@@ -66,7 +63,6 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
-	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	
@@ -82,7 +78,7 @@ void SceneTitle::ImGui()
 	ImGui::Begin("Title");
 	if (ImGui::Button("BuffArea  POP "))
 	{
-		ObjectSystem::GetInstance()->GetBuffAreaAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
+		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
 	}
 	if (ImGui::Button("Particle  POP "))
 	{

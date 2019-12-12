@@ -16,7 +16,6 @@
 class SceneGame : public Scene
 {
 private:
-	std::unique_ptr<BG>                    bg;
 
 public:
 	void Init();

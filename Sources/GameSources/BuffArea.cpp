@@ -9,7 +9,7 @@
 #include "SoundLoader.h"
 
 
-void BuffArea::Init()
+void BuffAreaSystem::Init()
 {
 	//モデルのロード
 	pArea = std::make_unique<Model>("Data/Assets/Model/val/AreaFrame.fbx", false);
@@ -19,11 +19,11 @@ void BuffArea::Init()
 	onCollision = false;
 }
 
-void BuffArea::UnInit()
+void BuffAreaSystem::UnInit()
 {
 }
 
-void BuffArea::Update()
+void BuffAreaSystem::Update()
 {
 	float s = 0;	//スケールを置く用
 	for (auto& ba : buffArea)
@@ -81,7 +81,7 @@ void BuffArea::Update()
 
 }
 
-void BuffArea::Draw()
+void BuffAreaSystem::Draw()
 {
 	pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
@@ -115,7 +115,7 @@ void BuffArea::Draw()
 
 }
 
-void BuffArea::SetBuffArea(BuffAreaInfo b)
+void BuffAreaSystem::SetBuffArea(BuffAreaInfo b)
 {
 	PlaySoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
 	//これから生成するやつ以外は動きを止める
@@ -142,7 +142,7 @@ void BuffArea::SetBuffArea(BuffAreaInfo b)
 }
 
 
-void BuffArea::SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad)
+void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad)
 {
 	BuffAreaInfo ba;
 	ba.Init(pos, rad, subRad);
@@ -150,7 +150,7 @@ void BuffArea::SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad)
 	SetBuffArea(ba);
 }
 
-void BuffArea::BreakBuffArea()
+void BuffAreaSystem::BreakBuffArea()
 {
 	for (auto& ba : buffArea)
 	{
@@ -159,7 +159,7 @@ void BuffArea::BreakBuffArea()
 	}
 }
 
-void BuffArea::ImGui()
+void BuffAreaSystem::ImGui()
 {
 	ImGui::Begin(u8"BuffArea");
 

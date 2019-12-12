@@ -1,10 +1,11 @@
 #pragma once
 #include "BuffArea.h"
-
+#include "BG.h"
 class ObjectSystem
 {
 private:
-	std::unique_ptr<BuffArea> buffarea;
+	std::unique_ptr<BuffAreaSystem> buffAreaSystem;
+	std::unique_ptr<BG>             bg;
 
 public:
 	ObjectSystem() {}
@@ -15,7 +16,8 @@ public:
 	void Draw();
 	void UnInit();
 
-	BuffArea* GetBuffAreaAddress() { return buffarea.get(); }
+	BuffAreaSystem* GetBuffAreaSystemAddress() { return buffAreaSystem.get(); }
+	BG* GetBgAddress() { return bg.get(); }
 
 	static ObjectSystem* GetInstance()
 	{

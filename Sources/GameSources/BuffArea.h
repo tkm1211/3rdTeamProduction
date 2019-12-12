@@ -77,7 +77,7 @@ public:
 
 };
 
-class BuffArea
+class BuffAreaSystem
 {
 private:
 
@@ -93,9 +93,9 @@ private:
 	void SetBuffArea(BuffAreaInfo b);
 	void BreakBuffArea();
 public:
-	BuffArea(const BuffArea& obj) {}
-	BuffArea() {}
-	~BuffArea() {}
+	BuffAreaSystem(const BuffAreaSystem& obj) {}
+	BuffAreaSystem() {}
+	~BuffAreaSystem() {}
 
 
 	void Init();
