@@ -10,12 +10,10 @@
 #include "Collision.h"
 
 #include "BuffArea.h"
-#include "BG.h"
 #include "Billboard.h"
 class SceneTitle : public Scene
 {
 private:
-	std::unique_ptr<BG>                    bg;
 	
 public:
 	void Init();

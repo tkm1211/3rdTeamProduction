@@ -16,6 +16,8 @@ public:
 	void Draw();
 	void UnInit();
 
+	void ImGui();
+
 	BuffAreaSystem* GetBuffAreaSystemAddress() { return buffAreaSystem.get(); }
 	BG* GetBgAddress() { return bg.get(); }
 

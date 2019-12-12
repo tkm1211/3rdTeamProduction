@@ -15,6 +15,8 @@ public:
 	void Draw();
 	void UnInit();
 
+	void ImGui();
+
 	Player* GetPlayerAddress() { return player.get(); }
 	EnemyManager* GetEnemyManagerAddress() { return enmMgr.get(); }
 

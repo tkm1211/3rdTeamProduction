@@ -28,7 +28,7 @@ void SceneTitle::Init()
 
 void SceneTitle::Update()
 {
-	if (GetKeyState('G') < 0)
+	if (GetKeyState('0') < 0)
 	{
 		Fade::GetInstance()->onFadeFlg = true;
 		Fade::GetInstance()->SetNextScene(new SceneGame());
@@ -65,8 +65,6 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
-
-	
 	ObjectSystem::GetInstance()->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	
@@ -105,11 +103,12 @@ void SceneTitle::ImGui()
 			CameraSystem::GetInstance()->enemyEditorView.SetPerspectiveMatrix(DirectX::XMConvertToRadians(30.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000000.0f);
 			/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
 		}
-
-	
-
 	}
 	ImGui::DragInt("CameraHeight", &Editer::GetInstance()->cameraHeight);
+
+	CharacterSystem::GetInstance()->ImGui();
+	ObjectSystem::GetInstance()->ImGui();
+
 	ImGui::End();
 }
 

@@ -37,3 +37,8 @@ void CharacterSystem::Draw()
 	}
 	enmMgr->Draw();
 }
+
+void CharacterSystem::ImGui()
+{
+	player->ImGui();
+}

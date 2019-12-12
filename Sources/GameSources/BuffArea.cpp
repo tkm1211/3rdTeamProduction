@@ -74,10 +74,6 @@ void BuffAreaSystem::Update()
 		ba.modelData.SetPos({ ba.pos.x, ba.pos.y + 20, ba.pos.z });
 	}
 
-#ifdef _DEBUG
-	ImGui();
-#endif // _DEBUG
-
 
 }
 

@@ -24,7 +24,6 @@ void BG::UnInit()
 
 void BG::Update()
 {
-	ImGui();
 }
 
 void BG::Draw()

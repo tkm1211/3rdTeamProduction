@@ -27,3 +27,9 @@ void ObjectSystem::Draw()
 	bg->Draw();
 	buffAreaSystem->Draw();
 }
+
+void ObjectSystem::ImGui()
+{
+	bg->ImGui();
+	buffAreaSystem->ImGui();
+}

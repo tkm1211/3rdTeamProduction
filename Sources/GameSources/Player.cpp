@@ -196,9 +196,6 @@ void Player::Update()
 
 	DamageCalc();
 
-#if _DEBUG
-	ImGui();
-#endif
 }
 
 
