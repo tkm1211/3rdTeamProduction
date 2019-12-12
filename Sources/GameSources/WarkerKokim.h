@@ -48,7 +48,7 @@ private:
 	float plDot;
 	int attackDis=50;
 	int findPdis=1000;
-	int strikeRecastMax = 300;
+	int strikeRecastMax = 500;
 	int strikeRecastCnt = 0;
 	int damageRecast = 0;
 	bool nowAsphyxia = false;

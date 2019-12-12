@@ -95,6 +95,12 @@ void WarkerKokim::Update()
 		AI::Update();
 		bodyCol->SetPos(modelData->GetPos());
 
+		if (damageRecast > 0)
+		{
+			damageRecast--;
+		}
+		
+
 		if (hp <= 0)
 		{
 			ChangeNowAsphyxia();
