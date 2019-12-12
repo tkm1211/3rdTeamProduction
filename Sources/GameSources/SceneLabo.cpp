@@ -10,7 +10,7 @@
 void SceneLabo::Init()
 {
 	//player.Init();
-	pPlayer = std::make_unique<Model>("Data/Assets/val/Player_attack01.fbx", false);
+	pPlayer = std::make_unique<Model>("Data/Assets/Model/enemyattack_1.fbx", false);
 	playerData.Init();
 	radius = 5.0f;
 
@@ -27,6 +27,10 @@ void SceneLabo::Init()
 	pGroundCylinder = std::make_unique<CollisionPrimitive>(CollisionPrimitive::SPHERE, false, DirectX::XMFLOAT3(20.0f, 20.0f, 20.0f));
 	pGroundCylinder->SetPosZ(35.0f);
 
+	pStartSphere = std::make_unique<CollisionPrimitive>(CollisionPrimitive::SPHERE, false, DirectX::XMFLOAT3(20.0f, 20.0f, 20.0f));
+	pEndSphere   = std::make_unique<CollisionPrimitive>(CollisionPrimitive::SPHERE, false, DirectX::XMFLOAT3(20.0f, 20.0f, 20.0f));
+	pOutSphere   = std::make_unique<CollisionPrimitive>(CollisionPrimitive::SPHERE, false, DirectX::XMFLOAT3(20.0f, 20.0f, 20.0f));
+
 	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();
 	particle = std::make_unique<Billboard>(device.Get(), L"Data/Assets/Texture/particle.png");
 }
@@ -36,10 +40,6 @@ void SceneLabo::Update()
 	{
 		SceneManager::GetInstance()->SetScene(new SceneTitle());
 	}
-
-	ImGui::Begin("Scene");
-
-	ImGui::End();
 
 	static DirectX::XMFLOAT3 _pos = { 0.0f, 1.0f, 0.0f };
 	static int vectexPosNo = 0;
@@ -150,7 +150,7 @@ void SceneLabo::Render()
 
 	pPlayer->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	pPlayer->Render(playerData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), playerData.GetColor(), FrameWork::GetInstance().GetElapsedTime(), radius);
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), playerData.GetColor(), FrameWork::GetInstance().GetElapsedTime(), true, radius);
 
 	pItem->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	pItem->Render(itemData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
@@ -170,46 +170,88 @@ void SceneLabo::Render()
 
 	pGroundCylinder->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+
+	pStartSphere->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+
+	pEndSphere->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+
+	pOutSphere->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 }
 void SceneLabo::ImGui()
 {
-	/*ImGui::Begin("Scene");
-
-	ImGui::End();
-
-	static DirectX::XMFLOAT3 _pos = { 0.0f, 1.0f, 0.0f };
-	DirectX::XMFLOAT3 addModelPos = _pos;
-	DirectX::XMFLOAT3 modelPos = backData.GetPos();
-
-	ImGui::Begin("Test Model");
-	ImGui::DragFloat3("pos", &_pos.x);
-	ImGui::DragFloat3("model pos", &modelPos.x);
-	ImGui::DragFloat("draw radius", &radius);
-
-	if (ImGui::Button("Anim Start"))
-	{
-		pBack->StartAnimation(0, true);
-	}
-	if (ImGui::Button("Anim ReStart"))
-	{
-		pBack->ReStartAnimation();
-	}
-	if (ImGui::Button("Anim Stop"))
-	{
-		pBack->PauseAnimation();
-	}
-	ImGui::End();
-
-	pBack->GetBoneTransform(std::string("pCube1"), addModelPos);
-	backData.SetPos(modelPos);
-
-	DirectX::XMMATRIX M = DirectX::XMMatrixTranslation(addModelPos.x, addModelPos.y, addModelPos.z);
-	DirectX::XMFLOAT4X4 _M;
-	DirectX::XMStoreFloat4x4(&_M, M * backData.GetWorldMatrix());
-
-	itemData.SetPos({ _M._41, _M._42, _M._43 });*/
-
-	//player.ImGui();
+//	/*ImGui::Begin("Scene");
+//
+//	ImGui::End();
+//
+//	static DirectX::XMFLOAT3 _pos = { 0.0f, 1.0f, 0.0f };
+//	DirectX::XMFLOAT3 addModelPos = _pos;
+//	DirectX::XMFLOAT3 modelPos = backData.GetPos();
+//
+//	ImGui::Begin("Test Model");
+//	ImGui::DragFloat3("pos", &_pos.x);
+//	ImGui::DragFloat3("model pos", &modelPos.x);
+//	ImGui::DragFloat("draw radius", &radius);
+//
+//	if (ImGui::Button("Anim Start"))
+//	{
+//		pBack->StartAnimation(0, true);
+//	}
+//	if (ImGui::Button("Anim ReStart"))
+//	{
+//		pBack->ReStartAnimation();
+//	}
+//	if (ImGui::Button("Anim Stop"))
+//	{
+//		pBack->PauseAnimation();
+//	}
+//	ImGui::End();
+//
+//	pBack->GetBoneTransform(std::string("pCube1"), addModelPos);
+//	backData.SetPos(modelPos);
+//
+//	DirectX::XMMATRIX M = DirectX::XMMatrixTranslation(addModelPos.x, addModelPos.y, addModelPos.z);
+//	DirectX::XMFLOAT4X4 _M;
+//	DirectX::XMStoreFloat4x4(&_M, M * backData.GetWorldMatrix());
+//
+//	itemData.SetPos({ _M._41, _M._42, _M._43 });*/
+//
+//	//player.ImGui();
+//
+//
+//	DirectX::XMFLOAT3 pos   = playerData.GetPos();
+//	DirectX::XMFLOAT3 start = pStartSphere->GetPos();
+//	DirectX::XMFLOAT3 end   = pEndSphere->GetPos();
+//	static float t = 0.0f;
+//
+//	ImGui::Begin("SphereLinear");
+//
+//	ImGui::DragFloat3("start pos", &start.x);
+//	ImGui::DragFloat3("end pos", &end.x);
+//	ImGui::InputFloat("t", &t);
+//
+//
+//	DirectX::XMFLOAT3 startVec;
+//	startVec.x = start.x - pos.x;
+//	startVec.y = start.y - pos.y;
+//	startVec.z = start.z - pos.z;
+//
+//	DirectX::XMFLOAT3 endVec;
+//	endVec.x = end.x - pos.x;
+//	endVec.y = end.y - pos.y;
+//	endVec.z = end.z - pos.z;
+//
+////	DirectX::XMFLOAT3 out = SphereLinear(startVec, endVec, t);
+//
+////	ImGui::Text("out.x : %f out.y : %f out.z : %f", out.x, out.y, out.z);
+////
+////	ImGui::End();
+////
+////	pStartSphere->SetPos(start);
+////	pEndSphere->SetPos(end);
+////	pOutSphere->SetPos(out);
 }
 
 

@@ -10,6 +10,7 @@
 #include "Editer.h"
 #include "SoundLoader.h"
 
+
 void SceneManager::Init()
 {
 	// 初期化処理
@@ -20,7 +21,8 @@ void SceneManager::Init()
 	Fade::GetInstance()->Init();
 	CameraSystem::GetInstance()->Init();
 	//Soundのロード
-	//SoundLoader::GetInstance()->load();
+	SoundLoader::GetInstance()->load();
+	commandOn = false;
 }
 
 void SceneManager::Update()
@@ -43,6 +45,8 @@ void SceneManager::Update()
 #endif // DEBUG_MODE
 
 	Light::GetInstance()->Update();
+
+	CommandCheck();
 	GoToSceneLaboCommand();
 
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -51,7 +55,6 @@ void SceneManager::Update()
 	}
 	else
 	{
-
 		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->enemyEditorView);
 
 	}
@@ -69,7 +72,7 @@ void SceneManager::Update()
 	}
 	pScene->Update();
 	//Soundの更新処理
-	//SoundLoader::GetInstance()->Update();
+	SoundLoader::GetInstance()->Update();
 	//Fadeの更新処理
 	Fade::GetInstance()->Update();
 }
@@ -108,10 +111,35 @@ void SceneManager::ImGui()
 {
 #if DEBUG_MODE
 
-	pScene->ImGui();
-	Light::GetInstance()->ImGui();
+	if (GetKeyState(VK_CONTROL) < 0)
+	{
+		if (GetKeyState(VK_SHIFT) < 0)
+		{
+			if (GetKeyState('F') < 0)
+			{
+				commandOn = false;
+			}
+		}
+		else if (GetKeyState('F') < 0)
+		{
+			commandOn = true;
+		}
+	}
+	if (commandOn)
+	{
+		ImGui::Begin("Command");
+		char _com[256] = "";
+		ImGui::InputText(u8"入力してください", _com, sizeof(_com));
+		com = std::string(_com);
+		ImGui::End();
+	}
+	if (commandFlg & useImGui)
+	{
+		pScene->ImGui();
+		Light::GetInstance()->ImGui();
+	}
 
-#endif // DEBUG_MODE
+#endif
 }
 
 // シーンの切り換え
@@ -151,7 +179,7 @@ void SceneManager::UnInit()
 	pStackScene = nullptr;
 	
 	//Soundの解放処理
-	//SoundLoader::GetInstance()->Release();
+	SoundLoader::GetInstance()->Release();
 	//Fadeの解放処理
 	Fade::GetInstance()->UnInit();
 	

@@ -49,7 +49,6 @@ void SceneTitle::Update()
 	else
 	{
 		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, Editer::GetInstance()->cameraHeight, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0,-1));
-	
 	}
 
 	if (xInput[0].bBt)

@@ -29,6 +29,11 @@ private:
 
 	std::unique_ptr<Billboard> particle;
 
+	std::unique_ptr<CollisionPrimitive> pStartSphere;
+	std::unique_ptr<CollisionPrimitive> pEndSphere;
+	std::unique_ptr<CollisionPrimitive> pOutSphere;
+
+
 	struct ParticleData
 	{
 		DirectX::XMFLOAT3 pos;

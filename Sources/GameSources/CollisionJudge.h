@@ -8,6 +8,9 @@ public:
 	static void AllJudge();
 	
 public:
+	// Player vs G‹›’B
+	static void PlayerVsEnemies();
+
 	// Player‚ÌUŒ‚ vs G‹›’B
 	static void PlayerAttackVsEnemies();
 
