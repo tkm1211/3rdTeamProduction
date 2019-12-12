@@ -10,7 +10,7 @@ void Light::Init()
 
 	lightAngle = 4.16f;
 	posY = -0.36f;
-	Light::SetAmbient(DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f));
+	Light::SetAmbient(DirectX::XMFLOAT3(2.0f, 2.0f, 2.0f));
 	//ƒ‰ƒCƒg•ûŒü
 	lightDir.x = sinf(lightAngle);
 	lightDir.y = posY;
