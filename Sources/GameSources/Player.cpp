@@ -442,7 +442,7 @@ void Player::Attack()
 			}
 
 			// 2’i–Ú‚É‚¢‚­‚©‚Ç‚¤‚©
-			if (pAttack[0]->GetAnimationFrame() == attackInfo[attackCnt].nextAttakTime)
+			if (pAttack[0]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
 			{
 				if (enableNextAttack)
 				{
@@ -486,7 +486,7 @@ void Player::Attack()
 				}
 
 				// 3’i–Ú‚É‚¢‚­‚©‚Ç‚¤‚©
-				if (pAttack[1]->GetAnimationFrame() == attackInfo[attackCnt].nextAttakTime)
+				if (pAttack[1]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
 				{
 					if (enableNextAttack)
 					{

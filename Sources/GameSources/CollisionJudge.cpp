@@ -33,7 +33,7 @@ void CollisionJudge::PlayerVsEnemies()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		DirectX::XMFLOAT3 playerPosFloat3 = player->atkCollision->GetPos();
+		DirectX::XMFLOAT3 playerPosFloat3 = player->GetModelData().GetPos();
 		DirectX::XMFLOAT2 playerPos = DirectX::XMFLOAT2(playerPosFloat3.x, playerPosFloat3.z);
 		DirectX::XMFLOAT2 enmeyPos = DirectX::XMFLOAT2(warkerKokim.GetModelData()->GetPos().x, warkerKokim.GetModelData()->GetPos().z);
 
@@ -62,7 +62,7 @@ void CollisionJudge::PlayerAttackVsEnemies()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		if (Collision::SphereVsSphere(player->atkCollision->GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x))
+		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x))
 		{
 			//warkerKokim.Damage(1);
 			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
@@ -85,7 +85,7 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		if (Collision::SphereVsSphere(player->atkCollision->GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
+		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
 		{
 			player->SufferDamage(1);
 			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
@@ -100,7 +100,7 @@ void CollisionJudge::BuffAreaVsPlayer()
 
 	for (auto& it : ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->buffArea)
 	{
-		if (Collision::SphereVsSphere(player->bodyCollision->GetPos(), it.pArea_collision->GetPos(), player->bodyCollision->GetCollisionScale().x, it.pArea_collision->GetCollisionScale().x))
+		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), it.pArea_collision->GetPos(), player->bodyCollision->GetCollisionScale().x, it.pArea_collision->GetCollisionScale().x))
 		{
 			ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->checkBuff(&it);
 		}
@@ -112,7 +112,7 @@ void CollisionJudge::PlayerVsStage()
 	Player* player;
 	player = CharacterSystem::GetInstance()->GetPlayerAddress();
 
-	DirectX::XMFLOAT3 playerPosFloat3 = player->atkCollision->GetPos();
+	DirectX::XMFLOAT3 playerPosFloat3 = player->GetModelData().GetPos();
 	DirectX::XMFLOAT2 playerPos = DirectX::XMFLOAT2(playerPosFloat3.x, playerPosFloat3.z);
 	DirectX::XMFLOAT2 playerScale = DirectX::XMFLOAT2(player->bodyCollision->GetScale().x, player->bodyCollision->GetScale().z);
 
