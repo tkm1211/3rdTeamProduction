@@ -1,0 +1,91 @@
+{
+    "value0": [
+        {
+            "timerMax": 200,
+            "archer": [],
+            "warker": [
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483649,
+                            "data": {
+                                "pos.x": 123.97982025146485,
+                                "pos.y": 0.0,
+                                "pos.z": -130.28671264648438,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 2,
+                    "hp": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "pos.x": 478.5319519042969,
+                                "pos.y": 0.0,
+                                "pos.z": 67.02265930175781,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 3,
+                    "hp": 0
+                }
+            ],
+            "eliteWarker": [],
+            "enmList": [
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 1
+                        }
+                    },
+                    "index": 2,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "index": 3,
+                    "type": 0
+                }
+            ]
+        }
+    ]
+}
