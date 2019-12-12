@@ -80,12 +80,17 @@ public:
 class BuffAreaSystem
 {
 private:
+	float MAG = 0.01f;
+	float SUB_RAD = 1.0f;
+	float RADIUS = 200.0f;
 
 	std::unique_ptr<Model> pArea;
+	std::unique_ptr<Model> pCrystal;
 
 	int onceLightNum;
 	int enabledBuffAreaNum;
 	bool onCollision;
+	int allArea;
 public:
 	std::vector<BuffAreaInfo> buffArea;
 	std::unique_ptr<Billboard> texture;
@@ -97,7 +102,6 @@ public:
 	BuffAreaSystem() {}
 	~BuffAreaSystem() {}
 
-
 	void Init();
 	void Update();
 	void Draw();
@@ -105,7 +109,7 @@ public:
 
 	void ImGui();
 
-	void SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad);//pos : ’†SÀ•W, rad : ”¼Œa, subRad : 1ƒtƒŒ[ƒ€‚Ék‚Þ”¼Œa
+	void SetBuffArea(DirectX::XMFLOAT3 pos);//pos : ’†SÀ•W, rad : ”¼Œa, subRad : 1ƒtƒŒ[ƒ€‚Ék‚Þ”¼Œa
 
 	void checkBuff(BuffAreaInfo* obj)
 	{
@@ -114,5 +118,17 @@ public:
 		obj->enableBuff = true;
 		enabledBuffAreaNum++;
 	}
+
+
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("”{—¦", MAG),
+			cereal::make_nvp("Œ¸‚é—Ê", SUB_RAD),
+			cereal::make_nvp("”¼Œa", RADIUS)
+		);
+	}
+
 
 };

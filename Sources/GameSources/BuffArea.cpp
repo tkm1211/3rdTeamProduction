@@ -7,16 +7,29 @@
 #include "Light.h"
 #include "CameraSystem.h"
 #include "SoundLoader.h"
-
+#include <fstream>
+#include <string>
+#include "CharacterSystem.h"
 
 void BuffAreaSystem::Init()
 {
 	//ÉÇÉfÉãÇÃÉçÅ[Éh
 	pArea = std::make_unique<Model>("Data/Assets/Model/val/AreaFrame.fbx", false);
+	pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
 	onceLightNum = 0;
 	enabledBuffAreaNum = 0;
 	onCollision = false;
+	allArea = 0;
+	// jsonì«Ç›çûÇ›
+	std::ifstream ifs;
+	ifs.open("./Data/Document/BuffArea.json", std::ios::out);
+	{
+		cereal::JSONInputArchive i_archive(ifs);
+		i_archive(*this);
+	}
+	ifs.close();
+
 }
 
 void BuffAreaSystem::UnInit()
@@ -56,6 +69,7 @@ void BuffAreaSystem::Update()
 			if (ba.modelData.GetScale().x <= 0) //ëÂÇ´Ç≥Ç™ÇOà»â∫Ç»ÇÁë∂ç›Çè¡Ç∑
 			{
 				PlaySoundMem(SoundLoader::GetInstance()->magicDestroySe.get());
+				PlaySoundMem(SoundLoader::GetInstance()->crystalBreakSe.get());
 				ba.isExist = false;
 				enabledBuffAreaNum = 0;
 				BreakBuffArea();
@@ -72,8 +86,10 @@ void BuffAreaSystem::Update()
 		//èÌéûâÒì]Ç≥ÇπÇÈ
 		ba.modelData.SetAngleY(ba.modelData.GetAngle().y + ba.addRota);
 		ba.modelData.SetPos({ ba.pos.x, ba.pos.y + 20, ba.pos.z });
+
 	}
 
+	CharacterSystem::GetInstance()->GetPlayerAddress()->SetAttackMag(enabledBuffAreaNum);
 
 }
 
@@ -88,6 +104,21 @@ void BuffAreaSystem::Draw()
 		//if (ba.stopFlg) continue;
 		pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+	}
+
+	SetBlenderMode(BM_ALPHA);
+	pCrystal->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+	for (auto& ba : buffArea)
+	{
+		if (!ba.isExist) continue;
+		//if (ba.stopFlg) continue;
+		OBJ3D _m = ba.modelData;
+		_m.SetScale({0, 0, 0});
+		pCrystal->Render(_m.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), _m.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		_m.SetScale({60, 60, 60});
+		_m.SetPosY(80);
+		_m.SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 	}
 	SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
 
@@ -114,6 +145,8 @@ void BuffAreaSystem::Draw()
 void BuffAreaSystem::SetBuffArea(BuffAreaInfo b)
 {
 	PlaySoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
+	SetVolume(SoundLoader::GetInstance()->magicCreateSe.get(), 0.1f);
+
 	//Ç±ÇÍÇ©ÇÁê∂ê¨Ç∑ÇÈÇ‚Ç¬à»äOÇÕìÆÇ´Çé~ÇﬂÇÈ
 	for (auto& ba : buffArea)
 	{
@@ -138,11 +171,20 @@ void BuffAreaSystem::SetBuffArea(BuffAreaInfo b)
 }
 
 
-void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad)
+void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 {
+	for (auto& ba : buffArea)
+	{
+		if (!ba.isExist) continue;
+		allArea++;
+	}
+
+	float rad = RADIUS;
+	float subRad = SUB_RAD * (MAG * allArea);
+	allArea = 0;
 	BuffAreaInfo ba;
 	ba.Init(pos, rad, subRad);
-	ba.addRota = (rand() % 12 - 6) * 0.01745f;
+	ba.addRota = 4 * 0.01745f;
 	SetBuffArea(ba);
 }
 
@@ -152,7 +194,11 @@ void BuffAreaSystem::BreakBuffArea()
 	{
 		if (!ba.isExist) continue;
 		ba.isExist = false;
+		ParticleSystem::GetInstance()->SetCrystalDestroy(ba.pos);
 	}
+	EnemyManager* enemyManager;
+	enemyManager = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
+	enemyManager->AllDelete();
 }
 
 void BuffAreaSystem::ImGui()
@@ -160,7 +206,26 @@ void BuffAreaSystem::ImGui()
 	ImGui::Begin(u8"BuffArea");
 
 	ImGui::Text(u8"ìñÇΩÇ¡ÇΩêî   : %d", enabledBuffAreaNum);
+	ImGui::Text(u8"èoÇƒÇÈêî   : %d", allArea);
 	ImGui::Checkbox(u8"ìñÇΩÇËîªíËï\é¶##BuffArea", &onCollision);
+
+	ImGui::DragFloat(u8"î{ó¶##BuffArea"  , &MAG);
+	ImGui::DragFloat(u8"å∏ÇÈó ##BuffArea", &SUB_RAD);
+	ImGui::DragFloat(u8"îºåa##BuffArea"  , &RADIUS);
+
+	//cereal Ç≈json Ç∆binary Ç…ï€ë∂
+	static std::string data_name;
+	if (ImGui::Button("SAVE"))
+	{
+		data_name = "./Data/Document/BuffArea.json";
+		std::ofstream ofs;
+		ofs.open(data_name.c_str(), std::ios::out);
+		{
+			cereal::JSONOutputArchive o_archive(ofs);
+			o_archive(*this);
+		}
+		ofs.close();
+	}
 
 	ImGui::End();
 

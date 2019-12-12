@@ -629,6 +629,46 @@ void SpriteBatch::Draw( DirectX::XMFLOAT2 pos, DirectX::XMFLOAT2 size, DirectX::
 
 }
 
+void SpriteBatch::Draw2(float dx, float dy, float dw, float dh, float angle/*degree*/, float r, float g, float b, float a, DirectX::XMFLOAT4 inf)
+{
+
+	assert(countInstance < MAX_INSTANCES && "MAX_INSTANCES <= countInstance");
+
+	float cx = dw * 0.5f, cy = dh * 0.5f; /*Center of Rotation*/
+#if 0
+#else//À•W•ÏŠ·
+	FLOAT c = cosf(angle * 0.01745f);
+	FLOAT s = sinf(angle * 0.01745f);
+	FLOAT w = 2.0f / viewport.Width;
+	FLOAT h = -2.0f / viewport.Height;
+	instances[countInstance].ndcTransform._11 = w * dw * c;
+	instances[countInstance].ndcTransform._21 = h * dw * s;
+	instances[countInstance].ndcTransform._31 = 0.0f;
+	instances[countInstance].ndcTransform._41 = 0.0f;
+	instances[countInstance].ndcTransform._12 = w * dh * -s;
+	instances[countInstance].ndcTransform._22 = h * dh * c;
+	instances[countInstance].ndcTransform._32 = 0.0f;
+	instances[countInstance].ndcTransform._42 = 0.0f;
+	instances[countInstance].ndcTransform._13 = 0.0f;
+	instances[countInstance].ndcTransform._23 = 0.0f;
+	instances[countInstance].ndcTransform._33 = 1.0f;
+	instances[countInstance].ndcTransform._43 = 0.0f;
+	instances[countInstance].ndcTransform._14 = w * (-cx * c + -cy * -s + cx + dx) - 1.0f;
+	instances[countInstance].ndcTransform._24 = h * (-cx * s + -cy * c + cy + dy) + 1.0f;
+	instances[countInstance].ndcTransform._34 = 0.0f;
+	instances[countInstance].ndcTransform._44 = 1.0f;
+#endif
+	//texcood
+	float tw = static_cast<float>(texture2dDesc.Width);
+	float th = static_cast<float>(texture2dDesc.Height);
+	instances[countInstance].texcoordTransform = DirectX::XMFLOAT4(inf.x / tw, inf.y / th, inf.z / tw, inf.w / th);
+	instances[countInstance].color = DirectX::XMFLOAT4(r, g, b, a);
+
+	countInstance++;
+
+}
+
+
 void SpriteBatch::End()
 {
 

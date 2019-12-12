@@ -6,7 +6,7 @@
 #include "EnemyManager.h"
 #include "ParticleSystem.h"
 #include "Wave.h"
-
+#include "SoundLoader.h"
 
 void CollisionJudge::AllJudge()
 {
@@ -74,10 +74,12 @@ void CollisionJudge::PlayerAttackVsEnemies()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x))
+		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x) && warkerKokim.GetNowAsphyxia())
 		{
-			//warkerKokim.Damage(MAX_ENEMY_DAMAGE);
-		//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
+			warkerKokim.Damage(CharacterSystem::GetInstance()->GetPlayerAddress()->GetAttackDamage());
+			float a = warkerKokim.GetHp();
+			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
+			//PlaySoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
 		}
 	}
 }
@@ -95,8 +97,11 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 	Player* player;
 	player = CharacterSystem::GetInstance()->GetPlayerAddress();
 
+
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
+		if (warkerKokim.GetState() == WARKER_STATE::STRIKE) continue;
+
 		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
 		{
 			player->SufferDamage(MAX_PLAYER_DAMAGE);

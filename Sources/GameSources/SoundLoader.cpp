@@ -9,11 +9,14 @@
 //***************************************************************************************************
 void SoundLoader::load()
 {
-	gameBgm         = std::make_unique<CXAudio2>(L"Data/Sound/game.wav", 1);
-	titleBgm        = std::make_unique<CXAudio2>(L"Data/Sound/title.wav", 1);
-	playerStepSe    = std::make_unique<CXAudio2>(L"Data/Sound/move.wav", 0);
-	magicCreateSe   = std::make_unique<CXAudio2>(L"Data/Sound/SE/Magic_start.wav", 0);
-	magicDestroySe  = std::make_unique<CXAudio2>(L"Data/Sound/SE/Magic_End.wav", 0);
+	gameBgm             = std::make_unique<CXAudio2>(L"Data/Sound/game.wav", 1);
+	titleBgm            = std::make_unique<CXAudio2>(L"Data/Sound/title.wav", 1);
+	playerStepSe        = std::make_unique<CXAudio2>(L"Data/Sound/move.wav", 0);
+	magicCreateSe       = std::make_unique<CXAudio2>(L"Data/Sound/SE/Magic_start.wav", 0);
+	magicDestroySe      = std::make_unique<CXAudio2>(L"Data/Sound/SE/Magic_End.wav", 0);
+	playerAttackSwingSe = std::make_unique<CXAudio2>(L"Data/Sound/SE/Swing.wav", 0);
+	playerAttackHitSe     = std::make_unique<CXAudio2>(L"Data/Sound/SE/sword-hit.wav", 0);
+	crystalBreakSe = std::make_unique<CXAudio2>(L"Data/Sound/SE/ChainLock.wav", 0);
 }
 
 
@@ -29,6 +32,9 @@ void SoundLoader::Update()
 	playerStepSe->Update();
 	magicCreateSe->Update();
 	magicDestroySe->Update();
+	playerAttackSwingSe->Update();
+	crystalBreakSe->Update();
+	playerAttackHitSe->Update();
 }
 
 //***************************************************************************************************
@@ -43,6 +49,9 @@ void SoundLoader::Release()
 	playerStepSe->Relese();
 	magicCreateSe->Relese();
 	magicDestroySe->Relese();
+	crystalBreakSe->Relese();
+	playerAttackSwingSe->Relese();
+	playerAttackHitSe->Relese();
 }
 
 void SoundLoader::ImGui()
@@ -55,6 +64,9 @@ void AllSoundStop()
 	StopSoundMem(SoundLoader::GetInstance()->playerStepSe.get());
 	StopSoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
 	StopSoundMem(SoundLoader::GetInstance()->magicDestroySe.get());
+	StopSoundMem(SoundLoader::GetInstance()->crystalBreakSe.get());
+	StopSoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+	StopSoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
 }
 
 void AllBgmSoundStop()

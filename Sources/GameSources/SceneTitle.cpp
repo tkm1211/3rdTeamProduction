@@ -3,6 +3,7 @@
 
 #include "SceneTitle.h"
 #include "Collision.h"
+#include "CollisionJudge.h"
 #include "Blender.h"
 #include "InputDevice.h"
 #include "SkinnedMesh.h"
@@ -18,98 +19,40 @@
 void SceneTitle::Init()
 {
 	//PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
-
-
-	CharacterSystem::GetInstance()->Init();
-	ObjectSystem::GetInstance()->Init();
-	ParticleSystem::GetInstance()->Init();
-
+	AllSoundStop();
+	titleBgSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/Title_BG.png");
+	titleBgSprData.texPos = { 0, 0 };		//テクスチャの左上
+	titleBgSprData.size = { 1920, 1080 };	//テクスチャの幅、高さ
+	startSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/UI_Title_Start.png");
+	startSprData.texPos = { 0, 0 };		//テクスチャの左上
+	startSprData.size = { 293, 71 };	//テクスチャの幅、高さ
 }
 
 void SceneTitle::Update()
 {
-	if (GetKeyState('0') < 0)
+	if (GetKeyState('0') < 0 || xInput[0].bAt)
 	{
-		Fade::GetInstance()->onFadeFlg = true;
-		Fade::GetInstance()->SetNextScene(new SceneGame());
-		//SetScene(new SceneLabo(), false);
+		if (!Fade::GetInstance()->onFadeFlg)
+		{
+			Fade::GetInstance()->onFadeFlg = true;
+			Fade::GetInstance()->SetNextScene(new SceneGame());
+			//SetScene(new SceneLabo(), false);
+		}
 	}
-
-
-	CharacterSystem::GetInstance()->Update();
-	ObjectSystem::GetInstance()->Update();
-	if (!Editer::GetInstance()->GetNowEditer())
-	{
-		CameraSystem::GetInstance()->mainView.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
-			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
-		));
-		ParticleSystem::GetInstance()->Update();
-	}
-	else
-	{
-		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, Editer::GetInstance()->cameraHeight, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0,-1));
-	}
-
-	if (xInput[0].bBt)
-	{
-		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 400, 1);
-	}
-
-	if (Editer::GetInstance()->GetNowEditer())
-	{
-		Editer::GetInstance()->Update();
-	}
-
 }
 
 void SceneTitle::Render()
 {
-	ObjectSystem::GetInstance()->Draw();
-	CharacterSystem::GetInstance()->Draw();
-	
-	if (!Editer::GetInstance()->GetNowEditer())
-	{
-		ParticleSystem::GetInstance()->Draw();
-	}
-
+	titleBgSpr->Begin();
+	titleBgSpr->Draw({ 0, 0 }, { 1920, 1080 }, titleBgSprData.texPos, titleBgSprData.size, 0, { 1, 1, 1, 1 });
+	titleBgSpr->End();
+	startSpr->Begin();
+	startSpr->Draw({ 1920 / 2.0f - 293 / 2.0f, 900 }, { 293, 71 }, startSprData.texPos, startSprData.size, 0, { 1, 1, 1, 1 });
+	startSpr->End();
 }
 
 void SceneTitle::ImGui()
 {
-	ImGui::Begin("Title");
-	if (ImGui::Button("BuffArea  POP "))
-	{
-		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos(), 200, 1);
-	}
-	if (ImGui::Button("Particle  POP "))
-	{
-		//ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
-		ParticleSystem::GetInstance()->SetCrystalDestroy({0, 100, 0});
-		ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({0, 100, 0});
-		CharacterSystem::GetInstance()->GetPlayerAddress()->SufferDamage(60);
-	}
-
-	if (ImGui::Button("Editer"))
-	{
-		Editer::GetInstance()->SetNowEditer(Editer::GetInstance()->GetNowEditer() ^1);
-
-
-		if (Editer::GetInstance()->GetNowEditer())
-		{
-			CameraSystem::GetInstance()->enemyEditorView.Init(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0));
-			CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
-
-			CameraSystem::GetInstance()->enemyEditorView.SetPerspectiveMatrix(DirectX::XMConvertToRadians(30.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000000.0f);
-			/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
-		}
-	}
-	ImGui::DragInt("CameraHeight", &Editer::GetInstance()->cameraHeight);
-
-	CharacterSystem::GetInstance()->ImGui();
-	ObjectSystem::GetInstance()->ImGui();
-
-	ImGui::End();
 }
 
 void SceneTitle::UnInit() {}

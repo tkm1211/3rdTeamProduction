@@ -131,6 +131,9 @@ public:
 		float angle,
 		DirectX::XMFLOAT4 color
 	);
+
+	void Draw2(float dx, float dy, float dw, float dh, float angle/*degree*/, float r, float g, float b, float a, DirectX::XMFLOAT4 inf);
+
 	/*void Draw
 	(
 		DirectX::XMFLOAT2 pos,

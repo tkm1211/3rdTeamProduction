@@ -7,14 +7,17 @@
 #include <GeometricPrimitive.h>
 
 #include "Scene.h"
-#include "Collision.h"
+#include "Sprite.h"
 
-#include "BuffArea.h"
-#include "Billboard.h"
+
 class SceneTitle : public Scene
 {
 private:
-	
+	std::unique_ptr<SpriteBatch> titleBgSpr;
+	TexData titleBgSprData;
+	std::unique_ptr<SpriteBatch> startSpr;
+	TexData startSprData;
+
 public:
 	void Init();
 	void UnInit();

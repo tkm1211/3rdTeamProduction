@@ -1,0 +1,2244 @@
+{
+    "value0": {
+        "integratedVertex": [
+            [
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.6875,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 0.0,
+                    "pos.z": -1.0715145385924552e-21,
+                    "normal.x": 0.0,
+                    "normal.y": -1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.625,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.5,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.1914788782596588,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.5,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 0.0,
+                    "pos.z": -1.0715145385924552e-21,
+                    "normal.x": 0.0,
+                    "normal.y": -1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.625,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.1914788782596588,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.3125,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.19147886335849763,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 0.0,
+                    "pos.z": -1.0715145385924552e-21,
+                    "normal.x": 0.0,
+                    "normal.y": -1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.625,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 0.0,
+                    "pos.z": -1.0715145385924552e-21,
+                    "normal.x": 0.0,
+                    "normal.y": -1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.625,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.19147886335849763,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 9.786513328552246,
+                    "pos.z": 1.055045265561938e-13,
+                    "normal.x": 0.0,
+                    "normal.y": 1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.125,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.375,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.375,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 9.786513328552246,
+                    "pos.z": 1.055045265561938e-13,
+                    "normal.x": 0.0,
+                    "normal.y": 1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.125,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.875,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.125,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 9.786513328552246,
+                    "pos.z": 1.055045265561938e-13,
+                    "normal.x": 0.0,
+                    "normal.y": 1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.125,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 0.0,
+                    "pos.y": 9.786513328552246,
+                    "pos.z": 1.055045265561938e-13,
+                    "normal.x": 0.0,
+                    "normal.y": 1.0,
+                    "normal.z": 0.0,
+                    "tex.x": 0.5,
+                    "tex.y": 0.125,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.875,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.6875,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.6875,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.375,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.375,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.5,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.5,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.375,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.1914788782596588,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.5,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": 1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": 0.6783871054649353,
+                    "tex.x": 0.125,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.1914788782596588,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.3125,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": 1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.1914788782596588,
+                    "normal.z": 0.694023072719574,
+                    "tex.x": 0.3125,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.19147886335849763,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": 0.6940229535102844,
+                    "normal.y": -0.19147883355617524,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.5625,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.19147886335849763,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": 1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": 0.6783870458602905,
+                    "normal.y": 0.2821025848388672,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.625,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.5828689336776734,
+                    "pos.y": 2.9288792610168459,
+                    "pos.z": -1.5828689336776734,
+                    "normal.x": -0.6940229535102844,
+                    "normal.y": -0.19147886335849763,
+                    "normal.z": -0.694023072719574,
+                    "tex.x": 0.4375,
+                    "tex.y": 0.75,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                },
+                {
+                    "pos.x": -1.307058572769165,
+                    "pos.y": 4.658395290374756,
+                    "pos.z": -1.307058572769165,
+                    "normal.x": -0.6783870458602905,
+                    "normal.y": 0.2821025550365448,
+                    "normal.z": -0.6783871054649353,
+                    "tex.x": 0.375,
+                    "tex.y": 0.875,
+                    "boneWeights": {
+                        "value0": 1.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "boneIndices": {
+                        "value0": 0,
+                        "value1": 0,
+                        "value2": 0,
+                        "value3": 0
+                    }
+                }
+            ]
+        ],
+        "integratedIndex": [
+            [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32,
+                33,
+                34,
+                35,
+                36,
+                37,
+                38,
+                39,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                46,
+                47
+            ]
+        ],
+        "meshes": [
+            {
+                "name": "pCube1",
+                "vectexPos": [
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 0.0,
+                        "pos.z": -1.0715145385924552e-21,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 0.0,
+                        "pos.z": -1.0715145385924552e-21,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 0.0,
+                        "pos.z": -1.0715145385924552e-21,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 0.0,
+                        "pos.z": -1.0715145385924552e-21,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 9.786513328552246,
+                        "pos.z": 1.055045265561938e-13,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 9.786513328552246,
+                        "pos.z": 1.055045265561938e-13,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 9.786513328552246,
+                        "pos.z": 1.055045265561938e-13,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 0.0,
+                        "pos.y": 9.786513328552246,
+                        "pos.z": 1.055045265561938e-13,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": 1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": 1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": 1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.5828689336776734,
+                        "pos.y": 2.9288792610168459,
+                        "pos.z": -1.5828689336776734,
+                        "pos.w": 1.0
+                    },
+                    {
+                        "pos.x": -1.307058572769165,
+                        "pos.y": 4.658395290374756,
+                        "pos.z": -1.307058572769165,
+                        "pos.w": 1.0
+                    }
+                ],
+                "boneWeights": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                ],
+                "boneIndeces": [
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                ],
+                "subsets": [
+                    {
+                        "indexStart": 0,
+                        "indexCount": 48,
+                        "ambient": {
+                            "color.x": 0.0,
+                            "color.y": 0.0,
+                            "color.z": 0.0,
+                            "color.w": 1.0,
+                            "texture": ""
+                        },
+                        "diffuse": {
+                            "color.x": 0.5,
+                            "color.y": 0.5,
+                            "color.z": 0.5,
+                            "color.w": 1.0,
+                            "texture": ""
+                        },
+                        "specular": {
+                            "color.x": 1.0,
+                            "color.y": 1.0,
+                            "color.z": 1.0,
+                            "color.w": 1.0,
+                            "texture": ""
+                        },
+                        "bump": {
+                            "color.x": 0.0,
+                            "color.y": 0.0,
+                            "color.z": 0.0,
+                            "color.w": 1.0,
+                            "texture": ""
+                        },
+                        "normalMap": {
+                            "color.x": 0.0,
+                            "color.y": 0.0,
+                            "color.z": 0.0,
+                            "color.w": 1.0,
+                            "texture": ""
+                        }
+                    }
+                ],
+                "globalTransform._11": 1.0,
+                "globalTransform._12": 0.0,
+                "globalTransform._13": 0.0,
+                "globalTransform._14": 0.0,
+                "globalTransform._21": 0.0,
+                "globalTransform._22": 1.0,
+                "globalTransform._23": 0.0,
+                "globalTransform._24": 0.0,
+                "globalTransform._31": 0.0,
+                "globalTransform._32": 0.0,
+                "globalTransform._33": 1.0,
+                "globalTransform._34": 0.0,
+                "globalTransform._41": 0.0,
+                "globalTransform._42": 0.0,
+                "globalTransform._43": 0.0,
+                "globalTransform._44": 1.0,
+                "skeletalAnimations": []
+            }
+        ],
+        "faces": [
+            {
+                "pos[0].x": 1.5828689336776734,
+                "pos[0].y": 2.9288792610168459,
+                "pos[0].z": -1.5828689336776734,
+                "pos[1].x": 1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": 1.5828689336776734,
+                "pos[2].x": 0.0,
+                "pos[2].y": 0.0,
+                "pos[2].z": -1.0715145385924552e-21,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.5828689336776734,
+                "pos[0].y": 2.9288792610168459,
+                "pos[0].z": 1.5828689336776734,
+                "pos[1].x": -1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": 1.5828689336776734,
+                "pos[2].x": 0.0,
+                "pos[2].y": 0.0,
+                "pos[2].z": -1.0715145385924552e-21,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": -1.5828689336776734,
+                "pos[0].y": 2.9288792610168459,
+                "pos[0].z": 1.5828689336776734,
+                "pos[1].x": -1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": -1.5828689336776734,
+                "pos[2].x": 0.0,
+                "pos[2].y": 0.0,
+                "pos[2].z": -1.0715145385924552e-21,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 0.0,
+                "pos[0].y": 0.0,
+                "pos[0].z": -1.0715145385924552e-21,
+                "pos[1].x": -1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": -1.5828689336776734,
+                "pos[2].x": 1.5828689336776734,
+                "pos[2].y": 2.9288792610168459,
+                "pos[2].z": -1.5828689336776734,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 0.0,
+                "pos[0].y": 9.786513328552246,
+                "pos[0].z": 1.055045265561938e-13,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": 1.307058572769165,
+                "pos[2].x": 1.307058572769165,
+                "pos[2].y": 4.658395290374756,
+                "pos[2].z": 1.307058572769165,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": -1.307058572769165,
+                "pos[1].x": 0.0,
+                "pos[1].y": 9.786513328552246,
+                "pos[1].z": 1.055045265561938e-13,
+                "pos[2].x": 1.307058572769165,
+                "pos[2].y": 4.658395290374756,
+                "pos[2].z": 1.307058572769165,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": -1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": -1.307058572769165,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": 1.307058572769165,
+                "pos[2].x": 0.0,
+                "pos[2].y": 9.786513328552246,
+                "pos[2].z": 1.055045265561938e-13,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": -1.307058572769165,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": -1.307058572769165,
+                "pos[2].x": 0.0,
+                "pos[2].y": 9.786513328552246,
+                "pos[2].z": 1.055045265561938e-13,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": 1.307058572769165,
+                "pos[1].x": 1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": 1.5828689336776734,
+                "pos[2].x": 1.307058572769165,
+                "pos[2].y": 4.658395290374756,
+                "pos[2].z": -1.307058572769165,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": -1.307058572769165,
+                "pos[1].x": 1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": 1.5828689336776734,
+                "pos[2].x": 1.5828689336776734,
+                "pos[2].y": 2.9288792610168459,
+                "pos[2].z": -1.5828689336776734,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": 1.307058572769165,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": 1.307058572769165,
+                "pos[2].x": 1.5828689336776734,
+                "pos[2].y": 2.9288792610168459,
+                "pos[2].z": 1.5828689336776734,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.5828689336776734,
+                "pos[0].y": 2.9288792610168459,
+                "pos[0].z": 1.5828689336776734,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": 1.307058572769165,
+                "pos[2].x": -1.5828689336776734,
+                "pos[2].y": 2.9288792610168459,
+                "pos[2].z": 1.5828689336776734,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": -1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": 1.307058572769165,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": -1.307058572769165,
+                "pos[2].x": -1.5828689336776734,
+                "pos[2].y": 2.9288792610168459,
+                "pos[2].z": 1.5828689336776734,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": -1.5828689336776734,
+                "pos[0].y": 2.9288792610168459,
+                "pos[0].z": 1.5828689336776734,
+                "pos[1].x": -1.307058572769165,
+                "pos[1].y": 4.658395290374756,
+                "pos[1].z": -1.307058572769165,
+                "pos[2].x": -1.5828689336776734,
+                "pos[2].y": 2.9288792610168459,
+                "pos[2].z": -1.5828689336776734,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.5828689336776734,
+                "pos[0].y": 2.9288792610168459,
+                "pos[0].z": -1.5828689336776734,
+                "pos[1].x": -1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": -1.5828689336776734,
+                "pos[2].x": 1.307058572769165,
+                "pos[2].y": 4.658395290374756,
+                "pos[2].z": -1.307058572769165,
+                "materialIndex": 0
+            },
+            {
+                "pos[0].x": 1.307058572769165,
+                "pos[0].y": 4.658395290374756,
+                "pos[0].z": -1.307058572769165,
+                "pos[1].x": -1.5828689336776734,
+                "pos[1].y": 2.9288792610168459,
+                "pos[1].z": -1.5828689336776734,
+                "pos[2].x": -1.307058572769165,
+                "pos[2].y": 4.658395290374756,
+                "pos[2].z": -1.307058572769165,
+                "materialIndex": 0
+            }
+        ],
+        "numIndex": 48
+    }
+}

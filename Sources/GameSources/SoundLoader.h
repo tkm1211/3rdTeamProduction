@@ -14,6 +14,10 @@ public:
 	std::unique_ptr<CXAudio2> magicCreateSe;
 	std::unique_ptr<CXAudio2> magicDestroySe;
 
+	std::unique_ptr<CXAudio2> playerAttackSwingSe;
+	std::unique_ptr<CXAudio2> playerAttackHitSe;
+	std::unique_ptr<CXAudio2> crystalBreakSe;
+
 
 public://ä÷êî
 	void Update();

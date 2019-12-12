@@ -53,8 +53,9 @@ private:
 	};
 
 	int MAX_SPEED     = 10;
-	int DAMAGE_TIMER  = 60;
+	int DAMAGE_TIMER  = 30;
 	int ATK_NUMBER    = PlayerAtkCountImGui::ATTACK_1ST;
+	float ATK_MAG     = 0.01;
 
 	// 何段攻撃目か
 	int attackCnt;
@@ -64,6 +65,11 @@ private:
 	int damage;
 	// ダメージのクールタイム
 	int damageTimer;
+	// 攻撃倍率
+	int attackMag;
+
+	// 合計の攻撃力
+	float totalAttack;
 
 	ModelState motionState;
 
@@ -146,6 +152,7 @@ public:
 		archive(
 			cereal::make_nvp("移動スピード"        , MAX_SPEED),
 			cereal::make_nvp("ダメージタイマー"    , DAMAGE_TIMER),
+			cereal::make_nvp("攻撃倍率"            , ATK_MAG),
 
 			cereal::make_nvp("攻撃力1"             , attackInfo[0].power),
 			cereal::make_nvp("攻撃力2"             , attackInfo[1].power),
@@ -179,7 +186,13 @@ public:
 
 	OBJ3D GetModelData() { return modelData; }
 	void SetModelPosition(DirectX::XMFLOAT3 _pos) { modelData.SetPos(_pos); }
-
+	float GetHp() { return hp; }
+	void SetAttackMag(int mag) { attackMag = mag; }
+	float GetAttackDamage() 
+	{
+		totalAttack = attackInfo[attackCnt].power * (1.0f + ATK_MAG * attackMag);
+		return totalAttack; 
+	}
 	void ImGui();
 
 

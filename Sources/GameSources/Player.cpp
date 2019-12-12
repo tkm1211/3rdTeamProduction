@@ -30,7 +30,7 @@ void Player::Init()
 	modelData.Init();
 	SwitchMotion(ModelState::WAIT);
 
-	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(50, 50, 50));
+	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(80, 80, 80));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
 
 	footRStepSound = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
@@ -53,6 +53,9 @@ void Player::Init()
 
 	moveSpeed                       = {0, 0, 0};
 	oldAtkPos                       = {0, 0, 0};
+
+	attackMag                       = 0.0f;
+	totalAttack                     = 0.0f;
 
 	// 攻撃カウント( 0 ~ 2 )
 	attackCnt                       = 0;
@@ -134,12 +137,12 @@ void Player::Update()
 	switch (motionState)
 	{
 	case ModelState::WAIT:
-		atkCollision->SetPos        (pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
-		attackAfterImageEmit->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		atkCollision->SetPos        (pWait->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::RUN:
-		atkCollision->SetPos        (pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
-		attackAfterImageEmit->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		atkCollision->SetPos        (pRun->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
 
 		footRStepSound->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1738));
 		footLStepSound->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1627));
@@ -147,7 +150,8 @@ void Player::Update()
 		if (!makeRightFoot && footRStepSound->GetPos().y <= 0.4f)
 		{
 			makeRightFoot = true;
-			//PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			SetVolume(SoundLoader::GetInstance()->playerStepSe.get(), 0.1f);
 		}
 		else if (footRStepSound->GetPos().y > 0.4f)
 		{
@@ -157,7 +161,8 @@ void Player::Update()
 		if (!makeLeftFoot && footLStepSound->GetPos().y <= 0.95f)
 		{
 			makeLeftFoot = true;
-			//PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			SetVolume(SoundLoader::GetInstance()->playerStepSe.get(), 0.1f);
 		}
 		else if (footLStepSound->GetPos().y > 0.95f)
 		{
@@ -166,20 +171,20 @@ void Player::Update()
 
 		break;
 	case ModelState::ATTACK1:
-		atkCollision->SetPos        (pAttack[0]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
-		attackAfterImageEmit->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		atkCollision->SetPos        (pAttack[0]->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::ATTACK2:
-		atkCollision->SetPos        (pAttack[1]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
-		attackAfterImageEmit->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		atkCollision->SetPos        (pAttack[1]->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::ATTACK3:
-		atkCollision->SetPos        (pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
-		attackAfterImageEmit->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		atkCollision->SetPos        (pAttack[2]->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
 		break;
 	case ModelState::DAMAGE:
-		atkCollision->SetPos        (pDamage->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
-		attackAfterImageEmit->SetPos(pDamage->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
+		atkCollision->SetPos        (pDamage->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pDamage->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
 		break;
 
 	}
@@ -194,8 +199,8 @@ void Player::Update()
 
 	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
 
-	DamageCalc();
 
+	DamageCalc();
 }
 
 
@@ -246,7 +251,7 @@ void Player::Draw()
 		if (onAtkCollision) atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 		bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	}
-	//attackAfterImageEmit->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	if(makeLeftFoot) footLStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	if(makeRightFoot) footRStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 }
@@ -308,18 +313,23 @@ void Player::SwitchMotion( ModelState state )
 
 		motionState = ModelState::ATTACK1;
 		pAttack[0]->StartAnimation( 0, false );
-
+		PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+		SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
 		break;
 	case Player::ModelState::ATTACK2:
 
 		motionState = ModelState::ATTACK2;
 		pAttack[1]->StartAnimation( 0, false );
+		PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+		SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
 
 		break;
 	case Player::ModelState::ATTACK3:
 
 		motionState = ModelState::ATTACK3;
 		pAttack[2]->StartAnimation( 0, false );
+		PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+		SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
 
 		break;
 	case Player::ModelState::DAMAGE:
@@ -568,6 +578,7 @@ void Player::ImGui()
 {
 	ImGui::Begin(u8"Player");
 	
+	ImGui::Text (u8"合計攻撃                 : %f" , totalAttack);
 	ImGui::Text (u8"アニメーションフレーム   : %d" , pAttack[attackCnt]->GetAnimationFrame());
 
 	ImGui::Text (u8"パーティクル数           : %d" , ParticleSystem::GetInstance()->popParticleNum);
@@ -580,13 +591,16 @@ void Player::ImGui()
 
 	ImGui::Text("HP   : %d", hp);
 
-	ImGui::DragInt(u8"スピード##Player"                  , &MAX_SPEED);
-	ImGui::DragInt(u8"次のダメージを受けれるまで##Player", &DAMAGE_TIMER);
+	ImGui::DragInt  (u8"スピード##Player"                  , &MAX_SPEED);
+	ImGui::DragInt  (u8"次のダメージを受けれるまで##Player", &DAMAGE_TIMER);
+	ImGui::DragFloat(u8"攻撃倍率##Player"                  , &ATK_MAG);
 
-	//static int num[2];
-	//ImGui::DragInt(u8"1##Player", &num[0]);
+	static int num[2];
+	//static DirectX::XMFLOAT3 _p = {};
+	////ImGui::DragInt(u8"1##Player", &num[0]);
 	//ImGui::DragInt(u8"2##Player", &num[1]);
-	//footRStepSound->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1738));
+	//ImGui::DragFloat3(u8"3##Player", &_p.x);
+	//attackAfterImageEmit->SetPos(pWait->GetVectexPos(std::string("model1"), {54, 2, -19}, modelData.GetWorldMatrix(), num[1]));
 	//footLStepSound->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1627));
 
 

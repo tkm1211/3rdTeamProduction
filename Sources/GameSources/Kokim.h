@@ -15,7 +15,7 @@ public:
 	CollisionPrimitive* GetWeaponCollision() { return weaponCol.get(); };
 
 
-	int Damage(int damage) { hp-=damage; };
+	void Damage(int damage) { hp-=damage; };
 	void SetHp(int hp) { this->hp = hp; };
 	void SetVelocity(float velocity) { this->velocity = velocity; };
 
