@@ -89,6 +89,7 @@ void Player::Init()
 	enableCollision     = false;
 	makeRightFoot       = false;
 	makeLeftFoot        = false;
+
 	// jsonì«Ç›çûÇ›
 	std::ifstream ifs;
 	ifs.open("./Data/Document/Player.json", std::ios::out);

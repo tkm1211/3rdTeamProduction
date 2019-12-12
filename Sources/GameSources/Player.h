@@ -108,11 +108,11 @@ private:
 	// ¶‘«‚Ì‰¹‚ğ–Â‚ç‚·ƒtƒ‰ƒO
 	bool makeLeftFoot;
 
-public:
 	std::unique_ptr<CollisionPrimitive> footRStepSound;
 	std::unique_ptr<CollisionPrimitive> footLStepSound;
-
 	std::unique_ptr<CollisionPrimitive> attackAfterImageEmit;
+public:
+
 	std::unique_ptr<CollisionPrimitive> atkCollision;
 	std::unique_ptr<CollisionPrimitive> bodyCollision;
 
@@ -178,7 +178,7 @@ public:
 	}
 
 	OBJ3D GetModelData() { return modelData; }
-
+	void SetModelPosition(DirectX::XMFLOAT3 _pos) { modelData.SetPos(_pos); }
 
 	void ImGui();
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "OBJ3D.h"
+#include "Collision.h"
 
 class BG
 {
@@ -12,6 +13,9 @@ private:
 	OBJ3D modelData;
 
 public:
+	std::unique_ptr<CollisionPrimitive> wallCollision;
+
+public:
 	BG() {}
 	~BG() {}
 
@@ -19,6 +23,8 @@ public:
 	void Update();
 	void Draw();
 	void UnInit();
+
+	void ImGui();
 
 };
 
