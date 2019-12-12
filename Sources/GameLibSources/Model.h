@@ -53,10 +53,25 @@ public: // アニメーション関数
 		pMesh->ReStartAnimation();
 	}
 
-	// (※工事中のため使用しないでください。)アニメーションを一時停止する関数
+	// アニメーションを一時停止する関数
 	void PauseAnimation()
 	{
 		pMesh->PauseAnimation();
+	}
+
+	// ※工事中
+	void SetAnimation( bool startAnimation, bool isLoopAnimation, bool forcedExecution )
+	{
+		if (!startAnimation) return;
+		if (startAnimation && !forcedExecution) return;
+
+		pMesh->StartAnimation( 0, isLoopAnimation );
+	}
+
+	// 現在アニメーションしているかを取得する関数
+	bool GetAnimatingFlg()
+	{
+		return pMesh->GetAnimatingFlg();
 	}
 
 	// 現在のアニメーションフレームを取得する関数

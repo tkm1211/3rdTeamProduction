@@ -381,6 +381,10 @@ public:
 	{
 		isAnimation = false;
 	}
+	bool GetAnimatingFlg()
+	{
+		return isAnimation;
+	}
 	int GetAnimationFrame()
 	{
 		return animationFrame;
