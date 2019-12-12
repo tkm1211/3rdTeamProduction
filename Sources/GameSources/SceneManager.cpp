@@ -20,7 +20,7 @@ void SceneManager::Init()
 	Fade::GetInstance()->Init();
 	CameraSystem::GetInstance()->Init();
 	//Sound‚Ìƒ[ƒh
-	SoundLoader::GetInstance()->load();
+	//SoundLoader::GetInstance()->load();
 }
 
 void SceneManager::Update()
@@ -51,6 +51,7 @@ void SceneManager::Update()
 	}
 	else
 	{
+
 		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->enemyEditorView);
 
 	}
@@ -150,7 +151,7 @@ void SceneManager::UnInit()
 	pStackScene = nullptr;
 	
 	//Sound‚Ì‰ð•úˆ—
-	SoundLoader::GetInstance()->Release();
+	//SoundLoader::GetInstance()->Release();
 	//Fade‚Ì‰ð•úˆ—
 	Fade::GetInstance()->UnInit();
 	

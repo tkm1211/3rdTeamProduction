@@ -91,7 +91,7 @@ private:
 
 	int enmNum = NULL;
 
-	DirectX::XMFLOAT3 vPoswa = {};
+	DirectX::XMFLOAT3 vPoswa = {-8,0,0};
 
 
 	template<class Archive>

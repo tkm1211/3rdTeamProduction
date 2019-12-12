@@ -58,7 +58,7 @@ void Editer::Update()
 				DirectX::XMFLOAT3 world_enm;
 				DirectX::XMStoreFloat3(&world_enm, mworld_enm);
 
-				CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).modelData->SetPos(DirectX::XMFLOAT3(world_enm.x*adjust.x*CameraSystem::GetInstance()->enemyEditorView.distance,0,world_enm.z*adjust.y*CameraSystem::GetInstance()->enemyEditorView.distance));
+				CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaves().at(CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex()).GetEnemyList().at(a).modelData->SetPos(DirectX::XMFLOAT3(world_enm.x*adjust.x*cameraHeight,0,world_enm.z*adjust.y*cameraHeight));
 		
 				WaveManager* waveMgr = CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager();
 				if (GetAsyncKeyState('A') & 1)

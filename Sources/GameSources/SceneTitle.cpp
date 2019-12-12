@@ -17,8 +17,10 @@
 
 void SceneTitle::Init()
 {
-	PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
+	//PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
 
+	bg = std::make_unique<BG>();
+	bg->Init();
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
@@ -34,6 +36,7 @@ void SceneTitle::Update()
 		//SetScene(new SceneLabo(), false);
 	}
 
+	bg->Update();
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -46,7 +49,8 @@ void SceneTitle::Update()
 	}
 	else
 	{
-		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -1));
+		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, Editer::GetInstance()->cameraHeight, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0,-1));
+	
 	}
 
 	if (xInput[0].bBt)
@@ -63,6 +67,7 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
+	bg->Draw();
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	
@@ -101,7 +106,10 @@ void SceneTitle::ImGui()
 			/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
 		}
 
+	
+
 	}
+	ImGui::DragInt("CameraHeight", &Editer::GetInstance()->cameraHeight);
 	ImGui::End();
 }
 

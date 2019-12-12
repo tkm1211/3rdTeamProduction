@@ -26,7 +26,7 @@ public:
 		static Editer instance;
 		return &instance;
 	}
-
+	int cameraHeight = 1000;
 private:
 	bool nowTarget;
 	bool nowCatch;
@@ -34,6 +34,7 @@ private:
 	bool nowEditer;
 	int cWavenum;
 	int catchIndex;
+	
 	float distance;
 	float objectLar;
 	DirectX::XMFLOAT2 oldCursor;

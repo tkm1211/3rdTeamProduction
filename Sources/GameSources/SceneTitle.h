@@ -15,6 +15,8 @@
 class SceneTitle : public Scene
 {
 private:
+	std::unique_ptr<BG>                    bg;
+	
 public:
 	void Init();
 	void UnInit();
