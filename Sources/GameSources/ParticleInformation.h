@@ -55,3 +55,10 @@ struct PlayerAttackAfterImageParticleInfo
 	float maxScale;
 };
 
+struct CrystalDestroyParticleInfo
+{
+	Data data;
+	DirectX::XMFLOAT3 speed;
+	float maxScale;
+};
+

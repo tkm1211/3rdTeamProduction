@@ -12,6 +12,7 @@ private:
 	PlayerAttackSlashParticleInfo pasp[MAX];
 	PlayerAttackSparkParticleInfo paspark[MAX];
 	PlayerAttackAfterImageParticleInfo plAfterImage[MAX];
+	CrystalDestroyParticleInfo crystalDestroy[MAX];
 
 	Particle ptc;
 public:
@@ -67,7 +68,7 @@ public:
 		}
 	}
 
-	//プレイヤー攻撃　ヒット時(火花)
+	// プレイヤー攻撃　ヒット時(火花)
 	void SetPlayerAttackSparkParticle(DirectX::XMFLOAT3 pos)
 	{		
 		int num = 0;
@@ -78,7 +79,7 @@ public:
 		} 
 	}
 
-	//プレイヤー攻撃　(残像)
+	// プレイヤー攻撃　(残像)
 	void SetPlayerAttackAfterImageParticle(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 sPos, DirectX::XMFLOAT3 ePos)
 	{
 		int num = 0;
@@ -90,7 +91,16 @@ public:
 		} 
 	}
 
-
+	// クリスタル破壊
+	void SetCrystalDestroy(DirectX::XMFLOAT3 pos)
+	{
+		int num = 0;
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetCrystalDestroy(&crystalDestroy[i], pos)) num++;
+			if (num >= 15) return;
+		}
+	}
 
 	DirectX::XMFLOAT3 SphereLinear // 戻り値 : 補間座標
 	(

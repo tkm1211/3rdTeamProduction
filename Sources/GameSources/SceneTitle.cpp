@@ -17,7 +17,7 @@
 
 void SceneTitle::Init()
 {
-	//PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
+	PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
 
 	bg = std::make_unique<BG>();
 	bg->Init();

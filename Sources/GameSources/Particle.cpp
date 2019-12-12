@@ -193,3 +193,47 @@ bool Particle::SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo* p, 
 
 }
 
+// ƒNƒŠƒXƒ^ƒ‹”j‰ó
+void Particle::CrystalDestroyUpdate(CrystalDestroyParticleInfo* p)
+{
+
+	if (!p->data.isExist) return;
+	float s       = easing::InQuint(p->data.time, p->data.existTime, 0.0f, p->maxScale);
+	p->data.scale = { s, s };
+
+	p->data.time++;
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+
+}
+
+bool Particle::SetCrystalDestroy(CrystalDestroyParticleInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos       = pos;
+	p->maxScale       = 100.0f;
+	p->data.scale     = { p->maxScale, p->maxScale };
+
+	int x = rand() % 1000 - 500;
+	int y = rand() % 300 + 200;
+	int z = rand() % 1000 - 500;
+
+	p->speed = { x / 50.0f, y / 50.0f, z / 50.0f };
+
+	p->data.angle     = { 0, 0, 0 };
+
+	p->data.alpha     = 1.0f;
+	p->data.time      = 0;
+
+	p->data.isExist   = true;
+	p->data.existTime = 30.0f;
+
+	p->data.tex.Set(1024.0f * 0.0f, 1024.0f * 1, 1024.0f, 1024.0f);
+
+	return true;
+
+}
+

@@ -20,4 +20,7 @@ public:
 	void PlayerAttackAfterImageUpdate(PlayerAttackAfterImageParticleInfo*p);
 	bool SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo*p, DirectX::XMFLOAT3 pos);
 
+	void CrystalDestroyUpdate(CrystalDestroyParticleInfo* p);
+	bool SetCrystalDestroy(CrystalDestroyParticleInfo*p, DirectX::XMFLOAT3 pos);
+
 };

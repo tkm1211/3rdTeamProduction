@@ -16,8 +16,8 @@ public:
 	int lightNum;
 	bool isExist;						//ê∂ë∂ÉtÉâÉO
 	bool stopFlg;						//îºåaÇÃèkÇﬁÇÃÇé~ÇﬂÇÈÉtÉâÉO
+	bool enableBuff;
 	OBJ3D modelData;
-
 	std::unique_ptr<CollisionPrimitive> pArea_collision;
 
 public:
@@ -35,6 +35,7 @@ public:
 		stopFlg = ba.stopFlg;
 		state = ba.state;
 		timer = ba.timer;
+		enableBuff = ba.enableBuff;
 		modelData = ba.modelData;
 		pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8 * 200, 200, 1.8 * 200));
 		pArea_collision->SetColor({ 1, 0, 0, 1 });
@@ -48,6 +49,7 @@ public:
 		lightNum = ba.lightNum;
 		isExist = true;
 		stopFlg = false;
+		enableBuff = false;
 		state = 0;
 		timer = 0;
 		modelData.Init();
@@ -55,7 +57,6 @@ public:
 		pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8 * 200, 200, 1.8 * 200));
 		pArea_collision->SetColor({ 1, 0, 0, 1 });
 	}
-
 	void Init(DirectX::XMFLOAT3 p, float r, float sr)
 	{
 		pos = p;
@@ -64,6 +65,7 @@ public:
 		addRota = 0.0f;
 		isExist = true;
 		stopFlg = false;
+		enableBuff = false;
 		state = 0;
 		timer = 0;
 		lightNum = -1;
@@ -82,12 +84,11 @@ private:
 	std::unique_ptr<Model> pArea;
 
 	int onceLightNum;
-
+	int enabledBuffAreaNum;
 	bool onCollision;
 public:
 	std::vector<BuffAreaInfo> buffArea;
 	std::unique_ptr<Billboard> texture;
-
 private:
 	void SetBuffArea(BuffAreaInfo b);
 	void BreakBuffArea();
@@ -106,5 +107,12 @@ public:
 
 	void SetBuffArea(DirectX::XMFLOAT3 pos, float rad, float subRad);//pos : íÜêSç¿ïW, rad : îºåa, subRad : 1ÉtÉåÅ[ÉÄÇ…èkÇﬁîºåa
 
+	void checkBuff(BuffAreaInfo* obj)
+	{
+		if (obj->enableBuff) return;
+
+		obj->enableBuff = true;
+		enabledBuffAreaNum++;
+	}
 
 };

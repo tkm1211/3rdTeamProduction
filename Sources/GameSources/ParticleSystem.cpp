@@ -20,6 +20,7 @@ void ParticleSystem::Update()
 		ptc.PlayerAttackSlashUpdate(&pasp[i]);
 		ptc.PlayerAttackSparkUpdate(&paspark[i]);
 		ptc.PlayerAttackAfterImageUpdate(&plAfterImage[i]);
+		ptc.CrystalDestroyUpdate(&crystalDestroy[i]);
 	}
 }
 
@@ -56,6 +57,13 @@ void ParticleSystem::Draw()
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				plAfterImage[i].data.pos, plAfterImage[i].data.tex.x, plAfterImage[i].data.tex.y, plAfterImage[i].data.tex.sx, plAfterImage[i].data.tex.sy,
 				plAfterImage[i].data.angle, plAfterImage[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
+		if (crystalDestroy[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				crystalDestroy[i].data.pos, crystalDestroy[i].data.tex.x, crystalDestroy[i].data.tex.y, crystalDestroy[i].data.tex.sx, crystalDestroy[i].data.tex.sy,
+				crystalDestroy[i].data.angle, crystalDestroy[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
 			popParticleNum++;
 		}
 	}
