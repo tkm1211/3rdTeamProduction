@@ -96,6 +96,8 @@ private:
 		Material bump;
 		Material normalMap;
 
+		int animCnt = 0;
+
 
 		Subset() = default;
 
@@ -388,19 +390,19 @@ public:
 	}
 	int GetAnimationFrame()
 	{
-		if (animationFrame)
+		return animationFrame;
+	}
+	bool GetFinishAnimation()
+	{
+		if (isFinishAnimation)
 		{
-			animationFrame = false;
+			isFinishAnimation = false;
 			return true;
 		}
 		else
 		{
 			return false;
 		}
-	}
-	bool GetFinishAnimation()
-	{
-		return isFinishAnimation;
 	}
 
 	// レイピック関数

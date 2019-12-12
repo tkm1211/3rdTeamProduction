@@ -179,19 +179,24 @@ void SkinnedMesh::Render
 			{
 				if ( animationNumber < mesh.skeletalAnimations.size() && mesh.skeletalAnimations.at( animationNumber ).skeletel.size() > 0 )
 				{
-					if (animationFrame == 0)
+					if (subset.animCnt == 0)
 					{
 						isFinishAnimation = false;
 					}
 
 					int frame = static_cast<int>( mesh.skeletalAnimations.at( animationNumber ).animationTick / mesh.skeletalAnimations.at( animationNumber ).samplingTime );
 					animationFrame = frame;
+					int maxSize = static_cast<int>(mesh.skeletalAnimations.at(animationNumber).skeletel.size()) - 1;
 					if ( frame > static_cast<int>( mesh.skeletalAnimations.at( animationNumber ).skeletel.size() ) - 1 )
 					{
 						frame = 0;
 						animationFrame = 0;
 						mesh.skeletalAnimations.at( animationNumber ).animationTick = 0.0f;
 						if ( !isLoopAnimation ) isAnimation = false;
+					}
+					if (maxSize <= subset.animCnt++)
+					{
+						subset.animCnt = 0;
 						isFinishAnimation = true;
 					}
 				
