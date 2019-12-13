@@ -1,5 +1,6 @@
 #include "CharacterSystem.h"
 #include "Editer.h"
+#include "UiSystem.h"
 #undef max
 #undef min
 

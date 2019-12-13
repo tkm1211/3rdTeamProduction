@@ -18,6 +18,7 @@ public:
 	bool stopFlg;						//îºåaÇÃèkÇﬁÇÃÇé~ÇﬂÇÈÉtÉâÉO
 	bool enableBuff;
 	OBJ3D modelData;
+	OBJ3D cryData;
 	std::unique_ptr<CollisionPrimitive> pArea_collision;
 
 public:
@@ -37,6 +38,7 @@ public:
 		timer = ba.timer;
 		enableBuff = ba.enableBuff;
 		modelData = ba.modelData;
+		cryData = ba.cryData;
 		pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8 * 200, 200, 1.8 * 200));
 		pArea_collision->SetColor({ 1, 0, 0, 1 });
 	}
@@ -54,6 +56,8 @@ public:
 		timer = 0;
 		modelData.Init();
 		modelData.SetScale({ 0.0f, 0.0f, 0.0f });
+		cryData.Init();
+		cryData.SetScale({ 0.0f, 0.0f, 0.0f });
 		pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8 * 200, 200, 1.8 * 200));
 		pArea_collision->SetColor({ 1, 0, 0, 1 });
 	}
@@ -71,6 +75,8 @@ public:
 		lightNum = -1;
 		modelData.Init();
 		modelData.SetScale({ 0.0f, 0.0f, 0.0f });
+		cryData.Init();
+		cryData.SetScale({ 0.0f, 0.0f, 0.0f });
 		pArea_collision = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(1.8 * 200, 200, 1.8 * 200));
 		pArea_collision->SetColor({ 1, 0, 0, 1 });
 	}

@@ -101,13 +101,13 @@ void Player::Init()
 	makeLeftFoot        = false;
 
 	// json読み込み
-	//std::ifstream ifs;
-	//ifs.open("./Data/Document/Player.json", std::ios::out);
-	//{
-	//	cereal::JSONInputArchive i_archive(ifs);
-	//	i_archive(*this);
-	//}
-	//ifs.close();
+	std::ifstream ifs;
+	ifs.open("./Data/Document/Player.json", std::ios::out);
+	{
+		cereal::JSONInputArchive i_archive(ifs);
+		i_archive(*this);
+	}
+	ifs.close();
 
 }
 
@@ -245,13 +245,15 @@ void Player::Draw()
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	}
-
+#ifdef _DEBUG
 	if (enableCollision)
 	{
 		if (onAtkCollision) atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 		bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	}
 	atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+#endif // _DEBUG
+
 	if(makeLeftFoot) footLStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	if(makeRightFoot) footRStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 }
@@ -579,7 +581,7 @@ void Player::ImGui()
 	ImGui::Begin(u8"Player");
 	
 	ImGui::Text (u8"合計攻撃                 : %f" , totalAttack);
-	ImGui::Text (u8"アニメーションフレーム   : %d" , pAttack[attackCnt]->GetAnimationFrame());
+	ImGui::Text (u8"アニメーションフレーム   : %d" , pWait->GetAnimationFrame());
 
 	ImGui::Text (u8"パーティクル数           : %d" , ParticleSystem::GetInstance()->popParticleNum);
 	ParticleSystem::GetInstance()->popParticleNum = 0;

@@ -27,6 +27,7 @@ void SceneGame::Init()
 
 void SceneGame::Update()
 {
+	if (Fade::GetInstance()->onFadeFlg) return;
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -42,10 +43,10 @@ void SceneGame::Update()
 		CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, Editer::GetInstance()->cameraHeight, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -1));
 	}
 
-	if (xInput[0].bBt)
-	{
-		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos());
-	}
+	//if (xInput[0].bBt)
+	//{
+	//	ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos());
+	//}
 
 	if (Editer::GetInstance()->GetNowEditer())
 	{

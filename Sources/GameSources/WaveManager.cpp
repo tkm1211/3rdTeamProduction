@@ -19,17 +19,20 @@ WaveManager::WaveManager()
 
 	if (wave.size() > 0)
 	{
-		for (auto& w : wave.at(waveNowIndex).GetWarker())
+		for (int i =0; i< wave.size(); i++)
 		{
-			w.Init();
-		}
-		for (auto& a : wave.at(waveNowIndex).GetArcher())
-		{
-			a.Init();
-		}
-		for (auto& ew : wave.at(waveNowIndex).GetEliteWarker())
-		{
-			ew.Init();
+			for (auto& w : wave.at(i).GetWarker())
+			{
+				w.Init();
+			}
+			for (auto& a : wave.at(i).GetArcher())
+			{
+				a.Init();
+			}
+			for (auto& ew : wave.at(i).GetEliteWarker())
+			{
+				ew.Init();
+			}
 		}
 	}
 }

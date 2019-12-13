@@ -59,7 +59,6 @@ void WarkerKokim::Init()
 	SetBehaviorTree(&aiTree);
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
-
 }
 
 void WarkerKokim::Update()

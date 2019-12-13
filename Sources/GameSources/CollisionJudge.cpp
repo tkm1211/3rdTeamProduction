@@ -74,12 +74,14 @@ void CollisionJudge::PlayerAttackVsEnemies()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x) && warkerKokim.GetNowAsphyxia())
+
+		if (Collision::SphereVsSphere(player->atkCollision->GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x) && !warkerKokim.GetNowAsphyxia() && warkerKokim.GetDamageRecast() == 0)
 		{
 			warkerKokim.Damage(CharacterSystem::GetInstance()->GetPlayerAddress()->GetAttackDamage());
-			float a = warkerKokim.GetHp();
+			warkerKokim.SetDamageRecast(50);
 			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
-			//PlaySoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
+			PlaySoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
+			if(warkerKokim.GetHp() <= 0) ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(warkerKokim.GetModelData()->GetPos());
 		}
 	}
 }
@@ -100,7 +102,7 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		if (warkerKokim.GetState() == WARKER_STATE::STRIKE) continue;
+		if (warkerKokim.GetState() != WARKER_STATE::STRIKE || warkerKokim.GetNowAsphyxia()) continue;
 
 		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
 		{
@@ -165,15 +167,18 @@ void CollisionJudge::EnemiesVsStage()
 	DirectX::XMFLOAT2 bgScale = DirectX::XMFLOAT2(bg->wallCollision->GetScale().x, bg->wallCollision->GetScale().z);
 
 
-	for (auto& warkerKokim : waveData->GetWarker())
+	if (waveData->GetWarker().size() > 0)
 	{
-		DirectX::XMFLOAT3 enemyPosFloat3 = warkerKokim.GetBodyCollision()->GetPos();
-		DirectX::XMFLOAT2 enemyPos = DirectX::XMFLOAT2(enemyPosFloat3.x, enemyPosFloat3.z);
-		DirectX::XMFLOAT2 enemyScale = DirectX::XMFLOAT2(warkerKokim.GetBodyCollision()->GetScale().x, warkerKokim.GetBodyCollision()->GetScale().z);
-
-		if (Collision::RectVsRectAndExtrusion(enemyPos, bgPos, enemyScale, bgScale))
+		for (auto& warkerKokim : waveData->GetWarker())
 		{
-			//warkerKokim.SetModelPosition(DirectX::XMFLOAT3(enemyPos.x, enemyPosFloat3.y, enemyPos.y));
+			DirectX::XMFLOAT3 enemyPosFloat3 = warkerKokim.GetBodyCollision()->GetPos();
+			DirectX::XMFLOAT2 enemyPos = DirectX::XMFLOAT2(enemyPosFloat3.x, enemyPosFloat3.z);
+			DirectX::XMFLOAT2 enemyScale = DirectX::XMFLOAT2(warkerKokim.GetBodyCollision()->GetScale().x, warkerKokim.GetBodyCollision()->GetScale().z);
+
+			if (Collision::RectVsRectAndExtrusion(enemyPos, bgPos, enemyScale, bgScale))
+			{
+				//warkerKokim.SetModelPosition(DirectX::XMFLOAT3(enemyPos.x, enemyPosFloat3.y, enemyPos.y));
+			}
 		}
 	}
 }

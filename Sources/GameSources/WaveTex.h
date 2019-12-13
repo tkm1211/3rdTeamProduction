@@ -33,4 +33,6 @@ public:
 	void Update();
 	void Draw();
 	void Start(int waveNum);
+
+	bool GetMove() { return move; }
 };

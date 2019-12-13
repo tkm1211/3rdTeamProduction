@@ -58,8 +58,10 @@ void BuffAreaSystem::Update()
 			//if( rand() % 100 == 33 ) ParticleSystem::GetInstance()->SetBuffAreaParticle(ba.pos, ba.radius);
 			if (rand() % 100 >= 80) ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos().x, ba.modelData.GetPos().y + 20, ba.modelData.GetPos().z }, ba.modelData.GetScale().x);
 
-			if (ba.stopFlg) break;	//‘¦break
-
+			if (ba.stopFlg)
+			{
+				break;	//‘¦break
+			}
 			ba.pArea_collision->SetPos(ba.modelData.GetPos());
 			ba.pArea_collision->SetScale({ ba.modelData.GetScale().x , 200, ba.modelData.GetScale().z });
 
@@ -86,6 +88,9 @@ void BuffAreaSystem::Update()
 		//íŽž‰ñ“]‚³‚¹‚é
 		ba.modelData.SetAngleY(ba.modelData.GetAngle().y + ba.addRota);
 		ba.modelData.SetPos({ ba.pos.x, ba.pos.y + 20, ba.pos.z });
+		ba.cryData.SetPos({ ba.pos.x, ba.pos.y + 80, ba.pos.z });
+		ba.cryData.SetScale({ 60, 60, 60 });
+		ba.cryData.SetColor({ 1, 1, 1, 0.5f });
 
 	}
 
@@ -96,7 +101,6 @@ void BuffAreaSystem::Update()
 void BuffAreaSystem::Draw()
 {
 	pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
 	SetBlenderMode(BM_ALPHA);
 	for (auto& ba : buffArea)
 	{
@@ -112,15 +116,9 @@ void BuffAreaSystem::Draw()
 	{
 		if (!ba.isExist) continue;
 		//if (ba.stopFlg) continue;
-		OBJ3D _m = ba.modelData;
-		_m.SetScale({0, 0, 0});
-		pCrystal->Render(_m.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), _m.GetColor(), FrameWork::GetInstance().GetElapsedTime());
-		_m.SetScale({60, 60, 60});
-		_m.SetPosY(80);
-		_m.SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+		pCrystal->Render(ba.cryData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.cryData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 	}
-	SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
 
 	//SetBlenderMode(BM_ADD);
 	texture->Begin(FrameWork::GetInstance().GetContext().Get());
@@ -180,7 +178,7 @@ void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 	}
 
 	float rad = RADIUS;
-	float subRad = SUB_RAD * (MAG * allArea);
+	float subRad = SUB_RAD + (1 + (MAG * (allArea + 1)));
 	allArea = 0;
 	BuffAreaInfo ba;
 	ba.Init(pos, rad, subRad);

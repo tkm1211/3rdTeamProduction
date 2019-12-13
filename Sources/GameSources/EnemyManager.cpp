@@ -12,7 +12,7 @@
 #include "Wave.h"
 #include "CharacterSystem.h"
 #include "WarkerAttack.h"
-
+#include "UiSystem.h"
 
 EnemyManager::EnemyManager()
 {
@@ -62,13 +62,14 @@ void EnemyManager::Update()
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).Update();
 		
 	}
-	/*if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
+	if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
 	{
-		waveMgr->GetWaves().emplace_back();
+		//waveMgr->GetWaves().emplace_back();
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).SetTimer(0);
 		waveMgr->GetWaveNowIndex()++;
-		
-	}*/
+
+		//UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex());
+	}
 	ImGui();
 }
 

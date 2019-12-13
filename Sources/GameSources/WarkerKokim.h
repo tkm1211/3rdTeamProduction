@@ -39,8 +39,6 @@ public:
 	void SetStrikeRecastMax(int recast) { strikeRecastMax = recast; };
 	void SetStrikeRecastCnt(int recast) { strikeRecastCnt = recast; };
 	void SetDamageRecast(int damageRecast) { this->damageRecast = damageRecast; };
-
-
 	void ChangeNowAsphyxia() { nowAsphyxia ^= 1; };
 private:
 
