@@ -1,0 +1,409 @@
+{
+    "value0": [
+        {
+            "timerMax": 200,
+            "archer": [],
+            "warker": [
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483649,
+                            "data": {
+                                "pos.x": -682.4688110351563,
+                                "pos.y": 0.0,
+                                "pos.z": -500.7587890625,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 0,
+                    "hp": 10,
+                    "velocity": 10.0
+                },
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "pos.x": 695.1460571289063,
+                                "pos.y": 0.0,
+                                "pos.z": -441.5973815917969,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 1,
+                    "hp": 10,
+                    "velocity": 10.0
+                },
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "pos.x": -878.9691162109375,
+                                "pos.y": 0.0,
+                                "pos.z": 162.6937713623047,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 2,
+                    "hp": 10,
+                    "velocity": 10.0
+                },
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "pos.x": 471.177978515625,
+                                "pos.y": 0.0,
+                                "pos.z": 428.919921875,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 3,
+                    "hp": 10,
+                    "velocity": 10.0
+                }
+            ],
+            "eliteWarker": [],
+            "enmList": [
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 1
+                        }
+                    },
+                    "index": 0,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2
+                        }
+                    },
+                    "index": 1,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 3
+                        }
+                    },
+                    "index": 2,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 4
+                        }
+                    },
+                    "index": 3,
+                    "type": 0
+                }
+            ]
+        },
+        {
+            "timerMax": 200,
+            "archer": [],
+            "warker": [
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483653,
+                            "data": {
+                                "pos.x": -779.6624755859375,
+                                "pos.y": 0.0,
+                                "pos.z": -821.9204711914063,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 4,
+                    "hp": 10,
+                    "velocity": 10.0
+                },
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483654,
+                            "data": {
+                                "pos.x": 771.210693359375,
+                                "pos.y": 0.0,
+                                "pos.z": -435.25872802734377,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 5,
+                    "hp": 10,
+                    "velocity": 10.0
+                },
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483655,
+                            "data": {
+                                "pos.x": -1014.1951293945313,
+                                "pos.y": 0.0,
+                                "pos.z": 373.984375,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 6,
+                    "hp": 10,
+                    "velocity": 10.0
+                }
+            ],
+            "eliteWarker": [],
+            "enmList": [
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 5
+                        }
+                    },
+                    "index": 4,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 6
+                        }
+                    },
+                    "index": 5,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 7
+                        }
+                    },
+                    "index": 6,
+                    "type": 0
+                }
+            ]
+        },
+        {
+            "timerMax": 200,
+            "archer": [],
+            "warker": [
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483656,
+                            "data": {
+                                "pos.x": -712.0494995117188,
+                                "pos.y": 0.0,
+                                "pos.z": -661.3396606445313,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 7,
+                    "hp": 10,
+                    "velocity": 10.0
+                },
+                {
+                    "attackDis": 50,
+                    "findPdis": 1000,
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 2147483657,
+                            "data": {
+                                "pos.x": 511.32318115234377,
+                                "pos.y": 0.0,
+                                "pos.z": -437.37164306640627,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
+                        }
+                    },
+                    "index": 8,
+                    "hp": 10,
+                    "velocity": 10.0
+                }
+            ],
+            "eliteWarker": [],
+            "enmList": [
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 8
+                        }
+                    },
+                    "index": 7,
+                    "type": 0
+                },
+                {
+                    "modelData": {
+                        "ptr_wrapper": {
+                            "id": 9
+                        }
+                    },
+                    "index": 8,
+                    "type": 0
+                }
+            ]
+        }
+    ]
+}
