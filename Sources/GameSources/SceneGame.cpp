@@ -23,11 +23,15 @@ void SceneGame::Init()
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
 	UiSystem::GetInstance()->Init();
+
+	//UiSystem::GetInstance()->GetWaveTexAddress()->Start(1);
+
 }
 
 void SceneGame::Update()
 {
-	if (Fade::GetInstance()->onFadeFlg) return;
+	//if (Fade::GetInstance()->onFadeFlg) return;
+
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 	if (!Editer::GetInstance()->GetNowEditer())
@@ -57,7 +61,9 @@ void SceneGame::Update()
 
 	CollisionJudge::AllJudge();
 
-	if (UiSystem::GetInstance()->GetHpAddress()->GetSubHp() >= 610)
+	//TODO TITLE
+	if (UiSystem::GetInstance()->GetHpAddress()->GetSubHp() >= 610 || 
+		7 <= CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager()->GetWaveNowIndex())
 	{
 		Fade::GetInstance()->onFadeFlg = true;
 		Fade::GetInstance()->SetNextScene(new SceneTitle());

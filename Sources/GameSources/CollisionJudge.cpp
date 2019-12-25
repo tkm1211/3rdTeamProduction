@@ -10,12 +10,12 @@
 
 void CollisionJudge::AllJudge()
 {
-	PlayerAttackVsEnemies();
-	EnemiesAttackVsPlayer();
-	BuffAreaVsPlayer();
-	PlayerVsStage();
-	EnemiesVsStage();
-	PlayerVsEnemies();
+	//PlayerAttackVsEnemies();
+	//EnemiesAttackVsPlayer();
+	//BuffAreaVsPlayer();
+	//PlayerVsStage();
+	//EnemiesVsStage();
+	//PlayerVsEnemies();
 }
 
 
@@ -41,14 +41,14 @@ void CollisionJudge::PlayerVsEnemies()
 
 		if (warkerKokim.GetState() == WARKER_STATE::RUN)
 		{
-			if (Collision::CircleVsCircleAndExtrusion(enmeyPos, warkerKokim.GetBodyCollision()->GetCollisionScale().x, playerPos, player->atkCollision->GetCollisionScale().x))
+			if (Collision::CircleVsCircleAndExtrusion(enmeyPos, warkerKokim.GetBodyCollision()->GetCollisionScale().x, playerPos, player->bodyCollision->GetCollisionScale().x))
 			{
 				warkerKokim.modelData->SetPos(DirectX::XMFLOAT3(enmeyPos.x, enmeyPosFloat3.y, enmeyPos.y));
 			}
 		}
 		else
 		{
-			if (Collision::CircleVsCircleAndExtrusion(playerPos, player->atkCollision->GetCollisionScale().x, enmeyPos, warkerKokim.GetBodyCollision()->GetCollisionScale().x))
+			if (Collision::CircleVsCircleAndExtrusion(playerPos, player->bodyCollision->GetCollisionScale().x, enmeyPos, warkerKokim.GetBodyCollision()->GetCollisionScale().x))
 			{
 				player->SetModelPosition(DirectX::XMFLOAT3(playerPos.x, playerPosFloat3.y, playerPos.y));
 				//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
@@ -104,9 +104,17 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 	{
 		if (warkerKokim.GetState() != WARKER_STATE::STRIKE || warkerKokim.GetNowAsphyxia()) continue;
 
-		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
+		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
 		{
-			player->SufferDamage(MAX_PLAYER_DAMAGE);
+			player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+			DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
+			DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&warkerKokim.GetWeaponCollision()->GetPos());
+			DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
+			d = DirectX::XMVectorNegate(d);
+			d = DirectX::XMVector3Normalize(d);
+			DirectX::XMFLOAT3 sp = {};
+			DirectX::XMStoreFloat3(&sp, d);
+			CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
 		//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
 		}
 	}

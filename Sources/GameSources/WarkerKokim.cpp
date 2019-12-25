@@ -30,7 +30,7 @@ WarkerKokim::WarkerKokim(int num)
 	}
 
 	SetBehaviorTree(&aiTree);
-	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(15, 90, 15));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 	index = num;
 	state = WARKER_STATE::RUN;
@@ -55,6 +55,8 @@ void WarkerKokim::Init()
 		}
 		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, WarkerWaitAction::GetInstance());
 	}
+
+	velocity = 3.0f;
 
 	SetBehaviorTree(&aiTree);
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));

@@ -52,11 +52,13 @@ public:
 	// プレイヤー攻撃　ヒット時(スラッシュ)
 	void SetPlayerAttackSlashParticle(DirectX::XMFLOAT3 pos)
 	{		
+		int num = 0;
 		//SetPlayerAttackSubSlashParticle(pos);
 		SetPlayerAttackSparkParticle(pos);
 		for (int i = 0; i < MAX; i++)
 		{
-			if (ptc.SetPlayerAttackSlash(&pasp[i], pos)) return;
+			if (ptc.SetPlayerAttackSlash(&pasp[i], pos)) num++;
+			if (num >= 2) return;
 		} 
 	}
 
@@ -81,13 +83,13 @@ public:
 	}
 
 	// プレイヤー攻撃　(残像)
-	void SetPlayerAttackAfterImageParticle(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 sPos, DirectX::XMFLOAT3 ePos)
+	void SetPlayerAttackAfterImageParticle(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 sPos, DirectX::XMFLOAT3 ePos, DirectX::XMFLOAT3 angle)
 	{
 		int num = 0;
 		for (int i = 0; i < MAX; i++)
 		{
 			//if (ptc.SetPlayerAttackAfterImage(&plAfterImage[i], ePos)) return;
-			if (ptc.SetPlayerAttackAfterImage(&plAfterImage[i], SphereLinear(origin, ePos, sPos, 0.05f*num))) num++;
+			if (ptc.SetPlayerAttackAfterImage(&plAfterImage[i], SphereLinear(origin, ePos, sPos, 0.05f*num), angle)) num++;
 			if (num > 20) return;
 		} 
 	}

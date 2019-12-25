@@ -4,7 +4,7 @@
 class CollisionJudge
 {
 private:
-	static const int MAX_PLAYER_DAMAGE = 10;
+	static const int MAX_PLAYER_DAMAGE = 1000;
 	static const int MAX_ENEMY_DAMAGE  = 10;
 
 public:

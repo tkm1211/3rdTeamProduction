@@ -13,6 +13,8 @@ class UiSystem
 private:
 	std::unique_ptr<Hp> hp;
 	std::unique_ptr<WaveTex> waveTex;
+	std::unique_ptr<SpriteBatch> attackSpr;
+	TexData attackSprData;
 
 public:
 	Hp* GetHpAddress() { return hp.get(); }

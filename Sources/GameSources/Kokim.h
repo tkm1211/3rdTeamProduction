@@ -25,7 +25,7 @@ public:
 
 	int index=0;
 	int hp=10;
-	float velocity = 10;
+	float velocity = 5;
 
 	template<class Archive>
 	void serialize(Archive & archive)

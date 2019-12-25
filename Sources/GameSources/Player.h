@@ -186,6 +186,7 @@ public:
 
 	OBJ3D GetModelData() { return modelData; }
 	void SetModelPosition(DirectX::XMFLOAT3 _pos) { modelData.SetPos(_pos); }
+	void SetMoveSpeed(DirectX::XMFLOAT3 _speed) { moveSpeed = _speed; }
 	float GetHp() { return hp; }
 	void SetAttackMag(int mag) { attackMag = mag; }
 	float GetAttackDamage() 

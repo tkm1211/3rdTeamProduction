@@ -7,7 +7,7 @@
 void CharacterSystem::Init()
 {
 	player = std::make_unique<Player>();
-	enmMgr = std::make_unique<EnemyManager>();
+	//enmMgr = std::make_unique<EnemyManager>();
 	player->Init();
 }
 
@@ -21,11 +21,11 @@ void CharacterSystem::Update()
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
 		player->Update();
-		enmMgr->Update();
+		//enmMgr->Update();
 	}
 	else
 	{
-		enmMgr->Update();
+		//enmMgr->Update();
 	/*	Editer::GetInstance()->Update();*/
 	}
 }
@@ -36,7 +36,7 @@ void CharacterSystem::Draw()
 	{
 		player->Draw();
 	}
-	enmMgr->Draw();
+	//enmMgr->Draw();
 }
 
 void CharacterSystem::ImGui()

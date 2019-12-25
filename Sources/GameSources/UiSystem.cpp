@@ -6,6 +6,11 @@ void UiSystem::Init()
 	hp->Init();
 	waveTex = std::make_unique<WaveTex>();
 	waveTex->Init();
+
+	attackSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/attacksetu.png", 1);
+	attackSprData.texPos = { 0, 0 };		//テクスチャの左上
+	attackSprData.size = { 131, 51 };	//テクスチャの幅、高さ
+
 }
 
 void UiSystem::Update()
@@ -18,6 +23,9 @@ void UiSystem::Draw()
 {
 	hp->Draw();
 	waveTex->Draw();
+	attackSpr->Begin();
+	attackSpr->Draw({ 1920 - 131*4, 900 }, { 131*2, 51*2 }, attackSprData.texPos, attackSprData.size, 0, { 1, 1, 1, 1 });
+	attackSpr->End();
 }
 
 void UiSystem::UnInit()

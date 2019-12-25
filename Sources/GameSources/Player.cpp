@@ -12,25 +12,27 @@
 
 void Player::Init()
 {
-	//pT         = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerT.fbx"   , false);
-	//pWait      = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerWait.fbx"   , false);
-	//pRun       = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerRun.fbx"    , false);
-	//pAttack[0] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack1.fbx", false);
-	//pAttack[1] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack2.fbx", false);
-	//pAttack[2] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack3.fbx", false);
-	//pDamage    = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerHidame.fbx", false);
-	pT         = std::make_unique<Model>("Data/Assets/Model/val/PlayerT.fbx"   , false);
-	pWait      = std::make_unique<Model>("Data/Assets/Model/val/PlayerWait.fbx"   , false);
-	pRun       = std::make_unique<Model>("Data/Assets/Model/val/PlayerRun.fbx"    , false);
-	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack1.fbx", false);
-	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack2.fbx", false);
-	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack3.fbx", false);
-	pDamage    = std::make_unique<Model>("Data/Assets/Model/val/PlayerHidame.fbx", false);
+	pT         = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerT.fbx"   , false);
+	pWait      = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerStay.fbx"   , false);
+	pRun       = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerRun.fbx"    , false);
+	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack1.fbx", false);
+	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack2.fbx", false);
+	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack3.fbx", false);
+	pDamage    = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerOuch.fbx", false);
+	//pT         = std::make_unique<Model>("Data/Assets/Model/val/PlayerT.fbx"   , false);
+	//pWait      = std::make_unique<Model>("Data/Assets/Model/val/PlayerWait.fbx"   , false);
+	//pRun       = std::make_unique<Model>("Data/Assets/Model/val/PlayerRun.fbx"    , false);
+	//pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack1.fbx", false);
+	//pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack2.fbx", false);
+	//pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack3.fbx", false);
+	//pDamage    = std::make_unique<Model>("Data/Assets/Model/val/PlayerHidame.fbx", false);
 
 	modelData.Init();
+	motionState = ModelState::WAIT;
 	SwitchMotion(ModelState::WAIT);
 
-	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(80, 80, 80));
+
+	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(45, 45, 45));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
 
 	footRStepSound = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
@@ -39,10 +41,10 @@ void Player::Init()
 	footLStepSound = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
 	footLStepSound->SetColor({ 0, 1, 0, 1 });
 
-	attackAfterImageEmit = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(50, 50, 50));
+	attackAfterImageEmit = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
 	attackAfterImageEmit->SetColor({ 0, 1, 0, 1 });
 
-	bodyCollision        = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(30, 160, 30));
+	bodyCollision        = std::make_unique<CollisionPrimitive>(2, true, DirectX::XMFLOAT3(25, 80, 25));
 	bodyCollision->SetColor({ 0, 1, 0, 1 });
 
 	hp                              = 10000;
@@ -130,77 +132,79 @@ void Player::Update()
 
 	Attack();
 
-	modelData.SetPosX( modelData.GetPos().x + moveSpeed.x );
-	modelData.SetPosZ( modelData.GetPos().z + moveSpeed.z );
-
 	// Collsion
 	switch (motionState)
 	{
 	case ModelState::WAIT:
-		atkCollision->SetPos        (pWait->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
-		attackAfterImageEmit->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos(pWait->GetVectexPos(std::string("Player"), { -2, -59, 7 }, modelData.GetWorldMatrix(), 0));
+		atkCollision->SetPos (pWait->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
 		break;
+
 	case ModelState::RUN:
-		atkCollision->SetPos        (pRun->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
-		attackAfterImageEmit->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos       (pRun->GetVectexPos(std::string("Player"), { -2, -59, 7 }, modelData.GetWorldMatrix(), 0));
+		atkCollision->SetPos        (pRun->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
 
-		footRStepSound->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1738));
-		footLStepSound->SetPos(pRun->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1627));
+		footLStepSound->SetPos(pRun->GetVectexPos(std::string("Player"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 13172));
+		footRStepSound->SetPos(pRun->GetVectexPos(std::string("Player"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 13348));
 
-		if (!makeRightFoot && footRStepSound->GetPos().y <= 0.4f)
+		if (!makeRightFoot && footRStepSound->GetPos().y <= 0.6f)
 		{
 			makeRightFoot = true;
-			PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
-			SetVolume(SoundLoader::GetInstance()->playerStepSe.get(), 0.1f);
+			////PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			////SetVolume(SoundLoader::GetInstance()->playerStepSe.get(), 0.1f);
 		}
-		else if (footRStepSound->GetPos().y > 0.4f)
+		else if (footRStepSound->GetPos().y > 1.5f)
 		{
 			makeRightFoot = false;
 		}
 
-		if (!makeLeftFoot && footLStepSound->GetPos().y <= 0.95f)
+		if (!makeLeftFoot && footLStepSound->GetPos().y <= 0.6f)
 		{
 			makeLeftFoot = true;
-			PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
-			SetVolume(SoundLoader::GetInstance()->playerStepSe.get(), 0.1f);
+			//PlaySoundMem(SoundLoader::GetInstance()->playerStepSe.get());
+			//SetVolume(SoundLoader::GetInstance()->playerStepSe.get(), 0.1f);
 		}
-		else if (footLStepSound->GetPos().y > 0.95f)
+		else if (footLStepSound->GetPos().y > 0.3f)
 		{
 			makeLeftFoot = false;
 		}
 
 		break;
+
 	case ModelState::ATTACK1:
-		atkCollision->SetPos        (pAttack[0]->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
-		attackAfterImageEmit->SetPos(pAttack[0]->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos       (pAttack[0]->GetVectexPos(std::string("Player"), { -2, -59, 7 }, modelData.GetWorldMatrix(), 0));
+		atkCollision->SetPos        (pAttack[0]->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pAttack[0]->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
 		break;
+
 	case ModelState::ATTACK2:
-		atkCollision->SetPos        (pAttack[1]->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
-		attackAfterImageEmit->SetPos(pAttack[1]->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos       (pAttack[1]->GetVectexPos(std::string("Player"), { -2, -59, 7 }, modelData.GetWorldMatrix(), 0));
+		atkCollision->SetPos        (pAttack[1]->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pAttack[1]->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
 		break;
+
 	case ModelState::ATTACK3:
-		atkCollision->SetPos        (pAttack[2]->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
-		attackAfterImageEmit->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos       (pAttack[2]->GetVectexPos(std::string("Player"), { -2, -59, 7 }, modelData.GetWorldMatrix(), 0));
+		atkCollision->SetPos        (pAttack[2]->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
+		attackAfterImageEmit->SetPos(pAttack[2]->GetVectexPos(std::string("Sword") , {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
 		break;
+
 	case ModelState::DAMAGE:
-		atkCollision->SetPos        (pDamage->GetVectexPos(std::string("model1"), { 54, 2, -19 }, modelData.GetWorldMatrix(), 0));
-		attackAfterImageEmit->SetPos(pDamage->GetVectexPos(std::string("model1"), { 0, 0, 0 }   , modelData.GetWorldMatrix(), 9));
+		bodyCollision->SetPos       (pDamage->GetVectexPos(std::string("Player"),  { -2, -59, 7 }, modelData.GetWorldMatrix(), 0));
+		atkCollision->SetPos        (pDamage->GetVectexPos(std::string("Sword") ,  {  0,   0, 0 }, modelData.GetWorldMatrix(), 0));
 		break;
 
 	}
 
-	if (onAtkCollision)
-	{
-		ParticleSystem::GetInstance()->SetPlayerAttackAfterImageParticle(modelData.GetPos(), oldAtkPos, attackAfterImageEmit->GetPos());
-	}
-	oldAtkPos = attackAfterImageEmit->GetPos();
-
-	bodyCollision->SetPos(pAttack[2]->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1688));
 
 	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
 
-
+	//ImGui();
 	DamageCalc();
+
+	modelData.SetPosX(modelData.GetPos().x + moveSpeed.x);
+	modelData.SetPosZ(modelData.GetPos().z + moveSpeed.z);
+
 }
 
 
@@ -217,8 +221,8 @@ void Player::Draw()
 	case ModelState::RUN:
 		pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false) ;
 
-		pRun->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
+		pRun->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			               DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK1:
 		pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
@@ -229,33 +233,34 @@ void Player::Draw()
 	case ModelState::ATTACK2:
 		pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
-		pAttack[1]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
+		pAttack[1]->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			                     DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK3:
 		pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
 
-		pAttack[2]->Render( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
+		pAttack[2]->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			                     DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::DAMAGE:
 		pDamage->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
-		pDamage->Render(modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		pDamage->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			                  DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	}
 #ifdef _DEBUG
 	if (enableCollision)
 	{
-		if (onAtkCollision) atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-		bodyCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		if (onAtkCollision) atkCollision->Render  (CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		                    bodyCollision->Render (CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		if(makeLeftFoot)    footLStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		if(makeRightFoot)   footRStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		if(onAtkCollision)  attackAfterImageEmit->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	}
-	atkCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 #endif // _DEBUG
 
-	if(makeLeftFoot) footLStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
-	if(makeRightFoot) footRStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+
 }
 
 
@@ -315,23 +320,23 @@ void Player::SwitchMotion( ModelState state )
 
 		motionState = ModelState::ATTACK1;
 		pAttack[0]->StartAnimation( 0, false );
-		PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
-		SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
+		//PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+		//SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
 		break;
 	case Player::ModelState::ATTACK2:
 
 		motionState = ModelState::ATTACK2;
 		pAttack[1]->StartAnimation( 0, false );
-		PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
-		SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
+		//PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+		//SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
 
 		break;
 	case Player::ModelState::ATTACK3:
 
 		motionState = ModelState::ATTACK3;
 		pAttack[2]->StartAnimation( 0, false );
-		PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
-		SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
+		//PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
+		//SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
 
 		break;
 	case Player::ModelState::DAMAGE:
@@ -420,6 +425,7 @@ void Player::Attack()
 	{
 		isAttack = true;
 		moveSpeed = { 0, 0, 0 };
+		oldAtkPos = { 0.0f, 0.0f, 0.0f };
 	}
 
 	if (isAttack)
@@ -427,16 +433,23 @@ void Player::Attack()
 		switch (attackState)
 		{
 		case AttackState::ATK1ST:
+			
+
 			SwitchMotion(ModelState::ATTACK1);
 			attackCnt = 0;
 			// 入力
 			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 			{
+				atkCollision->GetPos();
+
 				if (xInput[0].bXt)
 				{
 					enableNextAttack = true;
 				}
 			}
+
+			if(pAttack[attackCnt]->GetAnimationFrame() > 10 ) if (oldAtkPos.x == 0 && oldAtkPos.y == 0 && oldAtkPos.z == 0) oldAtkPos = atkCollision->GetPos();
+
 
 			moveSpeed.x = sinf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
 			moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
@@ -451,6 +464,9 @@ void Player::Attack()
 				onAtkCollision = false;
 				moveSpeed.x = 0.0f;
 				moveSpeed.z = 0.0f;
+				
+				//ParticleSystem::GetInstance()->SetPlayerAttackAfterImageParticle(modelData.GetPos(), oldAtkPos, atkCollision->GetPos(), {0, 0, 0});
+
 			}
 
 			// 2段目にいくかどうか
@@ -468,6 +484,7 @@ void Player::Attack()
 					attackState = AttackState::ATK1ST;
 				}
 				onAtkCollision = false;
+				oldAtkPos = { 0.0f, 0.0f, 0.0f };
 			}
 			break;
 		case AttackState::ATK2ND:
@@ -512,6 +529,7 @@ void Player::Attack()
 						attackState = AttackState::ATK1ST;
 					}
 					onAtkCollision = false;
+					oldAtkPos = { 0.0f, 0.0f, 0.0f };
 				}
 			break;
 		case AttackState::ATK3RD:
@@ -539,6 +557,7 @@ void Player::Attack()
 				isAttack = false;
 				enableNextAttack = false;
 				attackState = AttackState::ATK1ST;
+				oldAtkPos = { 0.0f, 0.0f, 0.0f };
 			}
 			break;
 		}
@@ -570,7 +589,12 @@ void Player::DamageCalc()
 	if (!isDamageCalc) return;
 	// 被ダメモーションに切り替え
 	SwitchMotion(ModelState::DAMAGE);
+	attackCnt = 0;
+	isAttack = false;
+	enableNextAttack = false;
+	attackState = AttackState::ATK1ST;
 	moveSpeed = { 0.0f, 0.0f, 0.0f };
+	oldAtkPos = { 0.0f, 0.0f, 0.0f };
 	hp -= damage;
 	isDamageCalc = false;
 }
@@ -597,14 +621,13 @@ void Player::ImGui()
 	ImGui::DragInt  (u8"次のダメージを受けれるまで##Player", &DAMAGE_TIMER);
 	ImGui::DragFloat(u8"攻撃倍率##Player"                  , &ATK_MAG);
 
-	static int num[2];
-	//static DirectX::XMFLOAT3 _p = {};
-	////ImGui::DragInt(u8"1##Player", &num[0]);
+	static int num[1];
+	static DirectX::XMFLOAT3 _p = {};
+	ImGui::DragInt(u8"1##Player", &num[0]);
 	//ImGui::DragInt(u8"2##Player", &num[1]);
-	//ImGui::DragFloat3(u8"3##Player", &_p.x);
-	//attackAfterImageEmit->SetPos(pWait->GetVectexPos(std::string("model1"), {54, 2, -19}, modelData.GetWorldMatrix(), num[1]));
-	//footLStepSound->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 1627));
+	ImGui::DragFloat3(u8"3##Player", &_p.x);
 
+	//attackAfterImageEmit->SetPos(pWait->GetVectexPos(std::string("model1"), { 0, 0, 0 }, modelData.GetWorldMatrix(), 9));
 
 	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_1ST);
 	ImGui::SameLine();

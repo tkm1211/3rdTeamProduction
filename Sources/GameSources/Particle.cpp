@@ -57,7 +57,7 @@ bool Particle::SetPlayerAttackSlash(PlayerAttackSlashParticleInfo* p, DirectX::X
 	if (p->data.isExist) return false;
 
 	p->data.pos = pos;
-	p->maxScale = 600.0f;
+	p->maxScale = 900.0f;
 	p->data.scale = DirectX::XMFLOAT2(p->maxScale, p->maxScale);
 
 	p->data.angle = { 0, 0, rand() % 361 * 0.01745f};
@@ -171,7 +171,7 @@ void Particle::PlayerAttackAfterImageUpdate(PlayerAttackAfterImageParticleInfo* 
 
 }
 
-bool Particle::SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo* p, DirectX::XMFLOAT3 pos)
+bool Particle::SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 ang)
 {
 	if (p->data.isExist) return false;
 
@@ -179,7 +179,7 @@ bool Particle::SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo* p, 
 	p->maxScale       = 100.0f;
 	p->data.scale     = { p->maxScale, p->maxScale };
 
-	p->data.angle     = { 0, 0, 0 };
+	p->data.angle     = ang;
 
 	p->data.alpha     = 1.0f;
 	p->data.time      = 0;

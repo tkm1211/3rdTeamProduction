@@ -22,13 +22,13 @@ void BuffAreaSystem::Init()
 	onCollision = false;
 	allArea = 0;
 	// jsonì«Ç›çûÇ›
-	//std::ifstream ifs;
-	//ifs.open("./Data/Document/BuffArea.json", std::ios::out);
-	//{
-	//	cereal::JSONInputArchive i_archive(ifs);
-	//	i_archive(*this);
-	//}
-	//ifs.close();
+	std::ifstream ifs;
+	ifs.open("./Data/Document/BuffArea.json", std::ios::out);
+	{
+		cereal::JSONInputArchive i_archive(ifs);
+		i_archive(*this);
+	}
+	ifs.close();
 
 }
 
@@ -70,11 +70,11 @@ void BuffAreaSystem::Update()
 			ba.modelData.SetScale({ ba.modelData.GetScale().x - s, ba.modelData.GetScale().y - s ,ba.modelData.GetScale().z - s }); //èkÇﬁèàóù
 			if (ba.modelData.GetScale().x <= 0) //ëÂÇ´Ç≥Ç™ÇOà»â∫Ç»ÇÁë∂ç›Çè¡Ç∑
 			{
-				PlaySoundMem(SoundLoader::GetInstance()->magicDestroySe.get());
-				PlaySoundMem(SoundLoader::GetInstance()->crystalBreakSe.get());
-				ba.isExist = false;
+				//PlaySoundMem(SoundLoader::GetInstance()->magicDestroySe.get());
+				//PlaySoundMem(SoundLoader::GetInstance()->crystalBreakSe.get());
 				enabledBuffAreaNum = 0;
 				BreakBuffArea();
+				ba.isExist = false;
 				for (int i = 0; i < onceLightNum; i++)
 				{
 					Light::GetInstance()->pointLight[i].range = 0;
@@ -88,14 +88,15 @@ void BuffAreaSystem::Update()
 		//èÌéûâÒì]Ç≥ÇπÇÈ
 		ba.modelData.SetAngleY(ba.modelData.GetAngle().y + ba.addRota);
 		ba.modelData.SetPos({ ba.pos.x, ba.pos.y + 20, ba.pos.z });
-		ba.cryData.SetPos({ ba.pos.x, ba.pos.y + 80, ba.pos.z });
-		ba.cryData.SetScale({ 60, 60, 60 });
+		ba.cryData.SetPos({ ba.pos.x, ba.pos.y + 50, ba.pos.z });
+		ba.cryData.SetScale({ 30, 30, 30 });
 		ba.cryData.SetColor({ 1, 1, 1, 0.5f });
 
 	}
 
 	CharacterSystem::GetInstance()->GetPlayerAddress()->SetAttackMag(enabledBuffAreaNum);
 
+	//ImGui();
 }
 
 void BuffAreaSystem::Draw()
@@ -142,8 +143,8 @@ void BuffAreaSystem::Draw()
 
 void BuffAreaSystem::SetBuffArea(BuffAreaInfo b)
 {
-	PlaySoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
-	SetVolume(SoundLoader::GetInstance()->magicCreateSe.get(), 0.1f);
+	//PlaySoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
+	//SetVolume(SoundLoader::GetInstance()->magicCreateSe.get(), 0.1f);
 
 	//Ç±ÇÍÇ©ÇÁê∂ê¨Ç∑ÇÈÇ‚Ç¬à»äOÇÕìÆÇ´Çé~ÇﬂÇÈ
 	for (auto& ba : buffArea)

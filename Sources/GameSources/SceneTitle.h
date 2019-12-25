@@ -9,10 +9,12 @@
 #include "Scene.h"
 #include "Sprite.h"
 
+#include "Player.h"
 
 class SceneTitle : public Scene
 {
 private:
+
 	std::unique_ptr<SpriteBatch> titleBgSpr;
 	TexData titleBgSprData;
 	std::unique_ptr<SpriteBatch> startSpr;

@@ -67,7 +67,6 @@ public:
 	~EnemyManager();
 
 	WaveManager* GetWaveManager() { return waveMgr.get(); };
-
 	std::vector<bool> nowCatch;
 
 	void Update();

@@ -87,8 +87,8 @@ class BuffAreaSystem
 {
 private:
 	float MAG = 0.01f;
-	float SUB_RAD = 1.0f;
-	float RADIUS = 200.0f;
+	float SUB_RAD = 0.1f;
+	float RADIUS = 500.0f;
 
 	std::unique_ptr<Model> pArea;
 	std::unique_ptr<Model> pCrystal;
