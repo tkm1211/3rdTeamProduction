@@ -37,6 +37,7 @@ public:
 
 private:
 	Shader shaderOfSkinnedMesh[ShaderOfSkinnedMesh::END];
+	Shader shaderOfSkinnedMeshBatch;
 	Shader shadowMapShader;
 
 public:
@@ -53,5 +54,6 @@ public:
 	void Init();
 	void UnInit() {}
 	Shader GetShaderOfSkinnedMesh( ShaderOfSkinnedMesh no ) { return shaderOfSkinnedMesh[no]; }
+	Shader GetShaderOfSkinnedMeshBatch() { return shaderOfSkinnedMeshBatch; }
 	Shader GetShadowMapShader() { return shadowMapShader; }
 };

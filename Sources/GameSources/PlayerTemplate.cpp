@@ -18,6 +18,16 @@ void PlayerTemplate::Init()
 	itemData.SetScale({ 10.0f,10.0f,10.0f });
 
 	modelState = ModelState::WAIT;
+
+
+	// skinnedmeshbatch
+	pModelBatch = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
+	for (int i = 0; i < MAX_INSTANCE; i++)
+	{
+		batchData[i].Init(); // 初期化
+		batchData[i].SetIsAnimation(true);  // アニメーションON
+		batchData[i].SetIsAnimation(false); // アニメーションOFF
+	}
 }
 void PlayerTemplate::UnInit()
 {
@@ -56,6 +66,14 @@ void PlayerTemplate::Draw()
 	pItem->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	pItem->Render(itemData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), itemData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+
+	// skinnedmeshbatch
+	pModelBatch->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
+	for (int i = 0; i < MAX_INSTANCE; i++)
+	{
+		pModelBatch->Render(batchData[i], /*modelBatchData[i].GetWorldMatrix(),*/ CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+	}
+	pModelBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 }
 void PlayerTemplate::ImGui()
 {

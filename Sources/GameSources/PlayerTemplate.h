@@ -14,6 +14,12 @@ private:
 	OBJ3D modelData;
 	OBJ3D itemData;
 
+	// skinnedmeshbatch
+	std::unique_ptr<Model> pModelBatch;
+	static const int MAX_INSTANCE = 150;
+	OBJ3DInstance batchData[MAX_INSTANCE];
+
+
 	enum ModelState
 	{
 		WAIT,

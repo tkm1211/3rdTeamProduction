@@ -14,12 +14,14 @@ private:
 public: // コンストラクタ・デストラクタ
 	Model() {}
 
-	// （ const char* fileName : モデルファイルパス, bool leftHandedCoordinate : true = 左手座標系 false = 右手座標系 ）
+	// （ const char* fileName : モデルファイルパス, bool leftHandedCoordinate : true = 左手座標系 false = 右手座標系, bool instancing : true = インスタンス化 false = 通常 ）
 	Model
 	(
 		const char* fileName,
-		bool leftHandedCoordinate = true
+		bool leftHandedCoordinate = true,
+		bool instancing = false
 	);
+
 
 	~Model() {}
 
@@ -38,6 +40,20 @@ public:
 		float elapsedTime,
 		bool solid = true,
 		float radius = 0.0f
+	);
+	void Begin(Shader shader, bool wireframe = false);
+	void Render
+	(
+		OBJ3DInstance& obj,
+		//const DirectX::XMMATRIX& world,
+		const DirectX::XMMATRIX& view,
+		const DirectX::XMMATRIX& projection,
+		float elapsedTime
+	);
+	void End
+	(
+		const DirectX::XMFLOAT4& lightDirection,
+		const DirectX::XMFLOAT4& materialColor
 	);
 
 public: // アニメーション関数

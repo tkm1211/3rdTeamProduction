@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include <string>
 #include "Shader.h"
+#include "OBJ3D.h"
 
 #undef max
 #undef min
@@ -80,6 +81,21 @@ public:
 		float elapsedTime,
 		bool inCamera,
 		bool solid
+	) {}
+	virtual void Begin(ID3D11DeviceContext* immediateContext, Shader shader, bool wireframe = false) {}
+	virtual void Render
+	(
+		ID3D11DeviceContext* immediateContext,
+		OBJ3DInstance& obj,
+		const DirectX::XMFLOAT4X4& wvp,
+		const DirectX::XMFLOAT4X4& world,
+		float elapsedTime
+	) {}
+	virtual void End
+	(
+		ID3D11DeviceContext* immediateContext,
+		const DirectX::XMFLOAT4& lightDirection,
+		const DirectX::XMFLOAT4& materialColor
 	) {}
 
 	//virtual void Release() {}

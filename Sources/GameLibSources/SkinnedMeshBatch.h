@@ -22,26 +22,32 @@
 #include "ResourceManager.h"
 #include "fbxsdk.h"
 #include "Shader.h"
+#include "OBJ3D.h"
 
 
-#define USE_CEREAL
+//#define USE_CEREAL
 
 
-class SkinnedMesh : public Mesh
+class SkinnedMeshBatch : public Mesh
 {
 public:
+	static const int MAX_FRAME = 32;
 	static const int MAX_BONE_INFLUENCES = 4;
-	static const int MAX_BONES = 64;
+	static const int MAX_BONES = 32;
+	static const int MAX_BUFFER_SIZE = 3;
 
 private:
 	struct CBuffer
 	{
-		DirectX::XMFLOAT4X4	wvp;
-		DirectX::XMFLOAT4X4	world;
 		DirectX::XMFLOAT4	materialColor;
 		DirectX::XMFLOAT4	lightDirection;
-		DirectX::XMFLOAT4X4 boneTransforms[MAX_BONES];
 	};
+
+	struct BoneTransformBuffer
+	{
+		DirectX::XMFLOAT4X4 transform[MAX_FRAME][MAX_BONES];
+	};
+	Microsoft::WRL::ComPtr<ID3D11Buffer> boneTransformBuffer[MAX_BUFFER_SIZE];
 
 	struct Vertex
 	{
@@ -96,8 +102,6 @@ private:
 		Material specular;
 		Material bump;
 		Material normalMap;
-
-		int animCnt = 0;
 
 
 		Subset() = default;
@@ -175,28 +179,12 @@ private:
 		}
 	};
 
-	struct VectexPos
-	{
-		DirectX::XMFLOAT4 pos;
-
-		VectexPos() = default;
-
-		template <class T>
-		void serialize(T& archive)
-		{
-			archive
-			(
-				CEREAL_NVP(pos.x), CEREAL_NVP(pos.y), CEREAL_NVP(pos.z), CEREAL_NVP(pos.w)
-			);
-		}
-	};
-
 	struct MeshData
 	{
 		std::string name;
-		std::vector<VectexPos> vectexPos;
-		std::vector<std::vector<float>> boneWeights;
-		std::vector<std::vector<int>>   boneIndeces;
+		DirectX::XMFLOAT4 pos;
+		float boneWeights[MAX_BONE_INFLUENCES] = { 1, 0, 0, 0 };
+		int boneIndeces[MAX_BONE_INFLUENCES] = {};
 		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
 		std::vector<Subset> subsets;
@@ -211,7 +199,7 @@ private:
 			archive
 			(
 				CEREAL_NVP( name ),
-				CEREAL_NVP( vectexPos ),
+				CEREAL_NVP( pos.x ), CEREAL_NVP( pos.y ), CEREAL_NVP( pos.z ), CEREAL_NVP( pos.w ),
 				CEREAL_NVP( boneWeights ),
 				CEREAL_NVP( boneIndeces ),
 				CEREAL_NVP( subsets ),
@@ -236,7 +224,6 @@ public:
 	std::vector<std::vector<Vertex>> integratedVertex;
 	std::vector<std::vector<unsigned int>>  integratedIndex;
 	std::vector<MeshData> meshes;
-	std::vector<Face> faces;
 	int numIndex;
 
 private:
@@ -261,16 +248,15 @@ private:
 	int animationFrame = 0;
 	bool isAnimation = false;
 	bool isLoopAnimation = false;
-	bool isFinishAnimation = false;
 
 public:
-	SkinnedMesh() = default;
-	~SkinnedMesh() {}
+	SkinnedMeshBatch() = default;
+	~SkinnedMeshBatch() {}
 
-	SkinnedMesh( SkinnedMesh & ) = delete;
-	SkinnedMesh &operator=( SkinnedMesh & ) = delete;
+	SkinnedMeshBatch( SkinnedMeshBatch & ) = delete;
+	SkinnedMeshBatch&operator=( SkinnedMeshBatch & ) = delete;
 
-	SkinnedMesh( ID3D11Device *device, const char* fileName, bool leftHandedCoordinate )/* : Mesh()*/
+	SkinnedMeshBatch( ID3D11Device *device, const char* fileName, bool leftHandedCoordinate )/* : Mesh()*/
 	{
 		if ( leftHandedCoordinate ) handedCoordinateSystem = FALSE;
 		else handedCoordinateSystem = TRUE;
@@ -343,21 +329,60 @@ public:
 		LoadFBX(device, fileName);
 #endif
 		CreateShaderResourceView( device );
+
+		HRESULT hr = S_OK;
+		Instance* _instances = new Instance[MAX_INSTANCE];
+
+		D3D11_BUFFER_DESC bufferDesc = {};
+		bufferDesc.ByteWidth = sizeof(Instance) * MAX_INSTANCE;
+		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		D3D11_SUBRESOURCE_DATA subresourceData = {};
+		subresourceData.pSysMem = _instances;
+
+		hr = device->CreateBuffer(&bufferDesc, &subresourceData, &instanceBuffer);
+		assert(!hr && "CreateBuffer		Error");
+
+		delete[] _instances;
 	}
 
 public:
-	void Preparation( ID3D11DeviceContext* immediateContext, Shader shader, bool wireframe = false );
+	Microsoft::WRL::ComPtr<ID3D11Buffer> instanceBuffer;
+	static const UINT MAX_INSTANCE = 150;
+	UINT instance;
+	struct Instance
+	{
+		DirectX::XMFLOAT4X4 wvp;
+		DirectX::XMFLOAT4X4 world;
+		UINT frame;
+	};
+	std::vector<Instance> instatnceData;
+	struct AnimationData
+	{
+		float animationTick;
+		bool isAnimation;
+		bool isLoopAnimation;
+	};
+	std::vector<AnimationData> animationData;
+	void Begin(ID3D11DeviceContext* immediateContext, Shader shader, bool wireframe = false);
 	void Render
 	(
 		ID3D11DeviceContext *immediateContext,
+		OBJ3DInstance& obj,
 		const DirectX::XMFLOAT4X4 &wvp,
 		const DirectX::XMFLOAT4X4 &world,
-		const DirectX::XMFLOAT4 &lightDirection,
-		const DirectX::XMFLOAT4 &materialColor,
-		float elapsedTime,
-		bool inCamera,
-		bool solid = true
+		float elapsedTime
 	);
+	void End
+	(
+		ID3D11DeviceContext* immediateContext,
+		const DirectX::XMFLOAT4& lightDirection,
+		const DirectX::XMFLOAT4& materialColor
+	);
+
+
 	void StartAnimation( u_int _animationNumber, bool _isloopAnimation )
 	{
 		animationNumber = _animationNumber;
@@ -385,66 +410,58 @@ public:
 	{
 		isAnimation = false;
 	}
-	bool GetAnimatingFlg()
-	{
-		return isAnimation;
-	}
 	int GetAnimationFrame()
 	{
 		return animationFrame;
 	}
-	bool GetFinishAnimation()
+
+private:
+	void LoadFBX( ID3D11Device *device, const char* fileName );
+	void FbxAMatrixToXMFLOAT4X4( const FbxAMatrix& fbxamatrix, DirectX::XMFLOAT4X4& xmfloat4x4 );
+	void FetchAnimations( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
+	void FetchMaterials( ID3D11Device* device, const char* fileName, FbxMesh* fbxMesh, MeshData& md );
+	void FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
+	void FetchBoneInfluences( const FbxMesh *fbxMesh, std::vector<BoneInfluencesPerControlPoint> &influences );
+	void FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<Bone> &skeletal, FbxTime time );
+	void FetchAnimations( FbxMesh *fbxMesh, SkeletalAnimation &skeletalAnimation, u_int numOfAnimation, u_int samplingRate = 0 );
+	void CreateBuffer( ID3D11Device *device, MeshData &m, Vertex* v, unsigned int* i, int numV, int numI );
+	void CreateShaderResourceView( ID3D11Device *device );
+	void CreateConstantBuffer( ID3D11Device *device )
 	{
-		if (isFinishAnimation)
+
+		HRESULT hr = S_OK;
+
+		// Create Constant Buffer ********************************************************
+
+		D3D11_BUFFER_DESC bufferDesc = {};
+		bufferDesc.ByteWidth = sizeof( CBuffer );
+		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bufferDesc.CPUAccessFlags = 0;
+		bufferDesc.MiscFlags = 0;
+		bufferDesc.StructureByteStride = 0;
+
+		hr = device->CreateBuffer( &bufferDesc, nullptr, constantBuffer.GetAddressOf() );
+		assert( !hr && "CreateBuffer	Error" );
+
+		// *******************************************************************************
+
+		for ( int i = 0; i < MAX_BUFFER_SIZE; i++ )
 		{
-			isFinishAnimation = false;
-			return true;
+			ZeroMemory( &bufferDesc, sizeof( bufferDesc ) );
+			bufferDesc.ByteWidth = sizeof( BoneTransformBuffer );
+			bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+			bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			bufferDesc.CPUAccessFlags = 0;
+			bufferDesc.MiscFlags = 0;
+			bufferDesc.StructureByteStride = 0;
+
+			hr = device->CreateBuffer( &bufferDesc, nullptr, boneTransformBuffer[i].GetAddressOf() );
+			assert( !hr && "BoneTransformBuffer	Error" );
 		}
-		else
-		{
-			return false;
-		}
+
 	}
-
-	// レイピック関数
-	int RayPick
-	(
-		const DirectX::XMFLOAT3& startPosition,
-		const DirectX::XMFLOAT3& endPosition,
-		DirectX::XMFLOAT3* outPosition,
-		DirectX::XMFLOAT3* outNormal,
-		float* outLength
-	);
-
-	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform )
-	{
-		for (auto& mesh : meshes)
-		{
-			std::vector<Bone>& skeletal = mesh.skeletalAnimations.at(animationNumber).skeletel.at(animationFrame).bone;
-			size_t number_of_bones = skeletal.size();
-			_ASSERT_EXPR(number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES.");
-
-			for (auto& bone : skeletal)
-			{
-				if (bone.name != name) continue;
-
-				DirectX::XMFLOAT4X4 transform;
-				DirectX::XMStoreFloat4x4(&transform,
-					DirectX::XMLoadFloat4x4(&bone.transform) *
-					worldTransform
-				);
-
-				return transform;
-
-			}
-		}
-
-		return DirectX::XMFLOAT4X4();
-	}
-
-	std::vector<Face> GetFaces() { return faces; }
-
-	DirectX::XMFLOAT3 GetVectexPos(std::string name, const DirectX::XMFLOAT3& pos, int vectexPosNo)
+	DirectX::XMFLOAT4X4 GetBoneTransform(std::string name, DirectX::XMFLOAT3& pos)
 	{
 #if 0
 		for (auto& mesh : meshes)
@@ -467,22 +484,18 @@ public:
 		for (auto& mesh : meshes)
 		{
 			if (mesh.name != name) continue;
-			if (vectexPosNo < 0) continue;
-			if (static_cast<int>(mesh.vectexPos.size()) <= vectexPosNo) continue;
+
 
 			std::vector<Bone>& skeletal = mesh.skeletalAnimations.at(animationNumber).skeletel.at(animationFrame).bone;
 			size_t number_of_bones = skeletal.size();
 			_ASSERT_EXPR(number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES.");
 
-
-			DirectX::XMFLOAT4 _pos = { mesh.vectexPos[vectexPosNo].pos.x + pos.x, mesh.vectexPos[vectexPosNo].pos.y + pos.y, mesh.vectexPos[vectexPosNo].pos.z + pos.z, mesh.vectexPos[vectexPosNo].pos.w };
+			DirectX::XMFLOAT4 _pos = { mesh.pos.x + pos.x, mesh.pos.y + pos.y, mesh.pos.z + pos.z, mesh.pos.w };
 			DirectX::XMFLOAT3 _p = { 0, 0, 0 };
-
+			
 			for (size_t i = 0; i < 4; i++)
 			{
-				if (mesh.boneIndeces[vectexPosNo][i] == -1) continue;
-
-				DirectX::XMFLOAT4X4 transform = skeletal.at(mesh.boneIndeces[vectexPosNo][i]).transform;
+				DirectX::XMFLOAT4X4 transform = skeletal.at(mesh.boneIndeces[i]).transform;
 				if (!handedCoordinateSystem)
 				{
 					DirectX::XMStoreFloat4x4(&transform, DirectX::XMLoadFloat4x4(&transform));
@@ -493,12 +506,12 @@ public:
 				}
 				float w = _pos.x * transform._14 + _pos.y * transform._24 + _pos.z * transform._34 + _pos.w * transform._44;
 
-				_p.x += (_pos.x * transform._11 + _pos.y * transform._21 + _pos.z * transform._31 + _pos.w * transform._41) / w * mesh.boneWeights[vectexPosNo][i];
-				_p.y += (_pos.x * transform._12 + _pos.y * transform._22 + _pos.z * transform._32 + _pos.w * transform._42) / w * mesh.boneWeights[vectexPosNo][i];
-				_p.z += (_pos.x * transform._13 + _pos.y * transform._23 + _pos.z * transform._33 + _pos.w * transform._43) / w * mesh.boneWeights[vectexPosNo][i];
+				_p.x += (_pos.x * transform._11 + _pos.y * transform._21 + _pos.z * transform._31 + _pos.w * transform._41) / w * mesh.boneWeights[i];
+				_p.y += (_pos.x * transform._12 + _pos.y * transform._22 + _pos.z * transform._32 + _pos.w * transform._42) / w * mesh.boneWeights[i];
+				_p.z += (_pos.x * transform._13 + _pos.y * transform._23 + _pos.z * transform._33 + _pos.w * transform._43) / w * mesh.boneWeights[i];
 			}
 
-			return DirectX::XMFLOAT3(_p.x, _p.y, _p.z);
+			pos = { _p.x, _p.y, _p.z };
 		}
 #elif 1
 		for (auto& mesh : meshes)
@@ -524,40 +537,8 @@ public:
 			}
 		}
 #endif
-		return DirectX::XMFLOAT3();
-	}
 
-private:
-	void LoadFBX( ID3D11Device *device, const char* fileName );
-	void FbxAMatrixToXMFLOAT4X4( const FbxAMatrix& fbxamatrix, DirectX::XMFLOAT4X4& xmfloat4x4 );
-	void FetchAnimations( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
-	void FetchMaterials( ID3D11Device* device, const char* fileName, FbxMesh* fbxMesh, MeshData& md );
-	void FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMesh, MeshData& mesh );
-	void FetchBoneInfluences( const FbxMesh *fbxMesh, std::vector<BoneInfluencesPerControlPoint> &influences );
-	void FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<SkinnedMesh::Bone> &skeletal, FbxTime time );
-	void FetchAnimations( FbxMesh *fbxMesh, SkinnedMesh::SkeletalAnimation &skeletalAnimation, u_int numOfAnimation, u_int samplingRate = 0 );
-	void CreateBuffer( ID3D11Device *device, MeshData &m, Vertex* v, unsigned int* i, int numV, int numI );
-	void CreateShaderResourceView( ID3D11Device *device );
-	void CreateConstantBuffer( ID3D11Device *device )
-	{
-
-		HRESULT hr = S_OK;
-
-		// Create Constant Buffer ********************************************************
-
-		D3D11_BUFFER_DESC bufferDesc = {};
-		bufferDesc.ByteWidth = sizeof( CBuffer );
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bufferDesc.CPUAccessFlags = 0;
-		bufferDesc.MiscFlags = 0;
-		bufferDesc.StructureByteStride = 0;
-
-		hr = device->CreateBuffer( &bufferDesc, nullptr, constantBuffer.GetAddressOf() );
-		assert( !hr && "CreateBuffer	Error" );
-
-		// *******************************************************************************
-
+		return DirectX::XMFLOAT4X4();
 	}
 
 public:
@@ -569,10 +550,9 @@ public:
 			CEREAL_NVP( integratedVertex ),
 			CEREAL_NVP( integratedIndex ),
 			CEREAL_NVP( meshes ),
-			CEREAL_NVP( faces ),
 			CEREAL_NVP( numIndex )
 		);
 	}
 };
 
-CEREAL_REGISTER_TYPE( SkinnedMesh )
+CEREAL_REGISTER_TYPE( SkinnedMeshBatch )
