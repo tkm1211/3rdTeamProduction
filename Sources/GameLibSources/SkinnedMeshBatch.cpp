@@ -660,6 +660,10 @@ void SkinnedMeshBatch::FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<Bone> &s
 			Bone &bone = skeletal.at( indexOfCluster );
 			FbxCluster *cluster = skin->GetCluster( indexOfCluster );
 
+			// Get Bone Name
+			std::string _name = cluster->GetName();
+			bone.name = cluster->GetLink()->GetName();
+
 			// this matrix trnasforms coordinates of the initial pose from mesh space to global space
 			FbxAMatrix referenceGlobalInitPosition;
 			cluster->GetTransformMatrix( referenceGlobalInitPosition );
@@ -671,6 +675,7 @@ void SkinnedMeshBatch::FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<Bone> &s
 			// this matrix trnasforms coordinates of the current pose from bone space to global space
 			FbxAMatrix clusterGlobalCurrentPosition;
 			clusterGlobalCurrentPosition = cluster->GetLink()->EvaluateGlobalTransform( time );
+			FbxAMatrixToXMFLOAT4X4( clusterGlobalCurrentPosition, bone.globalTransform );
 
 			// this matrix trnasforms coordinates of the current pose from mesh space to global space
 			FbxAMatrix referenceGlobalCurrentPosition;
@@ -683,17 +688,17 @@ void SkinnedMeshBatch::FetchBoneMatrices( FbxMesh *fbxMesh, std::vector<Bone> &s
 				* clusterGlobalInitPosition.Inverse() * referenceGlobalInitPosition;
 
 			// convert FbxAMatrix(transform) to XMFLOAT4X4(bone.transform)
-			for ( int row = 0; row < 4; row++ )
-			{
-				for ( int column = 0; column < 4; column++ )
-				{
-					bone.transform.m[row][column] = static_cast<float>( transform[row][column] );
-				}
-			}
+			FbxAMatrixToXMFLOAT4X4( transform, bone.transform );
 
-			// Get Bone Name
-			std::string _name = cluster->GetName();
-			bone.name = cluster->GetLink()->GetName();
+			// Get ParentBoneTransform
+			bone.transformToParent = DirectX::XMFLOAT4X4( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+			FbxNode* parentNode = cluster->GetLink()->GetParent();
+			if ( parentNode )
+			{
+				FbxAMatrix parentClusterGlobalPosition;
+				parentClusterGlobalPosition = parentNode->EvaluateGlobalTransform( time );
+				FbxAMatrixToXMFLOAT4X4( parentClusterGlobalPosition.Inverse() * clusterGlobalCurrentPosition, bone.transformToParent );
+			}
 		}
 	}
 

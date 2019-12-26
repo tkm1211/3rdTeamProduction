@@ -122,6 +122,8 @@ private:
 	{
 		std::string name;
 		DirectX::XMFLOAT4X4 transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+		DirectX::XMFLOAT4X4 transformToParent = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+		DirectX::XMFLOAT4X4 globalTransform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 
 		Bone() = default;
 
@@ -134,7 +136,15 @@ private:
 				CEREAL_NVP( transform._11 ), CEREAL_NVP( transform._12 ), CEREAL_NVP( transform._13 ), CEREAL_NVP( transform._14 ),
 				CEREAL_NVP( transform._21 ), CEREAL_NVP( transform._22 ), CEREAL_NVP( transform._23 ), CEREAL_NVP( transform._24 ),
 				CEREAL_NVP( transform._31 ), CEREAL_NVP( transform._32 ), CEREAL_NVP( transform._33 ), CEREAL_NVP( transform._34 ),
-				CEREAL_NVP( transform._41 ), CEREAL_NVP( transform._42 ), CEREAL_NVP( transform._43 ), CEREAL_NVP( transform._44 )
+				CEREAL_NVP( transform._41 ), CEREAL_NVP( transform._42 ), CEREAL_NVP( transform._43 ), CEREAL_NVP( transform._44 ),
+				CEREAL_NVP( transformToParent._11 ), CEREAL_NVP( transformToParent._12 ), CEREAL_NVP( transformToParent._13 ), CEREAL_NVP( transformToParent._14 ),
+				CEREAL_NVP( transformToParent._21 ), CEREAL_NVP( transformToParent._22 ), CEREAL_NVP( transformToParent._23 ), CEREAL_NVP( transformToParent._24 ),
+				CEREAL_NVP( transformToParent._31 ), CEREAL_NVP( transformToParent._32 ), CEREAL_NVP( transformToParent._33 ), CEREAL_NVP( transformToParent._34 ),
+				CEREAL_NVP( transformToParent._41 ), CEREAL_NVP( transformToParent._42 ), CEREAL_NVP( transformToParent._43 ), CEREAL_NVP( transformToParent._44 ),
+				CEREAL_NVP( globalTransform._11 ), CEREAL_NVP( globalTransform._12 ), CEREAL_NVP( globalTransform._13 ), CEREAL_NVP( globalTransform._14 ),
+				CEREAL_NVP( globalTransform._21 ), CEREAL_NVP( globalTransform._22 ), CEREAL_NVP( globalTransform._23 ), CEREAL_NVP( globalTransform._24 ),
+				CEREAL_NVP( globalTransform._31 ), CEREAL_NVP( globalTransform._32 ), CEREAL_NVP( globalTransform._33 ), CEREAL_NVP( globalTransform._34 ),
+				CEREAL_NVP( globalTransform._41 ), CEREAL_NVP( globalTransform._42 ), CEREAL_NVP( globalTransform._43 ), CEREAL_NVP( globalTransform._44 )
 			);
 		}
 	};
@@ -416,26 +426,29 @@ public:
 		float* outLength
 	);
 
-	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform )
+	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name )
 	{
-		for (auto& mesh : meshes)
+		for ( auto& mesh : meshes )
 		{
-			std::vector<Bone>& skeletal = mesh.skeletalAnimations.at(animationNumber).skeletel.at(animationFrame).bone;
+			std::vector<Bone>& skeletal = mesh.skeletalAnimations.at( animationNumber ).skeletel.at( animationFrame ).bone;
 			size_t number_of_bones = skeletal.size();
-			_ASSERT_EXPR(number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES.");
+			_ASSERT_EXPR( number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES." );
 
-			for (auto& bone : skeletal)
+			for ( auto& bone : skeletal )
 			{
-				if (bone.name != name) continue;
+				if ( bone.name != name ) continue;
 
-				DirectX::XMFLOAT4X4 transform;
-				DirectX::XMStoreFloat4x4(&transform,
-					DirectX::XMLoadFloat4x4(&bone.transform) *
-					worldTransform
-				);
+				DirectX::XMFLOAT4X4 boneTransform;
+				if ( !handedCoordinateSystem )
+				{
+					DirectX::XMStoreFloat4x4( &boneTransform, DirectX::XMLoadFloat4x4( &bone.globalTransform ) );
+				}
+				else
+				{
+					DirectX::XMStoreFloat4x4( &boneTransform, DirectX::XMLoadFloat4x4( &bone.globalTransform ) * DirectX::XMLoadFloat4x4( &coordinateConversion ) );
+				}
 
-				return transform;
-
+				return boneTransform;
 			}
 		}
 

@@ -102,9 +102,13 @@ public: // アニメーション関数
 		return pMesh->GetFinishAnimation();
 	}
 
-	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, const DirectX::XMMATRIX& worldTransform )
+	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name )
 	{
-		return pMesh->GetBoneTransform( name, worldTransform );
+		return pMesh->GetBoneTransform( name );
+	}
+	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, OBJ3DInstance& obj )
+	{
+		return pMesh->GetBoneTransform( name );
 	}
 	DirectX::XMFLOAT3 GetVectexPos( std::string name, const DirectX::XMFLOAT3& pos, const DirectX::XMMATRIX& myWorldTransform, int vectexPosNo = 0 )
 	{

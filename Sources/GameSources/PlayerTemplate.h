@@ -19,6 +19,8 @@ private:
 	static const int MAX_INSTANCE = 150;
 	OBJ3DInstance batchData[MAX_INSTANCE];
 
+	std::unique_ptr<Model> pItemBatch;
+	OBJ3DInstance itemBatchData[MAX_INSTANCE];
 
 	enum ModelState
 	{

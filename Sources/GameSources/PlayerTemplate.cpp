@@ -21,12 +21,21 @@ void PlayerTemplate::Init()
 
 
 	// skinnedmeshbatch
-	pModelBatch = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
+	{
+		pModelBatch = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
+		for (int i = 0; i < MAX_INSTANCE; i++)
+		{
+			batchData[i].Init(); // 初期化
+			batchData[i].SetIsAnimation(true);  // アニメーションON
+			batchData[i].SetIsAnimation(false); // アニメーションOFF
+		}
+	}
+
+
+	pItemBatch = std::make_unique<Model>("Data/Assets/Model/Life.fbx", false, true);
 	for (int i = 0; i < MAX_INSTANCE; i++)
 	{
-		batchData[i].Init(); // 初期化
-		batchData[i].SetIsAnimation(true);  // アニメーションON
-		batchData[i].SetIsAnimation(false); // アニメーションOFF
+		itemBatchData[i].Init(); // 初期化
 	}
 }
 void PlayerTemplate::UnInit()
@@ -40,6 +49,33 @@ void PlayerTemplate::UnInit()
 void PlayerTemplate::Update()
 {
 	pWait->GetAnimationFrame();
+
+
+	// Get boneTransform (通常)
+	{
+		// ボーン行列取得
+		DirectX::XMFLOAT4X4 boneTransform = pRun->GetBoneTransform(std::string("ボーン名"));
+
+		// ボーン行列をワールド空間に変換
+		DirectX::XMFLOAT4X4 boneTransformWithWorld;
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+
+		// 座標だけ抽出
+		itemData.SetPos(DirectX::XMFLOAT3(boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43));
+	}
+
+	// Get boneTransform (インスタンス化)
+	{
+		// ボーン行列取得
+		DirectX::XMFLOAT4X4 boneTransform = pModelBatch->GetBoneTransform(std::string("ボーン名"), batchData[10]);
+
+		// ボーン行列をワールド空間に変換
+		DirectX::XMFLOAT4X4 boneTransformWithWorld;
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * batchData[10].GetWorldMatrix());
+
+		// 座標だけ抽出
+		itemBatchData[10].SetPos(DirectX::XMFLOAT3(boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43));
+	}
 }
 void PlayerTemplate::Draw()
 {
@@ -68,12 +104,21 @@ void PlayerTemplate::Draw()
 		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), itemData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 
 	// skinnedmeshbatch
-	pModelBatch->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
+	{
+		pModelBatch->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
+		for (int i = 0; i < MAX_INSTANCE; i++)
+		{
+			pModelBatch->Render(batchData[i], /*modelBatchData[i].GetWorldMatrix(),*/ CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+		}
+		pModelBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
+	pItemBatch->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
 	for (int i = 0; i < MAX_INSTANCE; i++)
 	{
-		pModelBatch->Render(batchData[i], /*modelBatchData[i].GetWorldMatrix(),*/ CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+		pItemBatch->Render(itemBatchData[i], /*modelBatchData[i].GetWorldMatrix(),*/ CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
 	}
-	pModelBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	pItemBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 }
 void PlayerTemplate::ImGui()
 {
