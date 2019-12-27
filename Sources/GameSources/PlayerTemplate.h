@@ -22,6 +22,11 @@ private:
 	std::unique_ptr<Model> pItemBatch;
 	OBJ3DInstance itemBatchData[MAX_INSTANCE];
 
+	// New Get bonetransform
+	int modelIndeces[2];
+	int instanceModelIndeces[2];
+
+
 	enum ModelState
 	{
 		WAIT,

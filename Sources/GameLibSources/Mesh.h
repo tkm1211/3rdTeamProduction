@@ -110,6 +110,9 @@ public:
 	virtual DirectX::XMFLOAT3 GetVectexPos( std::string name, const DirectX::XMFLOAT3& pos, int vectexPosNo ) { return DirectX::XMFLOAT3(); }
 	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name ) { return DirectX::XMFLOAT4X4(); }
 	virtual DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, OBJ3DInstance& obj ) { return DirectX::XMFLOAT4X4(); }
+	virtual DirectX::XMFLOAT4X4 GetBoneTransform( int meshIndex, int boneIndex ) { return DirectX::XMFLOAT4X4(); }
+	virtual DirectX::XMFLOAT4X4 GetBoneTransform( int meshIndex, int boneIndex, OBJ3DInstance& obj ) { return DirectX::XMFLOAT4X4(); }
+	virtual bool GetBoneTransformIndex( std::string name, int& meshIndex, int& boneIndex ) { return false; }
 	virtual int RayPick
 	(
 		const DirectX::XMFLOAT3& startPosition,

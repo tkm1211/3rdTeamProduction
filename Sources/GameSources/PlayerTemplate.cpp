@@ -19,10 +19,31 @@ void PlayerTemplate::Init()
 
 	modelState = ModelState::WAIT;
 
+	// New Get bonetransform
+	{
+		bool check = false;
+
+		// 戻り値は、ボーンが存在した時に「true」で返ってきます。それ以外は、「false」。
+		// 第２引数は、meshインデックス。(ここにインデックス番号が入ります)
+		// 第３引数は、boneインデックス。(ここにインデックス番号が入ります)
+		check = pRun->GetBoneTransformIndex(std::string("ボーン名"), modelIndeces[0], modelIndeces[1]);
+	}
+
 
 	// skinnedmeshbatch
 	{
 		pModelBatch = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
+
+		// New Get bonetransform
+		{
+			bool check = false;
+
+			// 戻り値は、ボーンが存在した時に「true」で返ってきます。それ以外は、「false」。
+			// 第２引数は、meshインデックス。(ここにインデックス番号が入ります)
+			// 第３引数は、boneインデックス。(ここにインデックス番号が入ります)
+			pModelBatch->GetBoneTransformIndex(std::string("ボーン名"), instanceModelIndeces[0], instanceModelIndeces[1]);
+		}
+
 		for (int i = 0; i < MAX_INSTANCE; i++)
 		{
 			batchData[i].Init(); // 初期化
@@ -36,6 +57,7 @@ void PlayerTemplate::Init()
 	for (int i = 0; i < MAX_INSTANCE; i++)
 	{
 		itemBatchData[i].Init(); // 初期化
+		itemBatchData[i].SetScale({ 10.0f,10.0f,10.0f });
 	}
 }
 void PlayerTemplate::UnInit()
@@ -54,7 +76,13 @@ void PlayerTemplate::Update()
 	// Get boneTransform (通常)
 	{
 		// ボーン行列取得
+#if 0
+		// Old Get bonetransform
 		DirectX::XMFLOAT4X4 boneTransform = pRun->GetBoneTransform(std::string("ボーン名"));
+#else
+		// New Get bonetransform
+		DirectX::XMFLOAT4X4 boneTransform = pRun->GetBoneTransform(modelIndeces[0], modelIndeces[1]);
+#endif
 
 		// ボーン行列をワールド空間に変換
 		DirectX::XMFLOAT4X4 boneTransformWithWorld;
@@ -67,7 +95,13 @@ void PlayerTemplate::Update()
 	// Get boneTransform (インスタンス化)
 	{
 		// ボーン行列取得
+#if 0
+		// Old Get bonetransform
 		DirectX::XMFLOAT4X4 boneTransform = pModelBatch->GetBoneTransform(std::string("ボーン名"), batchData[10]);
+#else
+		// New Get bonetransform
+		DirectX::XMFLOAT4X4 boneTransform = pModelBatch->GetBoneTransform(instanceModelIndeces[0], instanceModelIndeces[1], batchData[10]);
+#endif
 
 		// ボーン行列をワールド空間に変換
 		DirectX::XMFLOAT4X4 boneTransformWithWorld;

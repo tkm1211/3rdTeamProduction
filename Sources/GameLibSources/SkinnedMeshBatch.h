@@ -471,6 +471,47 @@ private:
 		}
 
 	}
+	bool GetBoneTransformIndex( std::string name, int& meshIndex, int& boneIndex )
+	{
+		for ( size_t i = 0; i < meshes.size(); i++ )
+		{
+			std::vector<Bone>& skeletal = meshes[i].skeletalAnimations.at( animationNumber ).skeletel.at( animationFrame ).bone;
+			size_t number_of_bones = skeletal.size();
+			_ASSERT_EXPR( number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES." );
+
+			for ( size_t j = 0; j < skeletal.size(); j++ )
+			{
+				if ( skeletal[j].name != name ) continue;
+
+				meshIndex = i;
+				boneIndex = j;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+	DirectX::XMFLOAT4X4 GetBoneTransform( int meshIndex, int boneIndex, OBJ3DInstance& obj )
+	{
+		int frame = static_cast<int>( obj.GetAnimationTick() / meshes[meshIndex].skeletalAnimations.at( animationNumber ).samplingTime );
+
+		std::vector<Bone>& skeletal = meshes[meshIndex].skeletalAnimations.at( animationNumber ).skeletel.at( frame ).bone;
+		size_t number_of_bones = skeletal.size();
+		_ASSERT_EXPR( number_of_bones < MAX_BONES, L"'the number_of_bones' exceeds MAX_BONES." );
+
+		DirectX::XMFLOAT4X4 boneTransform;
+		if ( !handedCoordinateSystem )
+		{
+			DirectX::XMStoreFloat4x4( &boneTransform, DirectX::XMLoadFloat4x4( &skeletal[boneIndex].globalTransform ) );
+		}
+		else
+		{
+			DirectX::XMStoreFloat4x4( &boneTransform, DirectX::XMLoadFloat4x4( &skeletal[boneIndex].globalTransform ) * DirectX::XMLoadFloat4x4( &coordinateConversion ) );
+		}
+
+		return boneTransform;
+	}
 	DirectX::XMFLOAT4X4 GetBoneTransform( std::string name, OBJ3DInstance& obj )
 	{
 		for ( auto& mesh : meshes )
