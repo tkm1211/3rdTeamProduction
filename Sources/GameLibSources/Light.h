@@ -34,12 +34,15 @@ public:
 		DirectX::XMFLOAT4 dir;
 	};
 
-	struct CBufferLight
+	struct CBufferLight01
 	{
 		DirectX::XMFLOAT4 lightColor;	//ライトの色
 		DirectX::XMFLOAT4 lightDir;		//ライトの方向
 		DirectX::XMFLOAT4 ambientColor; //環境光
 		DirectX::XMFLOAT4 eyePos;		//カメラ座標
+	};
+	struct CBufferLight02
+	{
 		POINTLIGHT pointLight[POINTMAX];
 		SPOTLIGHT spotLight[SPOTMAX];
 	};
@@ -55,7 +58,8 @@ public:
 	}
 
 public:
-	Microsoft::WRL::ComPtr <ID3D11Buffer>	constantBufferLight;
+	Microsoft::WRL::ComPtr <ID3D11Buffer>	constantBufferLight1;
+	Microsoft::WRL::ComPtr <ID3D11Buffer>	constantBufferLight2;
 
 	float lightAngle = 4.16f;
 	float posY = -0.36f;

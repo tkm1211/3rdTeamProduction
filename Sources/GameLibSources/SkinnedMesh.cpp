@@ -124,22 +124,27 @@ void SkinnedMesh::Preparation( ID3D11DeviceContext* immediateContext, Shader sha
 	immediateContext->PSSetSamplers( 0, 1, samplerState.GetAddressOf() );
 
 	// コンスタントバッファ設定
-	Light::CBufferLight cb;
-	cb.ambientColor = Light::GetInstance()->ambient;
-	cb.lightDir = Light::GetInstance()->lightDir;
-	cb.lightColor = Light::GetInstance()->lightColor;
+	Light::CBufferLight01 cb1;
+	cb1.ambientColor = Light::GetInstance()->ambient;
+	cb1.lightDir = Light::GetInstance()->lightDir;
+	cb1.lightColor = Light::GetInstance()->lightColor;
 	DirectX::XMFLOAT3 _viewPos = CameraSystem::GetInstance()->mainView.GetPos();
-	cb.eyePos.x = _viewPos.x;
-	cb.eyePos.y = _viewPos.y;
-	cb.eyePos.z = _viewPos.z;
-	cb.eyePos.w = 1.0f;
-	memcpy( cb.pointLight, Light::GetInstance()->pointLight, sizeof( Light::POINTLIGHT ) * Light::POINTMAX );
-	memcpy( cb.spotLight, Light::GetInstance()->spotLight, sizeof( Light::SPOTLIGHT ) * Light::SPOTMAX );
+	cb1.eyePos.x = _viewPos.x;
+	cb1.eyePos.y = _viewPos.y;
+	cb1.eyePos.z = _viewPos.z;
+	cb1.eyePos.w = 1.0f;
 
-	immediateContext->UpdateSubresource( Light::GetInstance()->constantBufferLight.Get(), 0, 0, &cb, 0, 0 );
+	Light::CBufferLight02 cb2;
+	memcpy( cb2.pointLight, Light::GetInstance()->pointLight, sizeof( Light::POINTLIGHT ) * Light::POINTMAX );
+	memcpy( cb2.spotLight, Light::GetInstance()->spotLight, sizeof( Light::SPOTLIGHT ) * Light::SPOTMAX );
+	
+	immediateContext->UpdateSubresource(Light::GetInstance()->constantBufferLight1.Get(), 0, 0, &cb1, 0, 0);
+	immediateContext->UpdateSubresource(Light::GetInstance()->constantBufferLight2.Get(), 0, 0, &cb2, 0, 0);
 
-	immediateContext->VSSetConstantBuffers( 2, 1, Light::GetInstance()->constantBufferLight.GetAddressOf() );
-	immediateContext->PSSetConstantBuffers( 2, 1, Light::GetInstance()->constantBufferLight.GetAddressOf() );
+	immediateContext->VSSetConstantBuffers(2, 1, Light::GetInstance()->constantBufferLight1.GetAddressOf());
+	immediateContext->VSSetConstantBuffers(3, 1, Light::GetInstance()->constantBufferLight2.GetAddressOf());
+	immediateContext->PSSetConstantBuffers(2, 1, Light::GetInstance()->constantBufferLight1.GetAddressOf());
+	immediateContext->PSSetConstantBuffers(3, 1, Light::GetInstance()->constantBufferLight2.GetAddressOf());
 }
 
 void SkinnedMesh::Render

@@ -49,12 +49,16 @@ cbuffer CONSTANT_BUFFER : register(b0)
 	row_major float4x4 bone_transforms[MAX_BONES];
 };
 
-cbuffer CONSTANT_BUFFER_LIGHT : register(b2)
+cbuffer CONSTANT_BUFFER_LIGHT_01 : register(b2)
 {
 	float4 LightColor;					//ライトの色
 	float4 LightDir;					//ライトの方向
 	float4 AmbientColor;				//環境光
 	float4 EyePos;						//カメラ座標
+};
+
+cbuffer CONSTANT_BUFFER_LIGHT_02 : register(b3)
+{
 	POINTLIGHT PointLight[POINTMAX];	//ポイントライト配列
 	SPOTLIGHT SpotLight[SPOTMAX];		//スポットライト配列
 };

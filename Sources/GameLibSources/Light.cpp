@@ -32,15 +32,26 @@ void Light::Init()
 	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();
 
 	D3D11_BUFFER_DESC bufferDescLight = {};
-	bufferDescLight.ByteWidth = sizeof(CBufferLight);
+	bufferDescLight.ByteWidth = sizeof(CBufferLight01);
 	bufferDescLight.Usage = D3D11_USAGE_DEFAULT;
 	bufferDescLight.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDescLight.CPUAccessFlags = 0;
 	bufferDescLight.MiscFlags = 0;
 	bufferDescLight.StructureByteStride = 0;
 
-	hr = device->CreateBuffer(&bufferDescLight, nullptr, constantBufferLight.GetAddressOf());
-	assert(!hr && "CreateBufferLight	Error");
+	hr = device->CreateBuffer(&bufferDescLight, nullptr, constantBufferLight1.GetAddressOf());
+	assert(!hr && "CreateBufferLight1	Error");
+
+	ZeroMemory(&bufferDescLight, sizeof(bufferDescLight));
+	bufferDescLight.ByteWidth = sizeof(CBufferLight02);
+	bufferDescLight.Usage = D3D11_USAGE_DEFAULT;
+	bufferDescLight.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDescLight.CPUAccessFlags = 0;
+	bufferDescLight.MiscFlags = 0;
+	bufferDescLight.StructureByteStride = 0;
+
+	hr = device->CreateBuffer(&bufferDescLight, nullptr, constantBufferLight2.GetAddressOf());
+	assert(!hr && "CreateBufferLight2	Error");
 
 	pointLightNo = 0;
 }

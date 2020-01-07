@@ -30,8 +30,8 @@ public:
 	enum ShaderOfSkinnedMesh
 	{
 		DEFAULT,
-	//	NORMAL_MAP,
 		PHONE,
+		NORMAL_MAP,
 		END
 	};
 
