@@ -18,6 +18,7 @@ public:
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 up;
 	DirectX::XMFLOAT3 right;
+	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
 	DirectX::XMFLOAT3 target;
 	DirectX::XMFLOAT3 foward;
@@ -30,6 +31,9 @@ public:
 	float distance;
 	float angleY;
 	float fov;
+
+	bool updateLook;
+	bool updateNow;
 
 public:
 	Camera() {}
@@ -48,6 +52,9 @@ public: // Getä÷êî
 	float GetAngleY()	{ return angleY;  }
 	float GetFov()		{ return fov;	  }
 
+	bool GetUpdateLook() { return updateLook; }
+	bool GetUpdateNow() { return updateNow; }
+
 public: // Setä÷êî
 	DirectX::XMMATRIX	SetOrthographicMatrix(float w, float h, float znear, float zfar);
 	DirectX::XMMATRIX	SetPerspectiveMatrix(float fov, float aspect, float znear, float zfar);
@@ -56,4 +63,9 @@ public: // Setä÷êî
 	void SetTarget(DirectX::XMFLOAT3 _target) { target = _target; }
 	void SetRotateX( float _rotateX ) { rotateX = _rotateX; }
 	void SetRotateY( float _rotateY ) { rotateY = _rotateY; }
+
+	void SetUpdateLook(bool _updateLook) { updateLook = _updateLook; }
+
+	void SetViewMatrix(const DirectX::XMMATRIX& _view) { view = _view; }
+	void SetProjectionMatrix(const DirectX::XMMATRIX& _projection) { projection = _projection; }
 };

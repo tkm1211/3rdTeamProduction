@@ -105,3 +105,48 @@ void ResourceManager::CreatePixelShader
 	cache.insert( std::make_pair( csoName, *pixelShader ) );
 
 }
+
+void ResourceManager::CreateComputeShader
+  ( ID3D11Device *device,
+	const char *csoName,
+	ID3D11ComputeShader **computeShader )
+{
+
+	HRESULT hr = S_OK;
+
+
+	static std::map<std::string, Microsoft::WRL::ComPtr<ID3D11ComputeShader>> cache;
+
+
+	auto it = cache.find( csoName );
+	if ( it != cache.end() )
+	{
+		*computeShader = it->second.Get();
+		( *computeShader )->AddRef();
+	}
+
+
+	//Load CSO (ps)
+	FILE* fp = 0;
+	fopen_s( &fp, csoName, "rb" );
+
+
+	fseek( fp, 0, SEEK_END );
+	long csoSize = ftell( fp );
+	fseek( fp, 0, SEEK_SET );
+
+
+	std::unique_ptr<unsigned char[]> csoData = std::make_unique<unsigned char[]>( csoSize );
+	fread( csoData.get(), csoSize, 1, fp );
+	fclose( fp );
+
+	fp = nullptr;
+
+
+	hr = device->CreateComputeShader( csoData.get(), csoSize, NULL, computeShader );
+	assert( !hr && "Errer device->CreatePixelShader" );
+
+
+	cache.insert( std::make_pair( csoName, *computeShader ) );
+
+}

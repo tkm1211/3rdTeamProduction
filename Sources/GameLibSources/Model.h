@@ -133,19 +133,6 @@ public: // アニメーション関数
 		return DirectX::XMFLOAT3( _M._41, _M._42, _M._43 );
 	}
 
-	// レイピック関数
-	int RayPick
-	(
-		const DirectX::XMFLOAT3& startPosition,
-		const DirectX::XMFLOAT3& endPosition,
-		DirectX::XMFLOAT3* outPosition,
-		DirectX::XMFLOAT3* outNormal,
-		float* outLength
-	)
-	{
-		return pMesh->RayPick(startPosition, endPosition, outPosition, outNormal, outLength);
-	}
-
 	std::vector<Mesh::Face> GetFaces()
 	{
 		return pMesh->GetFaces();
@@ -158,4 +145,41 @@ public: // アニメーション関数
 
 private:
 	bool JudgeInCamera( DirectX::XMFLOAT3 pos );
+
+public:
+	// レイピック関数
+	int RayPick
+	(
+		const DirectX::XMFLOAT3& startPosition,
+		const DirectX::XMFLOAT3& endPosition,
+		const DirectX::XMMATRIX& modelWorldMatrix,
+		DirectX::XMFLOAT3* outPosition,
+		DirectX::XMFLOAT3* outNormal,
+		float* outLength
+	)
+	{
+#if 1
+		// レイをモデル空間に変換
+		DirectX::XMVECTOR rayStartVec = DirectX::XMLoadFloat3(&startPosition);
+		DirectX::XMVECTOR rayEndVec = DirectX::XMLoadFloat3(&endPosition);
+		
+		DirectX::XMVECTOR rayStartVecModelSpace;
+		DirectX::XMVECTOR rayEndVecModelSpace;
+		
+		DirectX::XMMATRIX groundMatrixInverse = DirectX::XMMatrixInverse(nullptr, modelWorldMatrix);
+		rayStartVecModelSpace = DirectX::XMVector3TransformCoord(rayStartVec, groundMatrixInverse);
+		rayEndVecModelSpace = DirectX::XMVector3TransformCoord(rayEndVec, groundMatrixInverse);
+		
+		DirectX::XMFLOAT3 rayStartFloat3;
+		DirectX::XMFLOAT3 rayEndFloat3;
+		
+		DirectX::XMStoreFloat3(&rayStartFloat3, rayStartVecModelSpace);
+		DirectX::XMStoreFloat3(&rayEndFloat3, rayEndVecModelSpace);
+		
+		
+		return pMesh->RayPick(rayStartFloat3, rayEndFloat3, outPosition, outNormal, outLength);
+#else
+		return pMesh->RayPick(startPosition, endPosition, outPosition, outNormal, outLength);
+#endif
+	}
 };

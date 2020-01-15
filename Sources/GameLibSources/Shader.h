@@ -3,7 +3,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <DirectXMath.h>
-
+#include "ImGuizmo.h"
 
 class Shader
 {
@@ -56,4 +56,40 @@ public:
 	Shader GetShaderOfSkinnedMesh( ShaderOfSkinnedMesh no ) { return shaderOfSkinnedMesh[no]; }
 	Shader GetShaderOfSkinnedMeshBatch() { return shaderOfSkinnedMeshBatch; }
 	Shader GetShadowMapShader() { return shadowMapShader; }
+};
+
+
+class ComputeShader
+{
+private:
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> computeShader;
+
+public:
+	 ComputeShader() {}
+	~ComputeShader() {}
+
+public:
+	void LoadCSO( ID3D11Device* device, const char* csoNameOfComputeShader );
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> GetComputeShader() { return computeShader; }
+};
+
+class ComputeShaderSystem
+{
+private:
+	ComputeShader gpuCaring;
+
+public:
+	 ComputeShaderSystem() {}
+	~ComputeShaderSystem() {}
+
+	static ComputeShaderSystem* GetInstance()
+	{
+		static ComputeShaderSystem instance;
+		return &instance;
+	}
+
+public:
+	void Init();
+	void UnInit() {}
+	ComputeShader GetGPUCaring() { return gpuCaring; }
 };

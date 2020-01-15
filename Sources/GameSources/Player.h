@@ -55,7 +55,7 @@ private:
 	int MAX_SPEED     = 10;
 	int DAMAGE_TIMER  = 30;
 	int ATK_NUMBER    = PlayerAtkCountImGui::ATTACK_1ST;
-	float ATK_MAG     = 0.01;
+	float ATK_MAG     = 0.01f;
 
 	// âΩíiçUåÇñ⁄Ç©
 	int attackCnt;
@@ -187,7 +187,7 @@ public:
 	OBJ3D GetModelData() { return modelData; }
 	void SetModelPosition(DirectX::XMFLOAT3 _pos) { modelData.SetPos(_pos); }
 	void SetMoveSpeed(DirectX::XMFLOAT3 _speed) { moveSpeed = _speed; }
-	float GetHp() { return hp; }
+	int GetHp() { return hp; }
 	void SetAttackMag(int mag) { attackMag = mag; }
 	float GetAttackDamage() 
 	{

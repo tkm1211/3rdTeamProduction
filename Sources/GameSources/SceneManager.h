@@ -44,7 +44,7 @@ private:
 	std::string com;
 	void GoToSceneLaboCommand()
 	{
-		/*if (GetKeyState(VK_CONTROL) < 0)
+		if (GetKeyState(VK_CONTROL) < 0)
 		{
 			if (GetKeyState(VK_SHIFT) < 0)
 			{
@@ -53,7 +53,7 @@ private:
 					SetScene(new SceneLabo());
 				}
 			}
-		}*/
+		}
 
 		if (GetKeyState(VK_RETURN) < 0)
 		{

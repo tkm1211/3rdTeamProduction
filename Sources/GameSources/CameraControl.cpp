@@ -28,6 +28,9 @@ void CameraControl::MouseControlUpdate( Camera* camera )
 	ImGui::End();
 #endif
 
+	if (camera->updateLook) return;
+
+
 	POINT cursor;
 	GetCursorPos(&cursor);
 
@@ -41,6 +44,7 @@ void CameraControl::MouseControlUpdate( Camera* camera )
 	{
 		if (GetKeyState(VK_LBUTTON) < 0)
 		{
+			camera->updateNow = true;
 			camera->rotateY += moveX * 0.5f;
 			camera->rotateX += moveY * 0.5f;
 		}
@@ -64,7 +68,15 @@ void CameraControl::MouseControlUpdate( Camera* camera )
 		}
 		else
 		{
+			camera->updateNow = false;
 			camera->distance -= (float)MOUSE.diMouseState.lZ / 1.0f;
+		}
+	}
+	else
+	{
+		if (!(GetKeyState(VK_LBUTTON) < 0))
+		{
+			camera->updateNow = false;
 		}
 	}
 

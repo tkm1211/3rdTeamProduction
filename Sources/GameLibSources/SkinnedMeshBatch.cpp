@@ -259,7 +259,7 @@ void SkinnedMeshBatch::End( ID3D11DeviceContext* immediateContext, const DirectX
 			}
 			immediateContext->UpdateSubresource( boneTransformBuffer[j].Get(), 0, 0, &boneTransformData[j], 0, 0 );
 
-			immediateContext->VSSetConstantBuffers( 7 + j, 1, boneTransformBuffer[j].GetAddressOf());
+			immediateContext->VSSetConstantBuffers( 7 + j, 1, boneTransformBuffer[j].GetAddressOf() );
 			immediateContext->PSSetConstantBuffers( 7 + j, 1, boneTransformBuffer[j].GetAddressOf() );
 		}
 
@@ -330,7 +330,7 @@ void SkinnedMeshBatch::CreateBuffer( ID3D11Device *device, MeshData &m, Vertex* 
 
 void SkinnedMeshBatch::CreateShaderResourceView( ID3D11Device *device )
 {
-	 
+	
 	for ( auto& m : meshes )
 	{
 		for ( auto& s : m.subsets )

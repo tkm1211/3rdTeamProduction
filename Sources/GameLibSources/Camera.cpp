@@ -31,6 +31,9 @@ void Camera::Init( const DirectX::XMFLOAT3& _pos, const DirectX::XMFLOAT3& _targ
 	foward.x = target.x - pos.x;
 	foward.y = target.y - pos.y;
 	foward.z = target.z - pos.z;
+
+	updateLook = false;
+	updateNow = false;
 }
 
 
@@ -52,9 +55,14 @@ DirectX::XMMATRIX	Camera::SetPerspectiveMatrix(float fov, float aspect, float zn
 
 DirectX::XMMATRIX	Camera::GetViewMatrix()
 {
-	DirectX::XMVECTOR _pos = DirectX::XMVectorSet(pos.x, pos.y, pos.z, 1.0f);
-	DirectX::XMVECTOR _target = DirectX::XMVectorSet(target.x, target.y, target.z, 1.0f);
-	DirectX::XMVECTOR _up = DirectX::XMVectorSet(up.x, up.y, up.z, 0.0f);
+	if (!updateLook)
+	{
+		DirectX::XMVECTOR _pos = DirectX::XMVectorSet(pos.x, pos.y, pos.z, 1.0f);
+		DirectX::XMVECTOR _target = DirectX::XMVectorSet(target.x, target.y, target.z, 1.0f);
+		DirectX::XMVECTOR _up = DirectX::XMVectorSet(up.x, up.y, up.z, 0.0f);
 
-	return	DirectX::XMMatrixLookAtLH(_pos, _target, _up);
+		view = DirectX::XMMatrixLookAtLH(_pos, _target, _up);
+	}
+
+	return	view;
 }

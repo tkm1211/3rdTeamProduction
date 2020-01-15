@@ -57,12 +57,28 @@ void ShaderSystem::Init()
 	{
 		D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT   ,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL"  , 0, DXGI_FORMAT_R32G32B32_FLOAT   ,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT      ,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR"   , 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT   , 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL"  , 0, DXGI_FORMAT_R32G32B32_FLOAT   , 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT      , 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR"   , 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 	
 		shadowMapShader.LoadCSO( device.Get(), "Data/Shader/ShadowMapVS.cso", "Data/Shader/ShadowMapPS.cso", inputElementDesc, ARRAYSIZE( inputElementDesc ) );
+	}
+}
+
+
+void ComputeShader::LoadCSO( ID3D11Device* device, const char* csoNameOfComputeShader )
+{
+	ResourceManager::CreateComputeShader( device, csoNameOfComputeShader, computeShader.GetAddressOf() );
+}
+
+void ComputeShaderSystem::Init()
+{
+	Microsoft::WRL::ComPtr<ID3D11Device> device = FrameWork::GetInstance().GetDevice();
+
+	// Load Compute Shader Of GPUCaring
+	{
+		gpuCaring.LoadCSO( device.Get(), "Data/Shader/test.cso" ); // TODO : GPUCaring
 	}
 }

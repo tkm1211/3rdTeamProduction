@@ -27,4 +27,11 @@ public:
 		const char *csoName,
 		ID3D11PixelShader **pixelShader
 	);
+
+	static void CreateComputeShader
+	(
+		ID3D11Device* device,
+		const char* csoName,
+		ID3D11ComputeShader** computeShader
+	);
 };

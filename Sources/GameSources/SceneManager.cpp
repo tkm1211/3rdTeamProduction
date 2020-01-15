@@ -9,6 +9,7 @@
 #include "CameraControl.h"
 #include "Editer.h"
 #include "SoundLoader.h"
+#include "BGEditor.h"
 
 
 void SceneManager::Init()
@@ -35,6 +36,7 @@ void SceneManager::Update()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 #endif // DEBUG_MODE
 
@@ -49,14 +51,17 @@ void SceneManager::Update()
 	CommandCheck();
 	GoToSceneLaboCommand();
 
-	if (!Editer::GetInstance()->GetNowEditer())
+	if (!Editer::GetInstance()->GetNowEditer() && !BGEditor::GetInstance()->GetOn())
 	{
 		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
+	}
+	else if (BGEditor::GetInstance()->GetOn())
+	{
+		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->bgEditorView);
 	}
 	else
 	{
 		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->enemyEditorView);
-
 	}
 
 	// XVˆ—
