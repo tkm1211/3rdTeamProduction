@@ -1,6 +1,7 @@
 #include "Fade.h"
 #include "SceneManager.h"
 #include "Blender.h"
+#include "CharacterSystem.h"
 void Fade::Init()
 {
 	fade_spr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/Fade/BG_SceneTransition.png");
@@ -19,7 +20,10 @@ void Fade::UnInit()
 
 void Fade::Update()
 {
-	if (!onFadeFlg) return;
+
+	//WaveManager& waveMgr = *CharacterSystem::GetInstance()->GetEnemyManagerAddress()->GetWaveManager();
+
+	if (!onFadeFlg/* || waveMgr.GetWaveNowIndex() == (int)waveMgr.GetWaves().size()*/) return;
 
 	switch (state)
 	{

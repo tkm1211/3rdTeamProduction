@@ -9,13 +9,40 @@ enum class WARKER_STATE
 	WAIT,
 	RUN,
 	STRIKE,
+	JUMP_ATTACK,
 	TPOSE
+};
+
+enum class  WARKER_ATTACK_STATE
+{
+	STRIKE,
+	JUMP_ATTACK
 };
 
 class WarkerKokim:
 	 public AI, public Kokim
 {
 public:
+	float velocity=5;
+	float randAng;
+	int	wanderingRct=0;
+	int wanderingRctMax=180;
+	int stWandering;
+	int wanderingCnt;
+	int atAnimFrame;
+	int attackPoint;
+
+	DirectX::XMFLOAT3 vec;
+	DirectX::XMFLOAT3 atJumpVec;
+
+	WARKER_ATTACK_STATE stAttack;
+
+	std::shared_ptr<Model> pWarker;
+	std::shared_ptr<Model> pWarkerRun;
+	std::shared_ptr<Model> pWarkerAttack;
+	std::shared_ptr<Model> pWarkerJumpAttack;
+	std::shared_ptr<Model> pWarkerWait;
+
 	WarkerKokim() {};
 	WarkerKokim(int num);
 	~WarkerKokim() {};
@@ -42,6 +69,8 @@ public:
 	void ChangeNowAsphyxia() { nowAsphyxia ^= 1; };
 private:
 
+
+
 	WARKER_STATE state = WARKER_STATE::RUN;
 	float plDot;
 	int attackDis=50;
@@ -49,6 +78,7 @@ private:
 	int strikeRecastMax = 500;
 	int strikeRecastCnt = 0;
 	int damageRecast = 0;
+
 	bool nowAsphyxia = false;
 
 public:

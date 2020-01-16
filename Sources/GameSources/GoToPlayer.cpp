@@ -23,7 +23,7 @@ ActionBase::STATE GotoPlayerAction::Update(AI*obj)
 		assert(0);
 	}
 #else
-	WarkerKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 	OBJ3D &o = *warker->GetModelData();
 	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();

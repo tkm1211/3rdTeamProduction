@@ -12,10 +12,10 @@ bool ArcherShotJudge::Judgement(AI * obj)
 		assert(0);
 	}
 #else
-	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
 
-	if (archer->GetRecast() > RECAST_MAX)
+	if (archer->GetRecast() > archer->recastMax)
 	{
 		return true;
 	}
@@ -31,11 +31,13 @@ ActionBase::STATE ArcherShotAction::Update(AI * obj)
 		assert(0);
 	}
 #else
-	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
-	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
+	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
+	archer->state = ARCHER_STATE::STRIKE;
 	archer->CreateArrow(pTrs.GetPos(), archer->GetModelData()->GetPos());
+	archer->arrow->GetModelData().SetPos(archer->GetModelData()->GetPos());
 	archer->SetRecast(0);
 
 	return ActionBase::STATE::COMPLETE;

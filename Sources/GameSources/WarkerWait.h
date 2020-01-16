@@ -1,15 +1,17 @@
 #pragma once
+#include "ExecJudgementBase.h"
 
-#include "ActionBase.h"
+class AI;
 
-class WarkerWaitAction :
-	public ActionBase
+class WarkerWaitJudge :
+	public ExecJudgementBase
 {
 public:
-	static WarkerWaitAction *GetInstance()
+	static WarkerWaitJudge *GetInstance()
 	{
-		static WarkerWaitAction instance;
+		static WarkerWaitJudge instance;
 		return &instance;
 	}
-	virtual ActionBase::STATE Update(AI *obj);
+	virtual bool Judgement(AI *obj);
 };
+

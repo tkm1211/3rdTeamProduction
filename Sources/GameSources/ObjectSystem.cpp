@@ -3,8 +3,8 @@
 
 void ObjectSystem::Init()
 {
-	buffAreaSystem = std::make_unique<BuffAreaSystem>();
-	buffAreaSystem->Init();
+	//buffAreaSystem = std::make_unique<BuffAreaSystem>();
+	//buffAreaSystem->Init();
 	bg = std::make_unique<BG>();
 	bg->Init();
 
@@ -13,23 +13,23 @@ void ObjectSystem::Init()
 void ObjectSystem::UnInit()
 {
 	bg->UnInit();
-	buffAreaSystem->UnInit();
+	//buffAreaSystem->UnInit();
 }
 
 void ObjectSystem::Update()
 {
 	bg->Update();
-	buffAreaSystem->Update();
+	//buffAreaSystem->Update();
 }
 
 void ObjectSystem::Draw()
 {
 	bg->Draw();
-	buffAreaSystem->Draw();
+	//buffAreaSystem->Draw();
 }
 
 void ObjectSystem::ImGui()
 {
 	bg->ImGui();
-	buffAreaSystem->ImGui();
+	//buffAreaSystem->ImGui();
 }

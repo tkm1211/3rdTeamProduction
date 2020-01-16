@@ -11,7 +11,7 @@ public:
 	void Update();
 	void Draw();
 
-	OBJ3D GetModelData() { return modelData; };
+	OBJ3D& GetModelData() { return modelData; };
 private:
 
 	OBJ3D modelData;

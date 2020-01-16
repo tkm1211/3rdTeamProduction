@@ -72,6 +72,8 @@ public:
 	void Update();
 	void Draw();
 
+	void ArcherRenderer();
+
 	void WarkerRenderer();
 	void AllDelete();
 
@@ -79,15 +81,11 @@ public:
 	void ImGui();
 
 private:
-	std::shared_ptr<Model> pArcher;
-	std::shared_ptr<Model> pWarker;
-	std::shared_ptr<Model> pWarkerRun;
-	std::shared_ptr<Model> pWarkerAttack;
-	std::shared_ptr<Model> pWarkerWait;
-		
+
+
+
 	std::shared_ptr<Model> pEliteWarker;
 	std::shared_ptr<Model> pPlayer;
-	std::shared_ptr<Model> pShot;
 
 	std::unique_ptr<WaveManager> waveMgr;
 

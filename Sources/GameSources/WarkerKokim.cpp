@@ -3,73 +3,115 @@
 #include "BehaviorTree.h"
 #include "WarkerAttack.h"
 #include "WarkerStrike.h"
+#include "WarkerJumpAttack.h"
 #include "WarkerMove.h"
 #include "WarkerWait.h"
+#include "WarkerWandering.h"
+#include "WarkerStay.h"
 #include "GoToPlayer.h"
 #include "Turn.h"
 #include "CharacterSystem.h"
 WarkerKokim::WarkerKokim(int num)
 {
-	modelData = std::make_shared<OBJ3D>();
-
-	static BehaviorTree aiTree;
-
-	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY,NULL,NULL);
 	{
-		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, WarkerAttackJudge::GetInstance(), NULL);
-		{
-			aiTree.AddNode("Attack", "WarkerStrike", 1, BehaviorTree::SELECT_RULE::NON, WarkerStrikeJudge::GetInstance(), WarkerStrikeAction::GetInstance());
-
-		}
-		aiTree.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, WarkerMoveJudge::GetInstance(), NULL);
-		{
-			aiTree.AddNode("Move", "GoToPlayer", 2, BehaviorTree::SELECT_RULE::NON, GotoPlayerJudge::GetInstance(), GotoPlayerAction::GetInstance());
-			aiTree.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, TurnJudge::GetInstance(), TurnAction::GetInstance());
-		}
-		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, WarkerWaitAction::GetInstance());
+		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
+		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false);
+		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false);
+		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false);
+		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false);
 	}
 
-	SetBehaviorTree(&aiTree);
+	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
+
+	modelData = std::make_shared<OBJ3D>();
+
+
+	aiTreeData.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY,NULL,NULL);
+	{
+		aiTreeData.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, WarkerAttackJudge::GetInstance(), NULL);
+		{
+			aiTreeData.AddNode("Attack", "WarkerStrike", 2, BehaviorTree::SELECT_RULE::NON, WarkerStrikeJudge::GetInstance(), WarkerStrikeAction::GetInstance());
+			aiTreeData.AddNode("Attack", "WarkerJumpAttack", 1, BehaviorTree::SELECT_RULE::NON, WarkerJumpAttackJudge::GetInstance(), WarkerJumpAttackAction::GetInstance());
+		}
+		aiTreeData.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, WarkerMoveJudge::GetInstance(), NULL);
+		{
+			aiTreeData.AddNode("Move", "GoToPlayer", 2, BehaviorTree::SELECT_RULE::NON, GotoPlayerJudge::GetInstance(), GotoPlayerAction::GetInstance());
+			aiTreeData.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, TurnJudge::GetInstance(), TurnAction::GetInstance());
+		}
+		aiTreeData.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+		{
+			aiTreeData.AddNode("Wait", "Wandering", 2, BehaviorTree::SELECT_RULE::NON, WarkerWanderingJudge::GetInstance(), WarkerWanderingAction::GetInstance());
+			aiTreeData.AddNode("Wait", "Stay", 1, BehaviorTree::SELECT_RULE::NON, NULL, WarkerStayAction::GetInstance());
+		}
+	}
+
+	SetBehaviorTree(aiTreeData);
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(15, 90, 15));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 	index = num;
-	state = WARKER_STATE::RUN;
+	state = WARKER_STATE::WAIT;
 	Update();
 	
 }
 
 void WarkerKokim::Init()
 {
-	static BehaviorTree aiTree;
 
-	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
 	{
-		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, WarkerAttackJudge::GetInstance(), NULL);
-		{
-			aiTree.AddNode("Attack", "WarkerStrike", 1, BehaviorTree::SELECT_RULE::NON, WarkerStrikeJudge::GetInstance(), WarkerStrikeAction::GetInstance());
-		}
-		aiTree.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, WarkerMoveJudge::GetInstance(), NULL);
-		{
-			aiTree.AddNode("Move", "GoToPlayer", 2, BehaviorTree::SELECT_RULE::NON, GotoPlayerJudge::GetInstance(), GotoPlayerAction::GetInstance());
-			aiTree.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, TurnJudge::GetInstance(), TurnAction::GetInstance());
-		}
-		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, WarkerWaitAction::GetInstance());
+		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
+		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false);
+		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false);
+		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false);
+		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false);
 	}
 
-	velocity = 3.0f;
+	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
+	
+	aiTreeData.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+	{
+		aiTreeData.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, WarkerAttackJudge::GetInstance(), NULL);
+		{
+			aiTreeData.AddNode("Attack", "WarkerStrike", 2, BehaviorTree::SELECT_RULE::NON, WarkerStrikeJudge::GetInstance(), WarkerStrikeAction::GetInstance());
+			aiTreeData.AddNode("Attack", "WarkerJumpAttack", 1, BehaviorTree::SELECT_RULE::NON, WarkerJumpAttackJudge::GetInstance(), WarkerJumpAttackAction::GetInstance());
 
-	SetBehaviorTree(&aiTree);
+		}
+		aiTreeData.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, WarkerMoveJudge::GetInstance(), NULL);
+		{
+			aiTreeData.AddNode("Move", "GoToPlayer", 2, BehaviorTree::SELECT_RULE::NON, GotoPlayerJudge::GetInstance(), GotoPlayerAction::GetInstance());
+			aiTreeData.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, TurnJudge::GetInstance(), TurnAction::GetInstance());
+		}
+		aiTreeData.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+		{
+			aiTreeData.AddNode("Wait", "Wandering", 2, BehaviorTree::SELECT_RULE::NON, WarkerWanderingJudge::GetInstance(), WarkerWanderingAction::GetInstance());
+			aiTreeData.AddNode("Wait", "Stay", 1, BehaviorTree::SELECT_RULE::NON, NULL, WarkerStayAction::GetInstance());
+		}
+	}
+	/*velocity = 3.0f;*/
+
+
+	SetBehaviorTree(aiTreeData);
+	wanderingRct = 0;
+	wanderingRctMax = 180;
+	velocity = 5;
+	randAng = 0;
+	stWandering = 0;
+	wanderingCnt = 0;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+	state = WARKER_STATE::WAIT;
+	Update();
 }
 
 void WarkerKokim::Update()
 {
+
+	atAnimFrame = pWarkerAttack->GetAnimationFrame();
+
 	if (!nowAsphyxia)
 	{
 		OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
-		DirectX::XMFLOAT3 vec;
+		
 		DirectX::XMStoreFloat3(&vec,
 			DirectX::XMVectorSubtract(
 				DirectX::XMLoadFloat3(&pTrs.GetPos()),
@@ -93,6 +135,16 @@ void WarkerKokim::Update()
 				DirectX::XMLoadFloat3(&vec),
 				plForward));
 
+
+		if (state == WARKER_STATE::JUMP_ATTACK)
+		{
+			modelData->SetPos(
+				DirectX::XMFLOAT3(
+					modelData->GetPos().x + atJumpVec.x*10,
+					modelData->GetPos().y,
+					modelData->GetPos().z + atJumpVec.z * 10));
+		}
+
 		AI::Update();
 		bodyCol->SetPos(modelData->GetPos());
 
@@ -112,4 +164,6 @@ void WarkerKokim::Update()
 		state = WARKER_STATE::TPOSE;
 		modelData->SetPosY(110);
 	}
+
+	
 }

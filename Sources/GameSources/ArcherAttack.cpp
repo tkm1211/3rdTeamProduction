@@ -11,9 +11,9 @@ bool ArcherAttackJudge::Judgement(AI * obj)
 		assert(0);
 	}
 #else
-	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
-	if (obj->GetEtoPdis() < 1000 && archer->GetPlayerDot()> 0.99f)
+	if (obj->GetEtoPdis() < archer->atDis && archer->GetPlayerDot()> 0.99f)
 	{
 		return true;
 	}

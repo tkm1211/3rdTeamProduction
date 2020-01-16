@@ -21,9 +21,9 @@ void Wave::Update()
 	for (auto &arc : archer)
 	{
 		arc.Update();
-		if (arc.GetArrow())
+		if (arc.arrow)
 		{
-			arc.GetArrow()->Update();
+			arc.arrow->Update();
 		}
 	}
 	for (auto &wrk : warker)

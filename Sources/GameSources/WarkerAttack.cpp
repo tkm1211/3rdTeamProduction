@@ -10,25 +10,35 @@ bool WarkerAttackJudge::Judgement(AI * obj)
 		assert(0);
 	}
 #else
-	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(job);
+	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 
-	if (obj->GetEtoPdis() < warker->GetAttackDistance() &&
-		warker->GetPlayerDot()> 0.99f&&
-		warker->GetStrikeRecastMax() <  warker->GetStrikeRecastCnt())
+	if (!warker->pWarkerAttack->GetAnimatingFlg()&& !warker->pWarkerJumpAttack->GetAnimatingFlg())
 	{
-
-		if (!pWarkerAttack->GetFinishAnimation())
+		if (obj->GetEtoPdis() <= (float)warker->GetAttackDistance() &&
+			warker->GetPlayerDot() > 0.99f&&
+			warker->GetStrikeRecastMax() < warker->GetStrikeRecastCnt())
 		{
-			return true;
-		}
-		else
-		{
+			int atRand = rand() % 10;
+			if (atRand > 6)
+			{
+				warker->stAttack = WARKER_ATTACK_STATE::JUMP_ATTACK;
+			}
+			else
+			{
+				warker->stAttack = WARKER_ATTACK_STATE::STRIKE;
+			}
 			warker->SetStrikeRecastCnt(0);
-			
+			return true;
+
 		}
 	}
+	else
+	{
 
+		return true;
+	}
 	warker->SetStrikeRecastCnt(warker->GetStrikeRecastCnt() + 1);
+
 	return false;
 }

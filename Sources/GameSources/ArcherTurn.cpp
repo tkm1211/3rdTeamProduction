@@ -13,7 +13,7 @@ ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 		assert(0);
 	}
 #else
-	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
 	OBJ3D &o = *archer->GetModelData();
 	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
@@ -55,7 +55,7 @@ bool ArcherTurnJudge::Judgement(AI * obj)
 		assert(0);
 	}
 #else
-	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(job);
+	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
 	OBJ3D &o = *archer->GetModelData();
 	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();

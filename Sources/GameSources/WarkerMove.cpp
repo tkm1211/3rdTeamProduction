@@ -12,7 +12,7 @@ bool WarkerMoveJudge::Judgement(AI *obj)
 		assert(0);
 	}
 #else
-	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(job);
+	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 
 	if (obj->GetEtoPdis() > 50&&obj->GetEtoPdis() < warker->GetFindPlayerDistance())

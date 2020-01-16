@@ -9,24 +9,33 @@
 #include "CharacterSystem.h"
 ArcherKokim::ArcherKokim(int num)
 {
+	{
+		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false);
+		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false);
+		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false);
+		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false);
+
+		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false);
+	}
 	modelData = std::make_shared<OBJ3D>();
 	
-	static BehaviorTree aiTree;
 
-	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+
+	aiTreeData.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
 	{
-		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, ArcherAttackJudge::GetInstance(), NULL);
+		aiTreeData.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, ArcherAttackJudge::GetInstance(), NULL);
 		{
-			aiTree.AddNode("Attack", "ArcherShot", 1, BehaviorTree::SELECT_RULE::NON, ArcherShotJudge::GetInstance(), ArcherShotAction::GetInstance());
+			aiTreeData.AddNode("Attack", "ArcherShot", 1, BehaviorTree::SELECT_RULE::NON, ArcherShotJudge::GetInstance(), ArcherShotAction::GetInstance());
 		}
-		aiTree.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, ArcherMoveJudge::GetInstance(), NULL);
+		aiTreeData.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, ArcherMoveJudge::GetInstance(), NULL);
 		{
-			aiTree.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, ArcherTurnJudge::GetInstance(), ArcherTurnAction::GetInstance());
+			aiTreeData.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, ArcherTurnJudge::GetInstance(), ArcherTurnAction::GetInstance());
 		}
-		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, ArcherWaitJudge::GetInstance(), NULL);
+		aiTreeData.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, ArcherWaitJudge::GetInstance(), NULL);
 	}
 
-	SetBehaviorTree(&aiTree);
+	SetBehaviorTree(aiTreeData);
+	state = ARCHER_STATE::WAIT;
 
 	bodyCol= std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 
@@ -35,23 +44,32 @@ ArcherKokim::ArcherKokim(int num)
 
 void ArcherKokim::Init()
 {
-	static BehaviorTree aiTree;
-
-	aiTree.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
 	{
-		aiTree.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, ArcherAttackJudge::GetInstance(), NULL);
-		{
-			aiTree.AddNode("Attack", "ArcherShot", 1, BehaviorTree::SELECT_RULE::NON, ArcherShotJudge::GetInstance(), ArcherShotAction::GetInstance());
-		}
-		aiTree.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, ArcherMoveJudge::GetInstance(), NULL);
-		{
-			aiTree.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, ArcherTurnJudge::GetInstance(), ArcherTurnAction::GetInstance());
-		}
-		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, ArcherWaitJudge::GetInstance(), NULL);
+		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false);
+		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false);
+		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false);
+		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false);
+
+		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false);
 	}
 
-	SetBehaviorTree(&aiTree);
 
+
+	aiTreeData.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
+	{
+		aiTreeData.AddNode("Root", "Attack", 3, BehaviorTree::SELECT_RULE::PRIORITY, ArcherAttackJudge::GetInstance(), NULL);
+		{
+			aiTreeData.AddNode("Attack", "ArcherShot", 1, BehaviorTree::SELECT_RULE::NON, ArcherShotJudge::GetInstance(), ArcherShotAction::GetInstance());
+		}
+		aiTreeData.AddNode("Root", "Move", 2, BehaviorTree::SELECT_RULE::PRIORITY, ArcherMoveJudge::GetInstance(), NULL);
+		{
+			aiTreeData.AddNode("Move", "Turn", 1, BehaviorTree::SELECT_RULE::NON, ArcherTurnJudge::GetInstance(), ArcherTurnAction::GetInstance());
+		}
+		aiTreeData.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, ArcherWaitJudge::GetInstance(), NULL);
+	}
+
+	SetBehaviorTree(aiTreeData);
+	state = ARCHER_STATE::WAIT;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 }
 
@@ -82,6 +100,7 @@ void ArcherKokim::Update()
 		DirectX::XMVector3Dot(
 			DirectX::XMLoadFloat3(&vec),
 			plForward));
+
 
 	recast++;
 	AI::Update();

@@ -17,6 +17,11 @@ class EditEnemy;
 class Wave
 {
 public:
+
+	int setWarkerAttackPoint = 1000;
+	int setArcherAttackPoint = 1000;
+	
+
 	Wave();
 	~Wave();
 
@@ -71,6 +76,8 @@ private:
 	float setWarkerVelocity = 10;
 	float setArcherVelocity = 10;
 	float setEliteWarkerVelocity = 10;
+
+
 
 	std::vector<ArcherKokim> archer;
 	std::vector<WarkerKokim> warker;

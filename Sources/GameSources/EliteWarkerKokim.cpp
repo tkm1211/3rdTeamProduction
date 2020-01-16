@@ -19,7 +19,7 @@ EliteWarkerKokim::EliteWarkerKokim(int num)
 		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, EliteWarkerWaitAction::GetInstance());
 	}
 
-	SetBehaviorTree(&aiTree);
+	SetBehaviorTree(aiTree);
 
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(160, 160, 160));
 
@@ -39,7 +39,7 @@ void EliteWarkerKokim::Init()
 		aiTree.AddNode("Root", "Wait", 1, BehaviorTree::SELECT_RULE::NON, NULL, EliteWarkerWaitAction::GetInstance());
 	}
 
-	SetBehaviorTree(&aiTree);
+	SetBehaviorTree(aiTree);
 
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(160, 160, 160));
 }
