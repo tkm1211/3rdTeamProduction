@@ -245,19 +245,11 @@ void EnemyManager::WarkerRenderer()
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 			break;
 		case WARKER_STATE::STRIKE:
-			if (!wrk.pWarkerAttack->GetAnimatingFlg())
-			{
-				wrk.pWarkerAttack->StartAnimation(0, false);
-			}
 			wrk.pWarkerAttack->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			wrk.pWarkerAttack->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 			break;
 		case WARKER_STATE::JUMP_ATTACK:
-			if (!wrk.pWarkerJumpAttack->GetAnimatingFlg())
-			{
-				wrk.pWarkerJumpAttack->StartAnimation(0, false);
-			}
 			wrk.pWarkerJumpAttack->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			wrk.pWarkerJumpAttack->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());

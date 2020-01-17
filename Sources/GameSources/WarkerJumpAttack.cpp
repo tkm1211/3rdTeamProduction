@@ -31,6 +31,12 @@ ActionBase::STATE WarkerJumpAttackAction::Update(AI * obj)
 #else
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
+
+	if (!warker->pWarkerJumpAttack->GetAnimatingFlg())
+	{
+		warker->pWarkerJumpAttack->StartAnimation(0, false);
+	}
+
 	if (!warker->nowJumpAttack)
 	{
 		warker->nowJumpAttack = true;

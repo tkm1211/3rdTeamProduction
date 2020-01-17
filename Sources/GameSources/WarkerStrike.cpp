@@ -49,6 +49,11 @@ ActionBase::STATE WarkerStrikeAction::Update(AI * obj)
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 
+	if (!warker->pWarkerAttack->GetAnimatingFlg())
+	{
+		warker->pWarkerAttack->StartAnimation(0, false);
+	}
+
 	warker->SetState(WARKER_STATE::STRIKE);
 
 	return ActionBase::STATE::COMPLETE;

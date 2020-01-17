@@ -15,7 +15,7 @@
 void SceneManager::Init()
 {
 	// ‰Šú‰»ˆ—
-	SetScene(new SceneTitle());
+	SetScene(new SceneGame());
 	ShaderSystem::GetInstance()->Init();
 	Light::GetInstance()->Init();
 	//Fade‚Ì‰Šú‰»ˆ—

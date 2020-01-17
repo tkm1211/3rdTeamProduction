@@ -95,6 +95,15 @@ public:
 			cereal::make_nvp("archer", archer),
 			cereal::make_nvp("warker", warker),
 			cereal::make_nvp("eliteWarker", eliteWarker),
-			cereal::make_nvp("enmList", enmList));
+			cereal::make_nvp("enmList", enmList),
+			cereal::make_nvp("setWarkerHp", setWarkerHp),
+			cereal::make_nvp("setArcherHp", setArcherHp),
+			cereal::make_nvp("setWarkerAttackDis", setWarkerAttackDis),
+			cereal::make_nvp("setArcherAttackDis", setArcherAttackDis),
+			cereal::make_nvp("setWarkerFindPlayerDistance", setWarkerFindPlayerDistance),
+			cereal::make_nvp("setArcherFindPlayerDistance", setArcherFindPlayerDistance),
+			cereal::make_nvp("setWarkerStrikeRecastMax", setWarkerStrikeRecastMax),
+			cereal::make_nvp("setWarkerVelocity", setWarkerVelocity),
+			cereal::make_nvp("setArcherVelocity", setArcherVelocity));
 	}
 };
