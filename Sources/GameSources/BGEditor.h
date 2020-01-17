@@ -7,6 +7,17 @@
 #include "CameraSystem.h"
 #include "CameraControl.h"
 
+#undef max
+#undef min
+
+#include <cereal/cereal.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/string.hpp>
+
 
 class BGObject
 {
@@ -28,6 +39,17 @@ public:
 	int GetType() { return type; }
 	OBJ3D GetOBJ3D() { return obj; }
 	void SetOBJ3D(OBJ3D _obj) { obj = _obj; }
+
+public:
+	template <class T>
+	void serialize(T& archive)
+	{
+		archive
+		(
+			CEREAL_NVP(type),
+			CEREAL_NVP(obj)
+		);
+	}
 };
 
 class BGEditor
@@ -54,8 +76,21 @@ private:
 #endif
 
 	bool on;
+	bool target;
+	int type;
+	int lookCnt;
+	bool lookFlg;
+	int clickCnt;
+	int backUpCnt;
+
 	std::vector<std::unique_ptr<Model>> bgModel;
 	std::vector<BGObject> bgObject;
+
+	std::unique_ptr<Model> ground;
+	std::unique_ptr<Model> wall;
+
+	OBJ3D groundData;
+	OBJ3D wallData;
 
 public:
 	 BGEditor() {}
@@ -79,6 +114,9 @@ private:
 	void LoadFile();
 	void SaveFile();
 
+	void LoadBackUpFile();
+	void SaveBackUpFile();
+
 	void GUI();
 	void Click();
 	void Edit(OBJ3D* obj);
@@ -99,7 +137,17 @@ private:
 		}
 		else if (type == ModelType::TREE)
 		{
-			//bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/G01.fbx", false));
+			bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Wood_MDL.fbx", true));
 		}
+	}
+
+public:
+	template <class T>
+	void serialize(T& archive)
+	{
+		archive
+		(
+			CEREAL_NVP(bgObject)
+		);
 	}
 };

@@ -7,13 +7,24 @@ void BGEditor::Init()
 	on = true;
 
 	// Load Models
-	//bgModels[ModelType::WALL]  = std::make_unique<Model>("Data/Assets/Model/Boss/Boss02/MDL_Boss02_Wait.fbx", false, true);
-	//bgModels[ModelType::STONE] = std::make_unique<Model>("Data/Assets/Model/Boss/Boss03/MDL_Boss03_Wait.fbx", false, true);
-	//bgModels[ModelType::GRASS] = std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx"          , false, true);
-	//bgModels[ModelType::TREE]  = std::make_unique<Model>("Data/Assets/Model/danbo_fbx/danbo_atk.fbx", false, true);
+	ground = std::make_unique<Model>("Data/Assets/Model/BG/Ground_MDL.fbx", true);
+	wall   = std::make_unique<Model>("Data/Assets/Model/BG/Wall_MDL.fbx"  , true);
 
 	// Load Data
 	LoadFile();
+
+	// Init Data
+	groundData.Init();
+	wallData.Init();
+
+	groundData.SetAngle({ 0.0f * 0.01745f, 0.0f, 0.0f });
+
+	target = false;
+	type = -1;
+	lookCnt = 0;
+	lookFlg = false;
+	clickCnt = 0;
+	backUpCnt = 0;
 }
 void BGEditor::Update()
 {
@@ -26,8 +37,30 @@ void BGEditor::Update()
 		}
 	}
 
+	if (GetKeyState(VK_DELETE) < 0)
+	{
+		if (target)
+		{
+			bgModel.erase(bgModel.begin() + type);
+			bgObject.erase(bgObject.begin() + type);
+
+			type = -1;
+			target = false;
+		}
+	}
+
 	GUI();
 	Click();
+
+	if (GetKeyState(VK_LBUTTON) < 0)
+	{
+		clickCnt++;
+	}
+	else if (0 < clickCnt)
+	{
+		SaveBackUpFile();
+		clickCnt = 0;
+	}
 }
 void BGEditor::GUI()
 {
@@ -37,7 +70,7 @@ void BGEditor::GUI()
 
 	ImGui::Begin("GUI 1");
 
-#if 0
+#if 1
 	const char* names[] = { u8"石1", u8"石2", u8"草", u8"木" };
 #else 
 	const char* names[] = { u8"石1", u8"石2", u8"草" };
@@ -72,12 +105,34 @@ void BGEditor::GUI()
 		ImGui::EndPopup();
 	}
 
+	if (ImGui::Button(u8"保存"))
+	{
+		SaveFile();
+	}
+
+	if (ImGui::Button(u8"削除 (選択中のオブジェクトを削除します)"))
+	{
+		if (target)
+		{
+			bgModel.erase(bgModel.begin() + type);
+			bgObject.erase(bgObject.begin() + type);
+
+			type = -1;
+			target = false;
+		}
+	}
+
 	ImGui::End();
+
+
+	DirectX::XMFLOAT3 angle = groundData.GetAngle();
+	ImGui::Begin("Ground");
+	ImGui::DragFloat3("angle", &angle.x, 0.1f);
+	ImGui::End();
+	groundData.SetAngle(angle);
 }
 void BGEditor::Click()
 {
-	static bool target = false;
-	static int type = -1;
 	OBJ3DInstance obj;
 
 	DirectX::XMFLOAT3 nearPos, farPos;
@@ -105,7 +160,7 @@ void BGEditor::Click()
 	DirectX::XMFLOAT3 outNormal;
 	float outDistance;
 
-	if (!CameraSystem::GetInstance()->bgEditorView.GetUpdateNow() && GetKeyState(VK_LBUTTON) < 0)
+	if (GetKeyState(VK_LBUTTON) < 0 && !CameraSystem::GetInstance()->bgEditorView.GetUpdateNow() && !lookFlg)
 	{
 		float minLength = 0.0f;
 		bool onFlg = false;
@@ -129,12 +184,23 @@ void BGEditor::Click()
 				type = i;
 				target = true;
 				onFlg = true;
+				lookFlg = true;
 			}
 			else if (!onFlg && !ImGuizmo::IsOver())
 			{
 				type = -1;
 				target = false;
 			}
+		}
+	}
+
+	if (lookFlg)
+	{
+		lookCnt++;
+		if (1 * 60 <= lookCnt)
+		{
+			lookFlg = false;
+			lookCnt = 0;
 		}
 	}
 
@@ -191,25 +257,25 @@ void BGEditor::Edit(OBJ3D* obj)
 
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
-	if (ImGui::IsKeyPressed(90))
+	if (GetKeyState('W') < 0)
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	if (ImGui::IsKeyPressed(69))
+	if (GetKeyState('E') < 0)
 		mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	if (ImGui::IsKeyPressed(82)) // r Key
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	//if (ImGui::IsKeyPressed(82)) // r Key
+	//	mCurrentGizmoOperation = ImGuizmo::SCALE;
 	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
 		mCurrentGizmoOperation = ImGuizmo::ROTATE;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	/*if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+		mCurrentGizmoOperation = ImGuizmo::SCALE;*/
 	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 	ImGuizmo::DecomposeMatrixToComponents(worldM16, matrixTranslation, matrixRotation, matrixScale);
 	ImGui::InputFloat3("Tr", matrixTranslation, 3);
 	ImGui::InputFloat3("Rt", matrixRotation, 3);
-	ImGui::InputFloat3("Sc", matrixScale, 3);
+	//ImGui::InputFloat3("Sc", matrixScale, 3);
 	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, worldM16);
 
 	obj->SetPos({ matrixTranslation[0], matrixTranslation[1], matrixTranslation[2] });
@@ -241,10 +307,10 @@ void BGEditor::Edit(OBJ3D* obj)
 		snap = obj->GetAngle();
 		ImGui::InputFloat("Angle Snap", &snap.x);
 		break;
-	case ImGuizmo::SCALE:
+	/*case ImGuizmo::SCALE:
 		snap = obj->GetScale();
 		ImGui::InputFloat("Scale Snap", &snap.x);
-		break;
+		break;*/
 	}
 
 	bool cameraUpdate = CameraSystem::GetInstance()->bgEditorView.GetUpdateLook();
@@ -311,11 +377,22 @@ void BGEditor::Edit(OBJ3D* obj)
 
 void BGEditor::Draw()  
 {
+	//SetRasterizerState(FrameWork::GetInstance().RS_CULL_BACK_TRUE);
 	SetRasterizerState(FrameWork::GetInstance().RS_CULL_BACK_FALSE);
+
+	ground->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), true);
+	ground->Render(groundData.GetWorldMatrix(), CameraSystem::GetInstance()->bgEditorView.GetViewMatrix(), CameraSystem::GetInstance()->bgEditorView.GetProjectionMatrix(),
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), groundData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+
+
+
+	wall->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
+	wall->Render(wallData.GetWorldMatrix(), CameraSystem::GetInstance()->bgEditorView.GetViewMatrix(), CameraSystem::GetInstance()->bgEditorView.GetProjectionMatrix(),
+		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), wallData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 
 	for (size_t i = 0; i < bgObject.size(); i++)
 	{
-		bgModel[i]->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+		bgModel[i]->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
 		bgModel[i]->Render(bgObject[i].GetOBJ3D().GetWorldMatrix(), CameraSystem::GetInstance()->bgEditorView.GetViewMatrix(), CameraSystem::GetInstance()->bgEditorView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), bgObject[i].GetOBJ3D().GetColor(), FrameWork::GetInstance().GetElapsedTime());
 	}
@@ -324,14 +401,58 @@ void BGEditor::Draw()
 
 void BGEditor::LoadFile()
 {
+	char fileName[] = "Data/Document/BG.json";
 
+	if (PathFileExistsA((std::string(fileName)).c_str()))
+	{
+		std::ifstream ifs;
+		ifs.open((std::string(fileName)).c_str(), std::ios::in);
+		cereal::JSONInputArchive inputArchive(ifs);
+		inputArchive(*this);
+
+		for (size_t i = 0; i < bgObject.size(); i++)
+		{
+			LoadModel(bgObject[i].GetType());
+		}
+	}
 }
 void BGEditor::SaveFile()
 {
+	char fileName[] = "Data/Document/BG.json";
 
+	std::ofstream ofsJson;
+	ofsJson.open((std::string(fileName)).c_str(), std::ios::out);
+	cereal::JSONOutputArchive outputJsonArchive(ofsJson);
+	outputJsonArchive(*this);
 }
 
+void BGEditor::LoadBackUpFile()
+{
+	char fileName[] = "Data/Document/BGBackUP/backup.json";
 
+	if (PathFileExistsA((std::string(fileName)).c_str()))
+	{
+		std::ifstream ifs;
+		ifs.open((std::string(fileName)).c_str(), std::ios::in);
+		cereal::JSONInputArchive inputArchive(ifs);
+		inputArchive(*this);
+
+		for (size_t i = 0; i < bgObject.size(); i++)
+		{
+			LoadModel(bgObject[i].GetType());
+		}
+	}
+}
+void BGEditor::SaveBackUpFile()
+{
+	char fileName[] = "Data/Document/BGBackUP/backup.json";
+
+	std::ofstream ofsJson;
+	ofsJson.open((std::string(fileName)).c_str(), std::ios::out);
+	cereal::JSONOutputArchive outputJsonArchive(ofsJson);
+	outputJsonArchive(*this);
+
+}
 
 
 
