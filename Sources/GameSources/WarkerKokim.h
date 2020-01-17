@@ -31,6 +31,7 @@ public:
 	int wanderingCnt;
 	int atAnimFrame;
 	int attackPoint;
+	bool nowJumpAttack;
 
 	DirectX::XMFLOAT3 vec;
 	DirectX::XMFLOAT3 atJumpVec;

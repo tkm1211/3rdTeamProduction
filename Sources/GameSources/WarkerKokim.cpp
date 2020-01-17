@@ -140,9 +140,13 @@ void WarkerKokim::Update()
 		{
 			modelData->SetPos(
 				DirectX::XMFLOAT3(
-					modelData->GetPos().x + atJumpVec.x*10,
+					modelData->GetPos().x + atJumpVec.x*3,
 					modelData->GetPos().y,
-					modelData->GetPos().z + atJumpVec.z * 10));
+					modelData->GetPos().z + atJumpVec.z * 3));
+		}
+		else
+		{
+			nowJumpAttack = false;
 		}
 
 		AI::Update();

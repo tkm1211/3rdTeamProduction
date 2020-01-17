@@ -20,7 +20,7 @@ bool WarkerAttackJudge::Judgement(AI * obj)
 			warker->GetStrikeRecastMax() < warker->GetStrikeRecastCnt())
 		{
 			int atRand = rand() % 10;
-			if (atRand > 6)
+			if (atRand > 1)
 			{
 				warker->stAttack = WARKER_ATTACK_STATE::JUMP_ATTACK;
 			}
@@ -30,12 +30,10 @@ bool WarkerAttackJudge::Judgement(AI * obj)
 			}
 			warker->SetStrikeRecastCnt(0);
 			return true;
-
 		}
 	}
 	else
 	{
-
 		return true;
 	}
 	warker->SetStrikeRecastCnt(warker->GetStrikeRecastCnt() + 1);
