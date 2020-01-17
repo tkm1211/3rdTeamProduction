@@ -1,24 +1,30 @@
 #pragma once
 
-#include "Hp.h"
 #include <memory>
 #include <Camera.h>
 #include <Model.h>
 #include <Billboard.h>
 #include <GeometricPrimitive.h>
 #include "WaveTex.h"
+#include "Hp.h"
+#include "DamageEffects.h"
+#include "SpecialAttackGauge.h"
 
 class UiSystem
 {
 private:
 	std::unique_ptr<Hp> hp;
 	std::unique_ptr<WaveTex> waveTex;
+	std::unique_ptr<DamageEffects> damageEffectsTex;
+	std::unique_ptr<SpecialAttackGauge> specialAttackGauge;
 	std::unique_ptr<SpriteBatch> attackSpr;
 	TexData attackSprData;
+
 
 public:
 	Hp* GetHpAddress() { return hp.get(); }
 	WaveTex* GetWaveTexAddress() { return waveTex.get(); }
+	DamageEffects* GetDamageEffectsTexAddress() { return damageEffectsTex.get(); }
 public:
 
 	UiSystem() {}

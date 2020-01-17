@@ -22,6 +22,9 @@ private:
 private:
 	void render(float x, float y, float angle, float scalex, float scaley, DirectX::XMFLOAT4 inf, DirectX::XMFLOAT4 tex, DirectX::XMFLOAT4 color);
 public:
+	Hp() {}
+	~Hp() {}
+
 	void Init();
 	void Update();
 	void Draw();

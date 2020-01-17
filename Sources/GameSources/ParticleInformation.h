@@ -71,3 +71,39 @@ struct SmokeParticleInfo
 	float originScale;
 };
 
+struct ThuderEffectInfo
+{
+	Data data;
+	float originScale;
+};
+
+struct UltimetThuderEffectInfo
+{
+	Data data;
+	float originScale;
+};
+
+struct UltimetThuderStoneParticle
+{
+	Data data;
+	DirectX::XMFLOAT3 speed;
+	float subSpeedY;
+	float addAngleZ;
+	bool isBreak;
+};
+
+struct SparkParticle
+{
+	Data data;
+	DirectX::XMFLOAT3 speed;
+	float maxSpeed;
+	float subSpeedY;
+	float angle;
+};
+
+struct SparkAfterImageParticle
+{
+	Data data;
+	float originScale;
+};
+

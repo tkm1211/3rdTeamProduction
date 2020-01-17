@@ -15,6 +15,11 @@ void BuffAreaSystem::Init()
 {
 	//ƒ‚ƒfƒ‹‚Ìƒ[ƒh
 	pArea = std::make_unique<Model>("Data/Assets/Model/val/AreaFrame.fbx", false);
+	areaModelData.areaModelData.Init();
+	areaModelData.state = 0;
+	areaModelData.timer = 0;
+	areaModelData.addRad = 0;
+
 	pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
 	onceLightNum = 0;
@@ -96,19 +101,32 @@ void BuffAreaSystem::Update()
 
 	CharacterSystem::GetInstance()->GetPlayerAddress()->SetAttackMag(enabledBuffAreaNum);
 
+	if (areaModelData.state == 1)
+	{
+		s = easing::OutQuint(areaModelData.timer, 30.0f,RADIUS, 0.0f); //”CˆÓ‚Ì‘å‚«‚³‚Ü‚Å‘å‚«‚­‚·‚é
+		areaModelData.areaModelData.SetScale({ s, s ,s });
+		areaModelData.timer++;
+		areaModelData.areaModelData.SetAngleY(areaModelData.areaModelData.GetAngle().y + areaModelData.addRad);
+		if (areaModelData.timer > 30)
+		{
+			areaModelData.state = 2;
+		}
+	}
+	else if (areaModelData.state == 2)
+	{
+		areaModelData.areaModelData.SetAngleY(areaModelData.areaModelData.GetAngle().y + areaModelData.addRad);
+	}
 	//ImGui();
 }
 
 void BuffAreaSystem::Draw()
 {
-	pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	SetBlenderMode(BM_ALPHA);
-	for (auto& ba : buffArea)
+	if (areaModelData.state >= 1)
 	{
-		if (!ba.isExist || ba.stopFlg) continue;
-		//if (ba.stopFlg) continue;
-		pArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+		SetBlenderMode(BM_ALPHA);
+		pArea->Render(areaModelData.areaModelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), areaModelData.areaModelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 	}
 
 	SetBlenderMode(BM_ALPHA);
@@ -185,6 +203,11 @@ void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 	ba.Init(pos, rad, subRad);
 	ba.addRota = 4 * 0.01745f;
 	SetBuffArea(ba);
+	areaModelData.state = 1;
+	areaModelData.timer = 0;
+	areaModelData.areaModelData.SetPos({pos.x, pos.y + 10, pos.z});
+	areaModelData.areaModelData.SetScale({0, 0, 0});
+	areaModelData.addRad = ba.addRota;
 }
 
 void BuffAreaSystem::BreakBuffArea()
@@ -211,6 +234,11 @@ void BuffAreaSystem::ImGui()
 	ImGui::DragFloat(u8"”{—¦##BuffArea"  , &MAG);
 	ImGui::DragFloat(u8"Œ¸‚é—Ê##BuffArea", &SUB_RAD);
 	ImGui::DragFloat(u8"”¼Œa##BuffArea"  , &RADIUS);
+
+	if (ImGui::Button(u8"¶¬##BuffArea"))
+	{
+		SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos());
+	}
 
 	//cereal ‚Åjson ‚Æbinary ‚É•Û‘¶
 	static std::string data_name;

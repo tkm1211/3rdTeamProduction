@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "OBJ3D.h"
 #include "Collision.h"
+#include "Billboard.h"
 //creal
 #include <cereal/cereal.hpp>
 
@@ -18,11 +19,18 @@
 class Player
 {
 private:
+
 	enum PlayerAtkCountImGui
 	{
 		ATTACK_1ST,
 		ATTACK_2ND,
 		ATTACK_3RD
+	};
+	enum class GuardState
+	{
+		GRD1ST,
+		GRD2ND,
+		GRD3RD
 	};
 	enum class AttackState
 	{
@@ -35,9 +43,13 @@ private:
 		T,
 		WAIT,
 		RUN,
+		DASH,
 		ATTACK1,
 		ATTACK2,
 		ATTACK3,
+		GUARD1,
+		GUARD2,
+		GUARD3,
 		DAMAGE
 	};
 
@@ -52,7 +64,13 @@ private:
 		float speed;
 	};
 
-	int MAX_SPEED     = 10;
+	struct BoneInfo
+	{
+		int meshIndex;
+		int boneIndex;
+	};
+
+	int MAX_SPEED     = 7;
 	int DAMAGE_TIMER  = 30;
 	int ATK_NUMBER    = PlayerAtkCountImGui::ATTACK_1ST;
 	float ATK_MAG     = 0.01f;
@@ -76,8 +94,10 @@ private:
 	std::unique_ptr<Model> pT;
 	std::unique_ptr<Model> pWait;
 	std::unique_ptr<Model> pRun;
+	std::unique_ptr<Model> pDash;
 	std::unique_ptr<Model> pAttack[3];
 	std::unique_ptr<Model> pDamage;
+	std::unique_ptr<Model> pGuard[3];
 
 	OBJ3D modelData;
 
@@ -86,19 +106,32 @@ private:
 
 	// 移動スピード
 	DirectX::XMFLOAT3 moveSpeed;
-	// 1フレーム前の攻撃の座標
-	DirectX::XMFLOAT3 oldAtkPos;
 
 	// 段階攻撃別情報
 	PlayerAttackInfo attackInfo[3];
-
 	// 攻撃ステート
 	AttackState attackState;
+	// ガードステート
+	GuardState  guardState;
+	// 右手のボーン
+	BoneInfo rightBone;
+	// 体のボーン
+	BoneInfo bodyBone;
+	// 右足のボーン
+	BoneInfo rightFootBone;
+	// 左足のボーン
+	BoneInfo leftFootBone;
 
 	// 移動していたらtrue
 	bool isMove;
+	// ガードしていたらture
+	bool isGuard;
+	// ガードが弾かれたらtrue
+	bool isFlip;
 	// 攻撃してたらtrue
 	bool isAttack;
+	// 攻撃終了
+	bool isFinishAttack;
 	// 次の攻撃をするかどうか
 	bool enableNextAttack;
 	// 攻撃collisionを表示するかどうか
@@ -116,7 +149,6 @@ private:
 
 	std::unique_ptr<CollisionPrimitive> footRStepSound;
 	std::unique_ptr<CollisionPrimitive> footLStepSound;
-	std::unique_ptr<CollisionPrimitive> attackAfterImageEmit;
 public:
 
 	std::unique_ptr<CollisionPrimitive> atkCollision;
@@ -131,17 +163,19 @@ private:
 	float GetLeftStickAngle();
 	// ダメージ計算
 	void DamageCalc();
+
+	void Move();
+	void Attack();
+	void Guard();
 public:
 	Player() {}
 	~Player() {}
 
 	void Init();
 	void Update();
+	void CollisionInformation();
 	void Draw();
 	void UnInit();
-
-	void Attack();
-	void Move();
 
 	// ダメージを受ける : _damage ダメージ量
 	void SufferDamage(int _damage);

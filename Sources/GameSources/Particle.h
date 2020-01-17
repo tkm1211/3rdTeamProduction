@@ -24,6 +24,21 @@ public:
 	bool SetCrystalDestroy(CrystalDestroyParticleInfo*p, DirectX::XMFLOAT3 pos);
 
 	void SmokeUpdate(SmokeParticleInfo* p);
-	bool SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos);
+	bool SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos, float minScale, float maxScale);
+
+	void ThuderUpdate(ThuderEffectInfo* p);
+	bool SetThuder(ThuderEffectInfo* p, DirectX::XMFLOAT3 pos);
+
+	void UltimetThuderUpdate(UltimetThuderEffectInfo* p);
+	bool SetUltimateThuder(UltimetThuderEffectInfo* p, DirectX::XMFLOAT3 pos);
+
+	void UltimetThuderStoneUpdate(UltimetThuderStoneParticle* p);
+	bool SetUltimateThuderStone(UltimetThuderStoneParticle* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 nmlSpeed, float scale, bool isBreak);
+
+	bool SparkUpdate(SparkParticle* p);
+	bool SetSpark(SparkParticle* p, DirectX::XMFLOAT3 pos);
+
+	void SparkAfterImageUpdate(SparkAfterImageParticle* p);
+	bool SetSparkAfterImage(SparkAfterImageParticle* p, DirectX::XMFLOAT3 pos, float scsale);
 
 };

@@ -1,5 +1,6 @@
 #include "Particle.h"
 #include "easing.h"
+#include "ParticleSystem.h"
 
 // バフエリア
 void Particle::BuffAreaUpdate(BuffAreaParticleInfo* p)
@@ -176,7 +177,7 @@ bool Particle::SetPlayerAttackAfterImage(PlayerAttackAfterImageParticleInfo* p, 
 	if (p->data.isExist) return false;
 
 	p->data.pos       = pos;
-	p->maxScale       = 100.0f;
+	p->maxScale       = 70.0f;
 	p->data.scale     = { p->maxScale, p->maxScale };
 
 	p->data.angle     = ang;
@@ -262,15 +263,15 @@ void Particle::SmokeUpdate(SmokeParticleInfo* p)
 	}
 }
 
-bool Particle::SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos)
+bool Particle::SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos, float minScale, float maxScale)
 {
 	if (p->data.isExist) return false;
 
 	p->data.pos = pos;
 
-	p->maxScale = rand() % 80 + 100;
+	p->maxScale = rand() % 100 + maxScale;
 
-	p->originScale = rand() % 60 + 150;
+	p->originScale = rand() % 100 + minScale;
 	p->data.scale = { p->originScale, p->originScale };
 	p->maxScale += p->originScale;
 
@@ -293,4 +294,205 @@ bool Particle::SetSmoke(SmokeParticleInfo* p, DirectX::XMFLOAT3 pos)
 
 	return true;
 
+}
+
+void Particle::ThuderUpdate(ThuderEffectInfo* p)
+{
+	if (!p->data.isExist) return;
+	int r = rand() % 4;
+	p->data.tex.Set(1024.0f * (1 + r), 1024.0f * 2, 1024.0f, 1024.0f);
+	p->data.time++;
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+}
+
+bool Particle::SetThuder(ThuderEffectInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	p->originScale = 400;
+	p->data.scale = { p->originScale, p->originScale };
+
+	float a = rand() % 180 - 90;
+	a += rand() % 2 * 180;
+	p->data.angle = { 0, 0, a * 0.01745f };
+
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+
+	p->data.existTime = rand() % 10 + 10;
+	p->data.isExist = true;
+
+	int r = rand() % 4;
+	p->data.tex.Set(1024.0f * (1 + r), 1024.0f * 2, 1024.0f, 1024.0f);
+
+	return true;
+}
+
+void Particle::UltimetThuderUpdate(UltimetThuderEffectInfo* p)
+{
+	if (!p->data.isExist) return;
+	float s = easing::InQuint(p->data.time, p->data.existTime, 0.0f, p->originScale);
+	p->data.scale = { s * 0.3f, s };
+	int r = rand() % 4;
+	p->data.tex.Set(1024.0f * (1 + r), 1024.0f * 2, 1024.0f, 1024.0f);
+	p->data.time++;
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+}
+
+bool Particle::SetUltimateThuder(UltimetThuderEffectInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	p->originScale = 2000;
+	p->data.scale = { p->originScale * 0.3f, p->originScale };
+
+	float a = rand() % 45 - (45 / 2.0f);
+	a += rand() % 2 * 180;
+	p->data.angle = { 0, 0, a * 0.01745f };
+
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+
+	p->data.existTime = rand() % 10 + 5;
+	p->data.isExist = true;
+
+	int r = rand() % 4;
+	p->data.tex.Set(1024.0f * (1 + r), 1024.0f * 2, 1024.0f, 1024.0f);
+
+	return true;
+}
+
+void Particle::UltimetThuderStoneUpdate(UltimetThuderStoneParticle* p)
+{
+	if (!p->data.isExist) return;
+	p->data.pos = { p->data.pos.x + p->speed.x, p->data.pos.y + p->speed.y, p->data.pos.z + p->speed.z };
+	p->speed.y -= p->subSpeedY;
+	p->data.angle.z += p->addAngleZ;
+	p->data.time++;
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+}
+
+bool Particle::SetUltimateThuderStone(UltimetThuderStoneParticle* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 nmlSpeed, float scale, bool isBreak)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	p->data.scale = { scale, scale };
+
+	float _speedY = 0;
+	 _speedY = rand() % 10 + 15.0f;
+	p->speed = { nmlSpeed.x * 8.0f, _speedY, nmlSpeed.z * 8.0f };
+
+	float a = rand() % 45 - (45 / 2.0f);
+	a += rand() % 2 * 180;
+	p->data.angle = { 0, 0, a * 0.01745f };
+
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+
+	p->data.existTime = rand() % 10 + 40;
+	p->data.isExist = true;
+
+	p->subSpeedY = (p->data.existTime * 0.5f) / p->speed.y;
+	p->addAngleZ = (rand() % 14 - 7) * 0.01745f;
+
+	p->data.tex.Set(1024.0f * 0, 1024.0f * 2, 1024.0f, 1024.0f);
+
+	return true;
+}
+
+bool Particle::SparkUpdate(SparkParticle* p)
+{
+	if (!p->data.isExist) return false;
+
+
+	p->data.pos.x += p->speed.x;
+	p->data.pos.y += p->speed.y;
+	p->data.pos.z += p->speed.z;
+
+	p->data.time++;
+
+	p->speed.y += p->subSpeedY;
+
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+	return true;
+}
+
+bool Particle::SetSpark(SparkParticle* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	float s = rand() % 50 + 10.0f;
+	p->data.scale = { s, s};
+
+	p->data.angle = { 0, 0, 0 };
+
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+
+	p->maxSpeed = rand() % 10 + 5;
+	p->angle = rand() % 360 * 0.01745f;
+
+	p->speed = { sinf(p->angle) * p->maxSpeed, rand() % 8 + 3.0f, cosf(p->angle) * p->maxSpeed };
+	p->subSpeedY = p->speed.y * -0.48f;
+
+	p->data.existTime = rand() % 10 + 40;
+	p->data.isExist = true;
+
+	p->data.tex.Set(1024.0f * 0, 1024.0f * 3, 1024.0f, 1024.0f);
+
+	return true;
+}
+
+void Particle::SparkAfterImageUpdate(SparkAfterImageParticle* p)
+{
+	if (!p->data.isExist) return;
+
+	float s = easing::OutSine(p->data.time, p->data.existTime, 0, p->originScale);
+	p->data.scale = { s, s };
+
+	p->data.time++;
+
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+}
+
+bool Particle::SetSparkAfterImage(SparkAfterImageParticle* p, DirectX::XMFLOAT3 pos, float scale)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+
+	p->data.scale = { scale, scale };
+
+	p->originScale = scale;
+
+	p->data.angle = { 0, 0, 0 };
+
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+
+	p->data.existTime = 10;
+	p->data.isExist = true;
+
+	p->data.tex.Set(1024.0f * 0, 1024.0f * 3, 1024.0f, 1024.0f);
+
+	return true;
 }

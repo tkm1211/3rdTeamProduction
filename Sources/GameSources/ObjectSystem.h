@@ -1,6 +1,7 @@
 #pragma once
 #include "BuffArea.h"
 #include "BG.h"
+
 class ObjectSystem
 {
 private:

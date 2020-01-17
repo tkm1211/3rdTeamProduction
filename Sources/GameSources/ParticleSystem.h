@@ -1,12 +1,16 @@
 #pragma once
 #include "Billboard.h"
 #include "Particle.h"
+#include "PlayerAttackEffect.h"
+#include "SwordLocus.h"
 
 class ParticleSystem
 {
 private:
 	static const int MAX = 1000;
 	std::unique_ptr<Billboard> texture;
+	std::unique_ptr<PlayerAttackEffect> playerAttackEffect;
+	std::unique_ptr<SwordLocus> swordLocus;
 
 	BuffAreaParticleInfo bap[MAX];
 	PlayerAttackSlashParticleInfo pasp[MAX];
@@ -14,6 +18,11 @@ private:
 	PlayerAttackAfterImageParticleInfo plAfterImage[MAX];
 	CrystalDestroyParticleInfo crystalDestroy[MAX];
 	SmokeParticleInfo smoke[MAX];
+	ThuderEffectInfo thunder[MAX];
+	UltimetThuderEffectInfo ultimetThunder[MAX];
+	UltimetThuderStoneParticle ultimetThunderStone[MAX];
+	SparkParticle spark[MAX];
+	SparkAfterImageParticle sparkAfterImage[MAX];
 
 	Particle ptc;
 public:
@@ -35,6 +44,8 @@ public:
 		return &instance;
 	}
 
+	PlayerAttackEffect* GetPlayerAttackEffect() { return playerAttackEffect.get(); }
+	SwordLocus* GetSwordLocus() { return swordLocus.get(); }
 
 	// íBêlÇÃâåìõ
 	void SetBuffAreaParticle(DirectX::XMFLOAT3 pos, float rad)
@@ -89,8 +100,8 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			//if (ptc.SetPlayerAttackAfterImage(&plAfterImage[i], ePos)) return;
-			if (ptc.SetPlayerAttackAfterImage(&plAfterImage[i], SphereLinear(origin, ePos, sPos, 0.05f*num), angle)) num++;
-			if (num > 20) return;
+			if (ptc.SetPlayerAttackAfterImage(&plAfterImage[i], SphereLinear(origin, ePos, sPos, 0.1f*num), angle)) num++;
+			if (num > 10) return;
 		} 
 	}
 
@@ -115,8 +126,70 @@ public:
 		int num = 0;
 		for (int i = 0; i < MAX; i++)
 		{
-			if (ptc.SetSmoke(&smoke[i], pos)) num++;
+			if (ptc.SetSmoke(&smoke[i], pos, 150, 100)) num++;
 			if (num >= 2) return;
+		}
+	}
+
+	// óã
+	void SetThunder(DirectX::XMFLOAT3 pos)
+	{
+		int num = 0;
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetThuder(&thunder[i], pos)) return;
+		}
+	}
+	void SetUltimateThunder(DirectX::XMFLOAT3 pos)
+	{
+		int num = 1000;
+		DirectX::XMFLOAT3 _p = { rand() % num - (num / 2.0f), 0, rand() % num - (num / 2.0f) };
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetUltimateThuder(&ultimetThunder[i], { pos.x + _p.x, pos.y +300, pos.z + _p.z }))
+			{
+				DirectX::XMFLOAT3 _sp = {};
+				DirectX::XMStoreFloat3(&_sp, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&_p)));
+				num = 0;
+				for (int j = 0; j < MAX; j++)
+				{
+					if (ptc.SetUltimateThuderStone(&ultimetThunderStone[i], { pos.x + _p.x, pos.y + _p.y, pos.z + _p.z }, _sp, rand() % 50 + 50, true))
+					{
+						for (int k = 0; k < MAX; k++)
+						{
+							if (ptc.SetSmoke(&smoke[k], { pos.x + _p.x, pos.y + _p.y, pos.z + _p.z }, 1000, 1300)) return;
+						}
+						return;
+					}
+				}
+				return;
+			}
+		}
+	}
+
+	// âŒâ‘
+	void SetSpark(DirectX::XMFLOAT3 pos)
+	{
+		int num = 0;
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetSpark(&spark[i], pos)) num++;
+				
+			if (num > 10)
+			{
+				for (int k = 0; k < MAX; k++)
+				{
+					if (ptc.SetSmoke(&smoke[k], pos, 20, 60)) return;
+				}
+			}
+		}
+	}
+	void SetSparkAfterImage(DirectX::XMFLOAT3 pos, float scale)
+	{
+		int num = 0;
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetSparkAfterImage(&sparkAfterImage[i], pos, scale)) return;
 		}
 	}
 

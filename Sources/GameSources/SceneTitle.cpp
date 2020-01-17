@@ -9,6 +9,7 @@
 #include "SkinnedMesh.h"
 #include "CharacterSystem.h"
 #include "ObjectSystem.h"
+#include "UiSystem.h"
 #include "ParticleSystem.h"
 #include "Editer.h"
 #include "CameraSystem.h"
@@ -29,7 +30,7 @@ void SceneTitle::Init()
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
-
+	UiSystem::GetInstance()->Init();
 }
 
 void SceneTitle::Update()
@@ -43,14 +44,21 @@ void SceneTitle::Update()
 	));
 
 	ParticleSystem::GetInstance()->Update();
+	UiSystem::GetInstance()->Update();
 
+	DirectX::XMFLOAT3 _p = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
+	float _a = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
+	if (xInput->bDOWNt)
+	{
+		UiSystem::GetInstance()->GetDamageEffectsTexAddress()->AddToEffects(_p, {0, 0, 0});
+	}
 
-	if (GetKeyState('/') < 0/* || xInput[0].bAt*/)
+	if (GetKeyState (' ') < 0/* || xInput[0].bAt*/)
 	{
 		if (!Fade::GetInstance()->onFadeFlg)
 		{
 			Fade::GetInstance()->onFadeFlg = true;
-			Fade::GetInstance()->SetNextScene(new SceneGame());
+			Fade::GetInstance()->SetNextScene(new SceneTitle());
 			//SetScene(new SceneLabo(), false);
 		}
 	}
@@ -62,6 +70,7 @@ void SceneTitle::Render()
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	ParticleSystem::GetInstance()->Draw();
+	UiSystem::GetInstance()->Draw();
 
 	//titleBgSpr->Begin();
 	//titleBgSpr->Draw({ 0, 0 }, { 1920, 1080 }, titleBgSprData.texPos, titleBgSprData.size, 0, { 1, 1, 1, 1 });

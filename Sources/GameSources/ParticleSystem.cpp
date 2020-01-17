@@ -8,6 +8,10 @@
 void ParticleSystem::Init()
 {
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
+	playerAttackEffect = std::make_unique<PlayerAttackEffect>();
+	playerAttackEffect->Init();
+	swordLocus = std::make_unique<SwordLocus>();
+	swordLocus->Init();
 	popParticleNum = 0;
 }
 
@@ -15,14 +19,26 @@ void ParticleSystem::Update()
 {
 	for (int i = 0; i < MAX; i++)
 	{
-		
 		ptc.BuffAreaUpdate(&bap[i]);
 		ptc.PlayerAttackSlashUpdate(&pasp[i]);
 		ptc.PlayerAttackSparkUpdate(&paspark[i]);
 		ptc.PlayerAttackAfterImageUpdate(&plAfterImage[i]);
 		ptc.CrystalDestroyUpdate(&crystalDestroy[i]);
 		ptc.SmokeUpdate(&smoke[i]);
+		ptc.ThuderUpdate(&thunder[i]);
+		ptc.UltimetThuderUpdate(&ultimetThunder[i]);
+		ptc.UltimetThuderStoneUpdate(&ultimetThunderStone[i]);
+		if (ptc.SparkUpdate(&spark[i]))
+		{
+			SetSparkAfterImage(spark[i].data.pos, spark[i].data.scale.x);
+		}
+
+		ptc.SparkAfterImageUpdate(&sparkAfterImage[i]);
 	}
+
+	playerAttackEffect->Update();
+	swordLocus->Update();
+
 }
 
 void ParticleSystem::Draw()
@@ -59,7 +75,35 @@ void ParticleSystem::Draw()
 				plAfterImage[i].data.angle, plAfterImage[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
 			popParticleNum++;
 		}
+		if (thunder[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				thunder[i].data.pos, thunder[i].data.tex.x, thunder[i].data.tex.y, thunder[i].data.tex.sx, thunder[i].data.tex.sy,
+				thunder[i].data.angle, thunder[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
+		if (ultimetThunder[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				ultimetThunder[i].data.pos, ultimetThunder[i].data.tex.x, ultimetThunder[i].data.tex.y, ultimetThunder[i].data.tex.sx, ultimetThunder[i].data.tex.sy,
+				ultimetThunder[i].data.angle, ultimetThunder[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
+		if (sparkAfterImage[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				sparkAfterImage[i].data.pos, sparkAfterImage[i].data.tex.x, sparkAfterImage[i].data.tex.y, sparkAfterImage[i].data.tex.sx, sparkAfterImage[i].data.tex.sy,
+				sparkAfterImage[i].data.angle, sparkAfterImage[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
 		SetBlenderMode(BM_ALPHA);
+		if (ultimetThunderStone[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				ultimetThunderStone[i].data.pos, ultimetThunderStone[i].data.tex.x, ultimetThunderStone[i].data.tex.y, ultimetThunderStone[i].data.tex.sx, ultimetThunderStone[i].data.tex.sy,
+				ultimetThunderStone[i].data.angle, ultimetThunderStone[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
 		if (smoke[i].data.isExist)
 		{
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
@@ -77,6 +121,9 @@ void ParticleSystem::Draw()
 	}
 	texture->End();
 
+	playerAttackEffect->Draw();
+	swordLocus->Draw();
+	
 	SetBlenderMode(BM_NONE);
 
 

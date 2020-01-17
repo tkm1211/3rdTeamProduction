@@ -86,11 +86,21 @@ public:
 class BuffAreaSystem
 {
 private:
+	struct AreaModelData
+	{
+		float timer;
+		int state;
+		OBJ3D areaModelData;
+		float addRad;
+	};
+
 	float MAG = 0.01f;
 	float SUB_RAD = 0.1f;
 	float RADIUS = 500.0f;
 
 	std::unique_ptr<Model> pArea;
+	AreaModelData areaModelData;
+
 	std::unique_ptr<Model> pCrystal;
 
 	int onceLightNum;
