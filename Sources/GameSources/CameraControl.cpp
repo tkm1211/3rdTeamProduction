@@ -103,8 +103,8 @@ void CameraControl::MouseControlUpdate( Camera* camera )
 
 void CameraControl::PadControlUpdate( Camera* camera )
 {
-	camera->rotateY += (static_cast<float>(xInput[0].sRX) / 1000.0f) * 0.01745f;
-	camera->rotateX += (static_cast<float>(xInput[0].sRY) / 1000.0f) * 0.01745f;
+	camera->rotateY += (static_cast<float>(xInput[0].sRX) / 1000.0f) * 2 * 0.01745f;
+	camera->rotateX += (static_cast<float>(xInput[0].sRY) / 1000.0f)  * 2 * 0.01745f;
 	if (0.3f < camera->rotateX)
 	{
 		camera->rotateX = 0.3f;

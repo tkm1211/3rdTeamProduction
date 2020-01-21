@@ -14,7 +14,7 @@
 #include "Editer.h"
 #include "CameraSystem.h"
 #include "SoundLoader.h"
-
+#include "Ranking.h"
 
 void SceneTitle::Init()
 {
@@ -27,10 +27,14 @@ void SceneTitle::Init()
 	//startSprData.texPos = { 0, 0 };		//テクスチャの左上
 	//startSprData.size = { 293, 71 };	//テクスチャの幅、高さ
 
+	gameTimer = std::make_unique<GameTimer>();
+	gameTimer->Init();
+
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
 	UiSystem::GetInstance()->Init();
+	Ranking::GetInstance()->Init();
 }
 
 void SceneTitle::Update()
@@ -38,10 +42,11 @@ void SceneTitle::Update()
 	CharacterSystem::GetInstance()->Update();
 	ObjectSystem::GetInstance()->Update();
 
-	CameraSystem::GetInstance()->mainView.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
-		CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-		CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
-	));
+	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
+	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
+
+	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z});
+	DirectX::XMFLOAT3 l = CameraSystem::GetInstance()->mainView.GetPos();
 
 	ParticleSystem::GetInstance()->Update();
 	UiSystem::GetInstance()->Update();
@@ -57,11 +62,13 @@ void SceneTitle::Update()
 	{
 		if (!Fade::GetInstance()->onFadeFlg)
 		{
+			Ranking::GetInstance()->Sort(gameTimer->timeNum, gameTimer->timer, gameTimer->frameNum);
 			Fade::GetInstance()->onFadeFlg = true;
 			Fade::GetInstance()->SetNextScene(new SceneTitle());
 			//SetScene(new SceneLabo(), false);
 		}
 	}
+	gameTimer->Update();
 
 }
 
@@ -71,7 +78,8 @@ void SceneTitle::Render()
 	ObjectSystem::GetInstance()->Draw();
 	ParticleSystem::GetInstance()->Draw();
 	UiSystem::GetInstance()->Draw();
-
+	gameTimer->Draw();
+	//Ranking::GetInstance()->Draw();
 	//titleBgSpr->Begin();
 	//titleBgSpr->Draw({ 0, 0 }, { 1920, 1080 }, titleBgSprData.texPos, titleBgSprData.size, 0, { 1, 1, 1, 1 });
 	//titleBgSpr->End();

@@ -323,7 +323,6 @@ void Player::SwitchMotion( ModelState state )
 		pAttack[0]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
 		pAttack[0]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
 
-		ParticleSystem::GetInstance()->GetPlayerAttackEffect()->SetEffectInfo(atkCollision->GetPos(), 0);
 
 		//PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
 		//SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
@@ -337,7 +336,6 @@ void Player::SwitchMotion( ModelState state )
 		pAttack[1]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
 		pAttack[1]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
 
-		ParticleSystem::GetInstance()->GetPlayerAttackEffect()->SetEffectInfo(atkCollision->GetPos(), 1);
 
 		//PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
 		//SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
@@ -352,7 +350,6 @@ void Player::SwitchMotion( ModelState state )
 		pAttack[2]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
 		pAttack[2]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
 
-		ParticleSystem::GetInstance()->GetPlayerAttackEffect()->SetEffectInfo(atkCollision->GetPos(), 2);
 
 		//PlaySoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
 		//SetVolume(SoundLoader::GetInstance()->playerAttackSwingSe.get(), 1.0f);
@@ -610,7 +607,7 @@ void Player::Attack()
 					isFinishAttack       = false;
 				}
 			}
-			if (pAttack[attackCnt]->GetAnimationFrame() > 30)
+			if (pAttack[attackCnt]->GetAnimationFrame() > 25)
 			{
 				isAttack               = false;
 				isFinishAttack       = false;
@@ -764,8 +761,9 @@ void Player::CollisionInformation()
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * 21.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -28.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -40.0f });
 
-		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -86.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -107.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -95.0f },
-			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 });
+
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, modelData.GetPos());
 
 		// R_Foot
 		boneTransform = pWait->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
@@ -794,8 +792,8 @@ void Player::CollisionInformation()
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * 21.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -28.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -40.0f });
 
-		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -86.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -107.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -95.0f },
-			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 });
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, modelData.GetPos());
 
 		// R_Foot
 		boneTransform = pRun->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
@@ -846,8 +844,8 @@ void Player::CollisionInformation()
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * 21.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -28.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -40.0f });
 
-		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -86.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -107.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -95.0f },
-			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 });
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, modelData.GetPos());
 
 		// R_Foot
 		boneTransform = pAttack[0]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
@@ -876,8 +874,8 @@ void Player::CollisionInformation()
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * 21.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -28.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -40.0f });
 
-		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -86.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -107.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -95.0f },
-			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 });
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, modelData.GetPos());
 
 		// R_Foot
 		boneTransform = pAttack[1]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
@@ -904,9 +902,9 @@ void Player::CollisionInformation()
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * 21.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -28.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -40.0f });
-
-		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -86.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -107.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -95.0f },
-			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 });
+		
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, modelData.GetPos());
 
 		// R_Foot
 		boneTransform = pAttack[2]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
@@ -959,7 +957,7 @@ void Player::ImGui()
 	ImGui::Begin(u8"Player");
 	
 	ImGui::Text (u8"合計攻撃                 : %f" , totalAttack);
-	ImGui::Text (u8"アニメーションフレーム   : %d" , pGuard[2]->GetAnimationFrame());
+	ImGui::Text (u8"アニメーションフレーム   : %d" , pAttack[0]->GetAnimationFrame());
 
 	ImGui::Text (u8"パーティクル数           : %d" , ParticleSystem::GetInstance()->popParticleNum);
 	ParticleSystem::GetInstance()->popParticleNum = 0;
@@ -988,7 +986,10 @@ void Player::ImGui()
 	//// ボーン行列をワールド空間に変換
 	//DirectX::XMFLOAT4X4 boneTransformWithWorld;
 	//DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
-	//atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * _p.x, boneTransformWithWorld._42 + boneTransformWithWorld._32 * _p.y , boneTransformWithWorld._43 + boneTransformWithWorld._33 * _p.z });
+	//atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f });
+
+	//ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint(atkCollision->GetPos(),
+	//	{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, modelData.GetPos());
 
 
 	ImGui::RadioButton("1st##Player", &ATK_NUMBER, PlayerAtkCountImGui::ATTACK_1ST);

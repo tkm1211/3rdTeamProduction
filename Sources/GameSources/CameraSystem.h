@@ -14,8 +14,8 @@ public:
 	~CameraSystem() {}
 
 	void Init()
-	{
-		mainView.Init( DirectX::XMFLOAT3( 270.0f, 500.0f, 1414.0f ), DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f ) );
+	{ 
+		mainView.Init( DirectX::XMFLOAT3(-9.97f, 265.0f, -830.0f ), DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f ) );
 		enemyEditorView.Init( DirectX::XMFLOAT3( 270.0f, 500.0f, 1414.0f ), DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f ) );
 		bgEditorView.Init( DirectX::XMFLOAT3( 270.0f, 500.0f, 1414.0f ), DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f ) );
 	}

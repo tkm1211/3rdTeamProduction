@@ -26,7 +26,7 @@ private:
 	OBJ3D obj;
 
 public:
-	 BGObject() {}
+	BGObject() {}
 	~BGObject() {}
 
 public:
@@ -34,7 +34,7 @@ public:
 	{
 		type = _type;
 		obj = _obj;
-	}
+}
 
 	int GetType() { return type; }
 	OBJ3D GetOBJ3D() { return obj; }
@@ -84,7 +84,6 @@ private:
 	int backUpCnt;
 
 	std::vector<std::unique_ptr<Model>> bgModel;
-	std::vector<BGObject> bgObject;
 
 	std::unique_ptr<Model> ground;
 	std::unique_ptr<Model> wall;
@@ -93,6 +92,8 @@ private:
 	OBJ3D wallData;
 
 public:
+	std::vector<BGObject> bgObject;
+
 	 BGEditor() {}
 	~BGEditor() {}
 
@@ -110,8 +111,8 @@ public:
 
 	bool GetOn() { return on; }
 
-private:
 	void LoadFile();
+private:
 	void SaveFile();
 
 	void LoadBackUpFile();

@@ -1,7 +1,6 @@
 #pragma once
 #include "Billboard.h"
 #include "Particle.h"
-#include "PlayerAttackEffect.h"
 #include "SwordLocus.h"
 
 class ParticleSystem
@@ -9,7 +8,6 @@ class ParticleSystem
 private:
 	static const int MAX = 1000;
 	std::unique_ptr<Billboard> texture;
-	std::unique_ptr<PlayerAttackEffect> playerAttackEffect;
 	std::unique_ptr<SwordLocus> swordLocus;
 
 	BuffAreaParticleInfo bap[MAX];
@@ -44,7 +42,6 @@ public:
 		return &instance;
 	}
 
-	PlayerAttackEffect* GetPlayerAttackEffect() { return playerAttackEffect.get(); }
 	SwordLocus* GetSwordLocus() { return swordLocus.get(); }
 
 	// íBêlÇÃâåìõ

@@ -1,0 +1,126 @@
+{
+    "value0": {
+        "bgObject": [
+            {
+                "type": 0,
+                "obj": {
+                    "pos.x": 643.0475463867188,
+                    "pos.y": 0.0,
+                    "pos.z": 0.0,
+                    "speed.x": 0.0,
+                    "speed.y": 0.0,
+                    "speed.z": 0.0,
+                    "scale.x": 0.9999938011169434,
+                    "scale.y": 0.9999939203262329,
+                    "scale.z": 0.9999966621398926,
+                    "angle.x": -1.0615146160125733,
+                    "angle.y": 0.22773294150829316,
+                    "angle.z": 1.2919539213180543,
+                    "color.r": 1.0,
+                    "color.g": 1.0,
+                    "color.b": 1.0,
+                    "color.a": 1.0,
+                    "adjust.x": 0.0,
+                    "adjust.y": 0.0,
+                    "adjust.z": 0.0
+                }
+            },
+            {
+                "type": 2,
+                "obj": {
+                    "pos.x": -126.19581604003906,
+                    "pos.y": -6.044036865234375,
+                    "pos.z": 179.104248046875,
+                    "speed.x": 0.0,
+                    "speed.y": 0.0,
+                    "speed.z": 0.0,
+                    "scale.x": 1.0,
+                    "scale.y": 1.0,
+                    "scale.z": 1.0,
+                    "angle.x": -0.0,
+                    "angle.y": 0.0,
+                    "angle.z": -0.0,
+                    "color.r": 1.0,
+                    "color.g": 1.0,
+                    "color.b": 1.0,
+                    "color.a": 1.0,
+                    "adjust.x": 0.0,
+                    "adjust.y": 0.0,
+                    "adjust.z": 0.0
+                }
+            },
+            {
+                "type": 1,
+                "obj": {
+                    "pos.x": 385.6031799316406,
+                    "pos.y": -37.3619384765625,
+                    "pos.z": 509.4305419921875,
+                    "speed.x": 0.0,
+                    "speed.y": 0.0,
+                    "speed.z": 0.0,
+                    "scale.x": 0.9999960064888,
+                    "scale.y": 0.999997615814209,
+                    "scale.z": 0.9999973177909851,
+                    "angle.x": -0.8015419244766235,
+                    "angle.y": -0.23423466086387635,
+                    "angle.z": 0.7478039860725403,
+                    "color.r": 1.0,
+                    "color.g": 1.0,
+                    "color.b": 1.0,
+                    "color.a": 1.0,
+                    "adjust.x": 0.0,
+                    "adjust.y": 0.0,
+                    "adjust.z": 0.0
+                }
+            },
+            {
+                "type": 3,
+                "obj": {
+                    "pos.x": -128.58792114257813,
+                    "pos.y": 3.9591617584228517,
+                    "pos.z": 0.0,
+                    "speed.x": 0.0,
+                    "speed.y": 0.0,
+                    "speed.z": 0.0,
+                    "scale.x": 1.0,
+                    "scale.y": 1.0,
+                    "scale.z": 1.0,
+                    "angle.x": -0.0,
+                    "angle.y": 0.0,
+                    "angle.z": -0.0,
+                    "color.r": 1.0,
+                    "color.g": 1.0,
+                    "color.b": 1.0,
+                    "color.a": 1.0,
+                    "adjust.x": 0.0,
+                    "adjust.y": 0.0,
+                    "adjust.z": 0.0
+                }
+            },
+            {
+                "type": 3,
+                "obj": {
+                    "pos.x": 0.0,
+                    "pos.y": 0.0,
+                    "pos.z": 0.0,
+                    "speed.x": 0.0,
+                    "speed.y": 0.0,
+                    "speed.z": 0.0,
+                    "scale.x": 1.0,
+                    "scale.y": 1.0,
+                    "scale.z": 1.0,
+                    "angle.x": 0.0,
+                    "angle.y": 0.0,
+                    "angle.z": 0.0,
+                    "color.r": 1.0,
+                    "color.g": 1.0,
+                    "color.b": 1.0,
+                    "color.a": 1.0,
+                    "adjust.x": 0.0,
+                    "adjust.y": 0.0,
+                    "adjust.z": 0.0
+                }
+            }
+        ]
+    }
+}

@@ -8,8 +8,6 @@
 void ParticleSystem::Init()
 {
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
-	playerAttackEffect = std::make_unique<PlayerAttackEffect>();
-	playerAttackEffect->Init();
 	swordLocus = std::make_unique<SwordLocus>();
 	swordLocus->Init();
 	popParticleNum = 0;
@@ -36,7 +34,6 @@ void ParticleSystem::Update()
 		ptc.SparkAfterImageUpdate(&sparkAfterImage[i]);
 	}
 
-	playerAttackEffect->Update();
 	swordLocus->Update();
 
 }
@@ -121,7 +118,6 @@ void ParticleSystem::Draw()
 	}
 	texture->End();
 
-	playerAttackEffect->Draw();
 	swordLocus->Draw();
 	
 	SetBlenderMode(BM_NONE);

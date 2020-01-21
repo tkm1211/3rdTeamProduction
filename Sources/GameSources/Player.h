@@ -13,9 +13,6 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
 
-
-
-
 class Player
 {
 private:

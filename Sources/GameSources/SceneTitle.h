@@ -8,8 +8,7 @@
 
 #include "Scene.h"
 #include "Sprite.h"
-
-#include "Player.h"
+#include "GameTimer.h"
 
 class SceneTitle : public Scene
 {
@@ -19,6 +18,8 @@ private:
 	TexData titleBgSprData;
 	std::unique_ptr<SpriteBatch> startSpr;
 	TexData startSprData;
+
+	std::unique_ptr<GameTimer> gameTimer;
 
 public:
 	void Init();
