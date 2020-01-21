@@ -180,29 +180,29 @@ void SwordLocusSprite::CreateBuffer(ID3D11Device* device, Vertex* vertices, unsi
 
 void SwordLocusSprite::CreateMesh(ID3D11Device* device, DirectX::XMFLOAT4 tex)
 {
-	Vertex vertices[4 * 10] = {}; // 4頂点 * 6面
-	unsigned int indices[3 * 2 * 10] = {};//　3頂点 * 2枚 * 6面 （三角形ポリゴン）
+	Vertex vertices[4 * 9 * 11 - 4] = {}; // 4頂点 * 10面
+	unsigned int indices[3 * 2 * 9 * 11 - 6] = {};//　3頂点 * 2枚 * 10面 （三角形ポリゴン）
 
 	int numV = 0, numI = 0;
 	float otex = tex.x / texture2dDesc.Width;
 	float ntex = tex.x / texture2dDesc.Width;
-	for (int i = 1; i < 11; i++)
+	for (int i = 1; i < 99; i++)
 	{
-	vertices[numV + 0].pos = meshInfo[i].dPos;
-	vertices[numV + 1].pos = meshInfo[i].uPos;
-	vertices[numV + 2].pos = meshInfo[i - 1].dPos;
-	vertices[numV + 3].pos = meshInfo[i - 1].uPos;
-	vertices[numV + 0].texcoord = {ntex, 1.0f};
-	vertices[numV + 1].texcoord = {ntex, 0.0f};
-	vertices[numV + 2].texcoord = {otex, 1.0f};
-	vertices[numV + 3].texcoord = {otex, 0.0f};
-	vertices[numV + 0].normal = vertices[numV + 1].normal =
-		vertices[numV + 2].normal = vertices[numV + 3].normal = DirectX::XMFLOAT3(+0.0f, +1.0f, +0.0f);
-	indices[numI + 0] = numV + 0;	indices[numI + 1] = numV + 1;	indices[numI + 2] = numV + 2;
-	indices[numI + 3] = numV + 1;	indices[numI + 4] = numV + 3;	indices[numI + 5] = numV + 2;
-	numV += 4;	numI += 6;
-	otex += ( tex.z / texture2dDesc.Width) / 10.0f;
-	ntex += ( tex.z / texture2dDesc.Width) / 10.0f;
+		vertices[numV + 0].pos = meshInfo[i].dPos;
+		vertices[numV + 1].pos = meshInfo[i].uPos;
+		vertices[numV + 2].pos = meshInfo[i - 1].dPos;
+		vertices[numV + 3].pos = meshInfo[i - 1].uPos;
+		vertices[numV + 0].texcoord = {ntex, 1.0f};
+		vertices[numV + 1].texcoord = {ntex, 0.0f};
+		vertices[numV + 2].texcoord = {otex, 1.0f};
+		vertices[numV + 3].texcoord = {otex, 0.0f};
+		vertices[numV + 0].normal = vertices[numV + 1].normal =
+			vertices[numV + 2].normal = vertices[numV + 3].normal = DirectX::XMFLOAT3(+0.0f, +1.0f, +0.0f);
+		indices[numI + 0] = numV + 0;	indices[numI + 1] = numV + 1;	indices[numI + 2] = numV + 2;
+		indices[numI + 3] = numV + 1;	indices[numI + 4] = numV + 3;	indices[numI + 5] = numV + 2;
+		numV += 4;	numI += 6;
+		otex += ( tex.z / texture2dDesc.Width) / (9.0f * 11.0f);
+		ntex += ( tex.z / texture2dDesc.Width) / (9.0f * 11.0f);
 	}
 
 	//バッファー作成

@@ -129,7 +129,7 @@ public:
 		MOUSE.ReleaseDInputMouse();
 		MOUSE.ReleaseDInput();
 
-		SceneManager::GetInstance()->UnInit();
+		UnInit();
 
 		return static_cast<int>( msg.wParam );
 
@@ -195,6 +195,7 @@ private:
 	bool Initialize( bool enableMsaa = false, int subSamples = 1 );
 	void Update( float elapsedTime );
 	void Render( float elapsedTime );
+	void UnInit();
 
 private:
 	HighResolutionTimer timer;

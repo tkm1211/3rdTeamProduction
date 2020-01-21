@@ -399,6 +399,11 @@ void FrameWork::Render( float elapsedTime )
 
 }
 
+void FrameWork::UnInit()
+{
+	SceneManager::GetInstance()->UnInit();
+}
+
 void SetRasterizerState(int state)
 {
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();

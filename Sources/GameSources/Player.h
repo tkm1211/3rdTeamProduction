@@ -118,6 +118,8 @@ private:
 	BoneInfo rightFootBone;
 	// 左足のボーン
 	BoneInfo leftFootBone;
+	// 右腕のボーン
+	BoneInfo rightArmBone;
 
 	// 移動していたらtrue
 	bool isMove;

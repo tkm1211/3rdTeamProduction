@@ -57,7 +57,7 @@ public:
 
 	int numIndex;
 
-	MeshInfo meshInfo[11];
+	MeshInfo meshInfo[9 * 11 + 1];
 
 public:
 	SwordLocusSprite(ID3D11Device* device, const wchar_t* fileName);

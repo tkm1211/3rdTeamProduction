@@ -4,7 +4,7 @@
 void SwordLocus::Init()
 {
 	// geometry collision
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 9 * 11 + 1; i++)
 	{
 		ci[i].handPoint = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(10, 10, 10));
 		ci[i].handPoint->SetColor({ 1, 0, 0, 1 });
@@ -15,7 +15,7 @@ void SwordLocus::Init()
 
 	spr = std::make_unique<SwordLocusSprite>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/swordLocus.png");
 
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 9 * 11 + 1; i++)
 	{
 		spr->meshInfo[i].dPos = {0, 0, 0};
 		spr->meshInfo[i].uPos = {0, 0, 0};
