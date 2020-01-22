@@ -27,6 +27,9 @@ public:
 	// Player vs ステージ
 	static void PlayerVsStage();
 
+	// Camera vs ステージ
+	static void CameraVsStage();
+
 	// 雑魚達 vs ステージ
 	static void EnemiesVsStage();
 };

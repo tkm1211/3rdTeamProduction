@@ -15,17 +15,25 @@
 #include "SoundLoader.h"
 #include "Shot.h"
 #include "UiSystem.h"
+#include "Ranking.h"
+#include "Crystal.h"
 
 void SceneGame::Init()
 {
 	AllSoundStop();
+	gameTimer = std::make_unique<GameTimer>();
+	gameTimer->Init();
+
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
 	ParticleSystem::GetInstance()->Init();
+	UiSystem::GetInstance()->Init();
+	Ranking::GetInstance()->Init();
+	CrystalSystem::GetInstance()->Init();
 	//UiSystem::GetInstance()->Init();
 
 	//UiSystem::GetInstance()->GetWaveTexAddress()->Start(1);
-	Editer::GetInstance()->SetNowEditer(true);
+	Editer::GetInstance()->SetNowEditer(false);
 
 }
 
@@ -34,14 +42,26 @@ void SceneGame::Update()
 	//if (Fade::GetInstance()->onFadeFlg) return;
 
 	CharacterSystem::GetInstance()->Update();
+	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead()) CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
+	else CameraControl::CameraRotation(&CameraSystem::GetInstance()->mainView);
+	CollisionJudge::CameraVsStage();
+
 	ObjectSystem::GetInstance()->Update();
+
+	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
+	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
+
+	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z });
+	DirectX::XMFLOAT3 l = CameraSystem::GetInstance()->mainView.GetPos();
+
+	ParticleSystem::GetInstance()->Update();
+	UiSystem::GetInstance()->Update();
+	CrystalSystem::GetInstance()->Update();
+
+	gameTimer->Update();
+
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
-		CameraSystem::GetInstance()->mainView.SetTarget(DirectX::XMFLOAT3(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().x,
-			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().y + 60.0f,
-			CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos().z
-		));
-		ParticleSystem::GetInstance()->Update();
 	}
 	else
 	{
@@ -60,7 +80,10 @@ void SceneGame::Update()
 
 	//UiSystem::GetInstance()->Update();
 
-	CollisionJudge::AllJudge();
+	CollisionJudge::PlayerVsStage();
+	CollisionJudge::PlayerAttackVsEnemies();
+	CollisionJudge::EnemiesAttackVsPlayer();
+	CollisionJudge::PlayerVsEnemies();
 
 	//TODO TITLE
 	/*if (UiSystem::GetInstance()->GetHpAddress()->GetSubHp() >= 610 || 
@@ -83,13 +106,16 @@ void SceneGame::Update()
 
 void SceneGame::Render()
 {
-	ObjectSystem::GetInstance()->Draw();
 	CharacterSystem::GetInstance()->Draw();
+	ObjectSystem::GetInstance()->Draw();
+	UiSystem::GetInstance()->Draw();
+	gameTimer->Draw();
 
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
 		ParticleSystem::GetInstance()->Draw();
 	}
+	CrystalSystem::GetInstance()->Draw();
 	//UiSystem::GetInstance()->Draw();
 
 }
@@ -100,14 +126,13 @@ void SceneGame::ImGui()
 	if (ImGui::Button("BuffArea  POP "))
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos());
-		CharacterSystem::GetInstance()->GetPlayerAddress()->SufferDamage(1000);
+		CharacterSystem::GetInstance()->GetPlayerAddress()->SufferDamage(5000);
 	}
 	if (ImGui::Button("Particle  POP "))
 	{
 		//ParticleSystem::GetInstance()->SetBuffAreaParticle({50.0f, 100.0f, 50.0f}, 200);
-		ParticleSystem::GetInstance()->SetCrystalDestroy({ 0, 100, 0 });
 		ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({ 0, 100, 0 });
-		CharacterSystem::GetInstance()->GetPlayerAddress()->SufferDamage(1000);
+		PlaySoundMem(SoundLoader::GetInstance()->playerAttackHit.get());
 	}
 
 	if (ImGui::Button("Editer"))

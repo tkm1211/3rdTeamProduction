@@ -63,7 +63,7 @@ public: // Setä÷êî
 	void SetTarget(DirectX::XMFLOAT3 _target) { target = _target; }
 	void SetRotateX( float _rotateX ) { rotateX = _rotateX; }
 	void SetRotateY( float _rotateY ) { rotateY = _rotateY; }
-
+	void SetPos(DirectX::XMFLOAT3 _pos) { pos = _pos; }
 	void SetUpdateLook(bool _updateLook) { updateLook = _updateLook; }
 
 	void SetViewMatrix(const DirectX::XMMATRIX& _view) { view = _view; }

@@ -9,14 +9,21 @@
 //***************************************************************************************************
 void SoundLoader::load()
 {
-	//gameBgm             = std::make_unique<CXAudio2>(L"Data/Sound/game.wav", 1);
-	//titleBgm            = std::make_unique<CXAudio2>(L"Data/Sound/title.wav", 1);
-	//playerStepSe        = std::make_unique<CXAudio2>(L"Data/Sound/move.wav", 0);
-	//magicCreateSe       = std::make_unique<CXAudio2>(L"Data/Sound/SE/Magic_start.wav", 0);
-	//magicDestroySe      = std::make_unique<CXAudio2>(L"Data/Sound/SE/Magic_End.wav", 0);
-	//playerAttackSwingSe = std::make_unique<CXAudio2>(L"Data/Sound/SE/Swing.wav", 0);
-	//playerAttackHitSe     = std::make_unique<CXAudio2>(L"Data/Sound/SE/sword-hit.wav", 0);
-	//crystalBreakSe = std::make_unique<CXAudio2>(L"Data/Sound/SE/ChainLock.wav", 0);
+	walk = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Walk/walk.wav", 0);
+
+	crystalCrash = std::make_unique<CXAudio2>(L"Data/Sound/SE/MagicArea/CrystalCrash.wav", 0);
+	crystalStart = std::make_unique<CXAudio2>(L"Data/Sound/SE/MagicArea/start.wav", 0);
+
+	guardSpark = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Shield/Guard.wav", 0);
+	holdShield = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Shield/Hold_Shield.wav", 0);
+	notHoldShield = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Shield/not_Hold_Shield.wav", 0);
+	
+	playerDamage = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Damage/hit.wav", 0);
+
+	playerAttackHit = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Attack/hit.wav", 0);
+	playerSwing1 = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Attack/swing1.wav", 0);
+	playerSwing2 = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Attack/swing2.wav", 0);
+	playerSwing3 = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Attack/swing3.wav", 0);
 }
 
 
@@ -27,14 +34,21 @@ void SoundLoader::load()
 //***************************************************************************************************
 void SoundLoader::Update()
 {
-	//gameBgm->Update();
-	//titleBgm->Update();
-	//playerStepSe->Update();
-	//magicCreateSe->Update();
-	//magicDestroySe->Update();
-	//playerAttackSwingSe->Update();
-	//crystalBreakSe->Update();
-	//playerAttackHitSe->Update();
+	walk->Update();
+
+	crystalCrash->Update();
+	crystalStart->Update();
+
+	guardSpark->Update();
+	holdShield->Update();
+	notHoldShield->Update();
+
+	playerDamage->Update();
+
+	playerAttackHit->Update();
+	playerSwing1->Update();
+	playerSwing2->Update();
+	playerSwing3->Update();
 }
 
 //***************************************************************************************************
@@ -44,14 +58,21 @@ void SoundLoader::Update()
 //***************************************************************************************************
 void SoundLoader::Release()
 {
-	//gameBgm->Relese();
-	//titleBgm->Relese();
-	//playerStepSe->Relese();
-	//magicCreateSe->Relese();
-	//magicDestroySe->Relese();
-	//crystalBreakSe->Relese();
-	//playerAttackSwingSe->Relese();
-	//playerAttackHitSe->Relese();
+	walk->Relese();
+
+	crystalCrash->Relese();
+	crystalStart->Relese();
+
+	guardSpark->Relese();
+	holdShield->Relese();
+	notHoldShield->Relese();
+
+	playerDamage->Relese();
+
+	playerAttackHit->Relese();
+	playerSwing1->Relese();
+	playerSwing2->Relese();
+	playerSwing3->Relese();
 }
 
 void SoundLoader::ImGui()
@@ -61,18 +82,22 @@ void SoundLoader::ImGui()
 
 void AllSoundStop()
 {
-	StopSoundMem(SoundLoader::GetInstance()->playerStepSe.get());
-	StopSoundMem(SoundLoader::GetInstance()->magicCreateSe.get());
-	StopSoundMem(SoundLoader::GetInstance()->magicDestroySe.get());
-	StopSoundMem(SoundLoader::GetInstance()->crystalBreakSe.get());
-	StopSoundMem(SoundLoader::GetInstance()->playerAttackSwingSe.get());
-	StopSoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
+	StopSoundMem(SoundLoader::GetInstance()->walk.get());
+	StopSoundMem(SoundLoader::GetInstance()->crystalCrash.get());
+	StopSoundMem(SoundLoader::GetInstance()->crystalStart.get());
+	StopSoundMem(SoundLoader::GetInstance()->guardSpark.get());
+	StopSoundMem(SoundLoader::GetInstance()->holdShield.get());
+	StopSoundMem(SoundLoader::GetInstance()->notHoldShield.get());
+	StopSoundMem(SoundLoader::GetInstance()->playerDamage.get());
+
+	StopSoundMem(SoundLoader::GetInstance()->playerAttackHit.get());
+	StopSoundMem(SoundLoader::GetInstance()->playerSwing1.get());
+	StopSoundMem(SoundLoader::GetInstance()->playerSwing2.get());
+	StopSoundMem(SoundLoader::GetInstance()->playerSwing3.get());
 }
 
 void AllBgmSoundStop()
 {
-	StopSoundMem(SoundLoader::GetInstance()->titleBgm.get());
-	StopSoundMem(SoundLoader::GetInstance()->gameBgm.get());
 }
 
 

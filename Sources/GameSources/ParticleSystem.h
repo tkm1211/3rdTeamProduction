@@ -150,7 +150,7 @@ public:
 				num = 0;
 				for (int j = 0; j < MAX; j++)
 				{
-					if (ptc.SetUltimateThuderStone(&ultimetThunderStone[i], { pos.x + _p.x, pos.y + _p.y, pos.z + _p.z }, _sp, rand() % 50 + 50, true))
+					if (ptc.SetUltimateThuderStone(&ultimetThunderStone[i], { pos.x + _p.x, pos.y + _p.y, pos.z + _p.z }, _sp, rand() % 50 + 50.0f, true))
 					{
 						for (int k = 0; k < MAX; k++)
 						{

@@ -7,6 +7,8 @@
 #include "ParticleSystem.h"
 #include "Wave.h"
 #include "SoundLoader.h"
+#include "CameraSystem.h"
+#include "UiSystem.h"
 
 void CollisionJudge::AllJudge()
 {
@@ -104,9 +106,15 @@ void CollisionJudge::PlayerAttackVsEnemies()
 		{
 			warkerKokim.Damage(CharacterSystem::GetInstance()->GetPlayerAddress()->GetAttackDamage());
 			warkerKokim.SetDamageRecast(50);
-			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
-			PlaySoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
-			if(warkerKokim.GetHp() <= 0) ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(warkerKokim.GetModelData()->GetPos());
+			DirectX::XMFLOAT3 emit = warkerKokim.GetModelData()->GetPos();
+			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({ emit.x, emit.y + 20.0f, emit.z });
+			PlaySoundMem(SoundLoader::GetInstance()->playerAttackHit.get());
+			SetVolume(SoundLoader::GetInstance()->playerAttackHit.get(), 1.0f);
+			if (warkerKokim.GetHp() <= 0)
+			{
+				UiSystem::GetInstance()->GetSpecialAttackGauge()->SetAttckPoint(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+				ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(warkerKokim.GetModelData()->GetPos());
+			}
 		}
 	}
 
@@ -116,9 +124,13 @@ void CollisionJudge::PlayerAttackVsEnemies()
 		{
 			archerKokim.Damage(CharacterSystem::GetInstance()->GetPlayerAddress()->GetAttackDamage());
 			archerKokim.damageRecast = 50;
-			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(archerKokim.GetModelData()->GetPos());
-			PlaySoundMem(SoundLoader::GetInstance()->playerAttackHitSe.get());
-			if (archerKokim.GetHp() <= 0) ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(archerKokim.GetModelData()->GetPos());
+			DirectX::XMFLOAT3 emit = archerKokim.GetModelData()->GetPos();
+			ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({ emit.x, emit.y + 20.0f, emit.z });
+			if (archerKokim.GetHp() <= 0)
+			{
+				UiSystem::GetInstance()->GetSpecialAttackGauge()->SetAttckPoint(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+				ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(archerKokim.GetModelData()->GetPos());
+			}
 		}
 	}
 }
@@ -151,7 +163,7 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 			d = DirectX::XMVector3Normalize(d);
 			DirectX::XMFLOAT3 sp = {};
 			DirectX::XMStoreFloat3(&sp, d);
-			CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
+		//	CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
 		//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
 		}
 	}
@@ -210,6 +222,29 @@ void CollisionJudge::PlayerVsStage()
 	if (Collision::RectVsRectAndExtrusion(playerPos, bgPos, playerScale, bgScale))
 	{
 		player->SetModelPosition(DirectX::XMFLOAT3(playerPos.x, playerPosFloat3.y, playerPos.y));
+	}
+}
+
+void CollisionJudge::CameraVsStage()
+{
+	Player* player;
+	player = CharacterSystem::GetInstance()->GetPlayerAddress();
+
+	DirectX::XMFLOAT3 playerPosFloat3 = CameraSystem::GetInstance()->mainView.GetPos();
+	DirectX::XMFLOAT2 playerPos = DirectX::XMFLOAT2(playerPosFloat3.x, playerPosFloat3.z);
+	DirectX::XMFLOAT2 playerScale = DirectX::XMFLOAT2(10.0f, 10.0f);
+
+
+	BG* bg;
+	bg = ObjectSystem::GetInstance()->GetBgAddress();
+
+	DirectX::XMFLOAT2 bgPos = DirectX::XMFLOAT2(bg->wallCollision->GetPos().x, bg->wallCollision->GetPos().z);
+	DirectX::XMFLOAT2 bgScale = DirectX::XMFLOAT2(bg->wallCollision->GetCollisionScale().x, bg->wallCollision->GetCollisionScale().z);
+
+
+	if (Collision::RectVsRectAndExtrusion(playerPos, bgPos, playerScale, bgScale))
+	{
+		CameraSystem::GetInstance()->mainView.SetPos(DirectX::XMFLOAT3(playerPos.x, playerPosFloat3.y, playerPos.y));
 	}
 }
 

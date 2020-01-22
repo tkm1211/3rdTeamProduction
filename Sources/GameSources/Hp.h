@@ -6,8 +6,12 @@
 #include <Billboard.h>
 #include <GeometricPrimitive.h>
 
+#undef max
+#undef min
+
 #include "Scene.h"
 #include "Sprite.h"
+
 
 
 class Hp

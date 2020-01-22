@@ -11,20 +11,18 @@ void SpecialAttackGauge::Init()
 
 	addGauge = 0.0;
 	attackPoint = 0;
+	totalPoint = 0;
 }
 
 void SpecialAttackGauge::Update()
 {
 	addGauge = abs(798 - ((attackPoint * 798) / 10000.0f));
 
-	//if (GetKeyState('A') < 0)
-	//{
-	//	attackPoint++;
-	//}
-	//if (GetKeyState('D') < 0)
-	//{
-	//	attackPoint--;
-	//}
+	if (totalPoint > attackPoint)
+	{
+		attackPoint += 20;
+	}
+
 }
 
 void SpecialAttackGauge::Draw()
@@ -45,4 +43,9 @@ void SpecialAttackGauge::UnInit()
 void SpecialAttackGauge::render(float x, float y, float angle, float scalex, float scaley, DirectX::XMFLOAT4 inf, DirectX::XMFLOAT4 tex, DirectX::XMFLOAT4 color)
 {
 	specialGaugeSpr->Draw2(x - (inf.z / 2), y - (inf.w / 2), tex.z * scalex, tex.w * scaley, angle, color.x, color.y, color.z, color.w, tex);
+}
+void SpecialAttackGauge::SetAttckPoint(int _point)
+{
+	totalPoint += _point;
+	if (totalPoint > 10000) totalPoint = 10000;
 }

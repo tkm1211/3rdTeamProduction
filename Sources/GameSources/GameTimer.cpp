@@ -1,9 +1,10 @@
 #include "GameTimer.h"
 #include "Blender.h"
+#include "SoundLoader.h"
 
 void GameTimer::Init()
 {
-	numSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/numText.png", 1000);
+	numSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/number.png", 1000);
 	frameSprData[0].texPos = { 0, 0 };		//テクスチャの左上
 	frameSprData[0].size = { 96, 128 };	//テクスチャの幅、高さ
 	frameSprData[1].texPos = { 0, 0 };	//テクスチャの左上
@@ -68,7 +69,6 @@ void GameTimer::Update()
 					}
 				}
 			}
-
 		}
 	}
 }
@@ -77,17 +77,27 @@ void GameTimer::Draw()
 {
 	SetBlenderMode(BM_ALPHA);
 	numSpr->Begin();
+	//if (frameNum[1] == 5/* && frameNum[1] == 5*/)
+	//{
+	//	PlaySoundMem(SoundLoader::GetInstance()->crystalCrash.get());
+	//	numSpr->Draw({ 1920 - 100 * 1, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[0].texPos.x + 96 * 11, frameSprData[0].texPos.y }, frameSprData[0].size, 0, { 1, 1, 1, 1 });
+	//}
+	//else
+	//{
+	//	numSpr->Draw({ 1920 - 100 * 1, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[0].texPos.x + 96 * frameNum[0], frameSprData[0].texPos.y }, frameSprData[0].size, 0, { 1, 1, 1, 1 });
+	//	numSpr->Draw({ 1920 - 100 * 1.5, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * frameNum[1], frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
+	//}
 	numSpr->Draw({ 1920 - 100 * 1, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[0].texPos.x + 96 * frameNum[0], frameSprData[0].texPos.y }, frameSprData[0].size, 0, { 1, 1, 1, 1 });
 	numSpr->Draw({ 1920 - 100 * 1.5, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * frameNum[1], frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
-
+	
 	numSpr->Draw({ 1920 - 100 * 2, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * 10, frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
 
-	if(timeNum.size() > 3) numSpr->Draw({ 1920 - 100 * 4, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * 10, frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
+	if(timeNum.size() > 2) numSpr->Draw({ 1920 - 100 * 4, 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * 10, frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
 
 		 
 	for (int i = 0; i < timeNum.size(); i++)
 	{
-		numSpr->Draw({ 1920 - (100 * (2.5f + (0.5f * i))), 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * timeNum.at(i), frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
+		numSpr->Draw({ 1920 - (100 * (3.0f + (0.5f * i))), 32 }, { 96 * 1.0f, 128 * 1.0f }, { frameSprData[1].texPos.x + 96 * timeNum.at(i), frameSprData[1].texPos.y }, frameSprData[1].size, 0, { 1, 1, 1, 1 });
 	}
 
 	numSpr->End();

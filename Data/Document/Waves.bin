@@ -2,185 +2,18 @@
     "value0": [
         {
             "timerMax": 200,
-            "archer": [
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483649,
-                            "data": {
-                                "pos.x": 770.492431640625,
-                                "pos.y": 0.0,
-                                "pos.z": 301.8997497558594,
-                                "speed.x": 0.0,
-                                "speed.y": 0.0,
-                                "speed.z": 0.0,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": 3.859997272491455,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 2
-                },
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483650,
-                            "data": {
-                                "pos.x": -653.8074951171875,
-                                "pos.y": 0.0,
-                                "pos.z": 363.0205383300781,
-                                "speed.x": 0.0,
-                                "speed.y": 0.0,
-                                "speed.z": 0.0,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": 9.200020790100098,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 3
-                }
-            ],
+            "archer": [],
             "warker": [
                 {
                     "attackDis": 50,
                     "findPdis": 1000,
                     "modelData": {
                         "ptr_wrapper": {
-                            "id": 2147483651,
+                            "id": 2147483649,
                             "data": {
-                                "pos.x": -169.95652770996095,
+                                "pos.x": 185.0382843017578,
                                 "pos.y": 0.0,
-                                "pos.z": -310.32232666015627,
-                                "speed.x": -2.8551456928253176,
-                                "speed.y": 0.0,
-                                "speed.z": -9.583744049072266,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": -2.8520493507385256,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 0,
-                    "hp": 10,
-                    "velocity": 5.0
-                },
-                {
-                    "attackDis": 50,
-                    "findPdis": 1000,
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483652,
-                            "data": {
-                                "pos.x": -391.47930908203127,
-                                "pos.y": 0.0,
-                                "pos.z": -933.5216064453125,
-                                "speed.x": 6.403230667114258,
-                                "speed.y": 0.0,
-                                "speed.z": -7.681056976318359,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": 2.44667387008667,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 1,
-                    "hp": 10,
-                    "velocity": 5.0
-                }
-            ],
-            "eliteWarker": [],
-            "enmList": [
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 3
-                        }
-                    },
-                    "index": 0,
-                    "type": -842150451
-                },
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 4
-                        }
-                    },
-                    "index": 1,
-                    "type": -842150451
-                },
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 1
-                        }
-                    },
-                    "index": 2,
-                    "type": -842150451
-                },
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2
-                        }
-                    },
-                    "index": 3,
-                    "type": -842150451
-                }
-            ]
-        },
-        {
-            "timerMax": 200,
-            "archer": [
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483653,
-                            "data": {
-                                "pos.x": -746.4146728515625,
-                                "pos.y": 0.0,
-                                "pos.z": 222.25746154785157,
+                                "pos.z": 67.96311950683594,
                                 "speed.x": 0.0,
                                 "speed.y": 0.0,
                                 "speed.z": 0.0,
@@ -200,39 +33,6 @@
                             }
                         }
                     },
-                    "index": 1
-                }
-            ],
-            "warker": [
-                {
-                    "attackDis": 50,
-                    "findPdis": 1000,
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483654,
-                            "data": {
-                                "pos.x": 567.427490234375,
-                                "pos.y": 0.0,
-                                "pos.z": -622.3399658203125,
-                                "speed.x": -3.3687689304351808,
-                                "speed.y": 0.0,
-                                "speed.z": 3.694779634475708,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": -0.7392769455909729,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
                     "index": 0,
                     "hp": 10,
                     "velocity": 5.0
@@ -242,19 +42,19 @@
                     "findPdis": 1000,
                     "modelData": {
                         "ptr_wrapper": {
-                            "id": 2147483655,
+                            "id": 2147483650,
                             "data": {
-                                "pos.x": 558.4610595703125,
+                                "pos.x": -330.3901672363281,
                                 "pos.y": 0.0,
-                                "pos.z": 375.9574279785156,
-                                "speed.x": -4.147697448730469,
+                                "pos.z": 57.04933547973633,
+                                "speed.x": 0.0,
                                 "speed.y": 0.0,
-                                "speed.z": -2.7922401428222658,
+                                "speed.z": 0.0,
                                 "scale.x": 1.0,
                                 "scale.y": 1.0,
                                 "scale.z": 1.0,
                                 "angle.x": 0.0,
-                                "angle.y": -2.1633100509643556,
+                                "angle.y": 0.0,
                                 "angle.z": 0.0,
                                 "color.r": 1.0,
                                 "color.g": 1.0,
@@ -264,144 +64,42 @@
                                 "adjust.y": 0.0,
                                 "adjust.z": 0.0
                             }
-                        }
-                    },
-                    "index": 2,
-                    "hp": 10,
-                    "velocity": 5.0
-                }
-            ],
-            "eliteWarker": [],
-            "enmList": [
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 6
-                        }
-                    },
-                    "index": 0,
-                    "type": -842150451
-                },
-                {
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 5
                         }
                     },
                     "index": 1,
-                    "type": -842150451
+                    "hp": 10,
+                    "velocity": 5.0
                 },
                 {
+                    "attackDis": 50,
+                    "findPdis": 1000,
                     "modelData": {
                         "ptr_wrapper": {
-                            "id": 7
+                            "id": 2147483651,
+                            "data": {
+                                "pos.x": -112.11438751220703,
+                                "pos.y": 0.0,
+                                "pos.z": -111.61827087402344,
+                                "speed.x": 0.0,
+                                "speed.y": 0.0,
+                                "speed.z": 0.0,
+                                "scale.x": 1.0,
+                                "scale.y": 1.0,
+                                "scale.z": 1.0,
+                                "angle.x": 0.0,
+                                "angle.y": 0.0,
+                                "angle.z": 0.0,
+                                "color.r": 1.0,
+                                "color.g": 1.0,
+                                "color.b": 1.0,
+                                "color.a": 1.0,
+                                "adjust.x": 0.0,
+                                "adjust.y": 0.0,
+                                "adjust.z": 0.0
+                            }
                         }
                     },
                     "index": 2,
-                    "type": -842150451
-                }
-            ]
-        },
-        {
-            "timerMax": 200,
-            "archer": [],
-            "warker": [
-                {
-                    "attackDis": 50,
-                    "findPdis": 1000,
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483656,
-                            "data": {
-                                "pos.x": 482.69879150390627,
-                                "pos.y": 0.0,
-                                "pos.z": 36.29312515258789,
-                                "speed.x": -4.985926628112793,
-                                "speed.y": 0.0,
-                                "speed.z": -0.374881386756897,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": -1.6458430290222169,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 3,
-                    "hp": 10,
-                    "velocity": 5.0
-                },
-                {
-                    "attackDis": 50,
-                    "findPdis": 1000,
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483657,
-                            "data": {
-                                "pos.x": -832.7792358398438,
-                                "pos.y": 0.0,
-                                "pos.z": 86.02327728271485,
-                                "speed.x": 4.973536014556885,
-                                "speed.y": 0.0,
-                                "speed.z": -0.5137494206428528,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": 1.6737278699874879,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 4,
-                    "hp": 10,
-                    "velocity": 5.0
-                },
-                {
-                    "attackDis": 50,
-                    "findPdis": 1000,
-                    "modelData": {
-                        "ptr_wrapper": {
-                            "id": 2147483658,
-                            "data": {
-                                "pos.x": 601.7061767578125,
-                                "pos.y": 0.0,
-                                "pos.z": -506.603759765625,
-                                "speed.x": -3.824857234954834,
-                                "speed.y": 0.0,
-                                "speed.z": 3.2203211784362795,
-                                "scale.x": 1.0,
-                                "scale.y": 1.0,
-                                "scale.z": 1.0,
-                                "angle.x": 0.0,
-                                "angle.y": -0.8709969520568848,
-                                "angle.z": 0.0,
-                                "color.r": 1.0,
-                                "color.g": 1.0,
-                                "color.b": 1.0,
-                                "color.a": 1.0,
-                                "adjust.x": 0.0,
-                                "adjust.y": 0.0,
-                                "adjust.z": 0.0
-                            }
-                        }
-                    },
-                    "index": 5,
                     "hp": 10,
                     "velocity": 5.0
                 }
@@ -411,31 +109,40 @@
                 {
                     "modelData": {
                         "ptr_wrapper": {
-                            "id": 8
+                            "id": 1
                         }
                     },
-                    "index": 3,
-                    "type": -842150451
+                    "index": 0,
+                    "type": 0
                 },
                 {
                     "modelData": {
                         "ptr_wrapper": {
-                            "id": 9
+                            "id": 2
                         }
                     },
-                    "index": 4,
-                    "type": -842150451
+                    "index": 1,
+                    "type": 0
                 },
                 {
                     "modelData": {
                         "ptr_wrapper": {
-                            "id": 10
+                            "id": 3
                         }
                     },
-                    "index": 5,
-                    "type": -842150451
+                    "index": 2,
+                    "type": 0
                 }
-            ]
+            ],
+            "setWarkerHp": 10,
+            "setArcherHp": 10,
+            "setWarkerAttackDis": 50,
+            "setArcherAttackDis": 50,
+            "setWarkerFindPlayerDistance": 1000,
+            "setArcherFindPlayerDistance": 1000,
+            "setWarkerStrikeRecastMax": 120,
+            "setWarkerVelocity": 10.0,
+            "setArcherVelocity": 10.0
         }
     ]
 }

@@ -3,6 +3,10 @@
 #include "OBJ3D.h"
 #include "Collision.h"
 #include "Billboard.h"
+
+#undef max
+#undef min
+
 //creal
 #include <cereal/cereal.hpp>
 
@@ -27,7 +31,8 @@ private:
 	{
 		GRD1ST,
 		GRD2ND,
-		GRD3RD
+		GRD3RD,
+		GRD4TH
 	};
 	enum class AttackState
 	{
@@ -47,7 +52,9 @@ private:
 		GUARD1,
 		GUARD2,
 		GUARD3,
-		DAMAGE
+		GUARD4,
+		DAMAGE,
+		DEAD
 	};
 
 	struct PlayerAttackInfo
@@ -94,7 +101,8 @@ private:
 	std::unique_ptr<Model> pDash;
 	std::unique_ptr<Model> pAttack[3];
 	std::unique_ptr<Model> pDamage;
-	std::unique_ptr<Model> pGuard[3];
+	std::unique_ptr<Model> pGuard[4];
+	std::unique_ptr<Model> pDead;
 
 	OBJ3D modelData;
 
@@ -112,6 +120,8 @@ private:
 	GuardState  guardState;
 	// 右手のボーン
 	BoneInfo rightBone;
+	// 左手のボーン
+	BoneInfo leftBone;
 	// 体のボーン
 	BoneInfo bodyBone;
 	// 右足のボーン
@@ -125,6 +135,8 @@ private:
 	bool isMove;
 	// ガードしていたらture
 	bool isGuard;
+	// ガード当たり判定
+	bool onGuardCollision;
 	// ガードが弾かれたらtrue
 	bool isFlip;
 	// 攻撃してたらtrue
@@ -145,12 +157,17 @@ private:
 	bool makeRightFoot;
 	// 左足の音を鳴らすフラグ
 	bool makeLeftFoot;
+	// 斬撃の軌跡表示フラグ
+	bool isAttackLocusDisplay;
+	// 死んだかどうか
+	bool isDead;
 
 	std::unique_ptr<CollisionPrimitive> footRStepSound;
 	std::unique_ptr<CollisionPrimitive> footLStepSound;
 public:
 
 	std::unique_ptr<CollisionPrimitive> atkCollision;
+	std::unique_ptr<CollisionPrimitive> grdCollision;
 	std::unique_ptr<CollisionPrimitive> bodyCollision;
 
 private:
@@ -178,7 +195,13 @@ public:
 
 	// ダメージを受ける : _damage ダメージ量
 	void SufferDamage(int _damage);
+	// ガード成功
+	void SuccessGuard();
+	bool GetonGrdCollision() { return onGuardCollision; }
 	bool GetOnAtkCollision() { return onAtkCollision; }
+	bool GetisDamage() { return isDamage; }
+	bool GetisAttackLocusDisplay() { return isAttackLocusDisplay; }
+	bool GetisDead() { return isDead; }
 	template<class Archive>
 	void serialize(Archive& archive)
 	{

@@ -114,3 +114,8 @@ void CameraControl::PadControlUpdate( Camera* camera )
 		camera->rotateX = 0.05f;
 	}
 }
+
+void CameraControl::CameraRotation( Camera* camera )
+{
+	camera->rotateY += 1 * 0.01745f;
+}

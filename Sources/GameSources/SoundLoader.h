@@ -7,16 +7,21 @@ private:
 	SoundLoader() {}
 
 public:
-	std::unique_ptr<CXAudio2> gameBgm;
-	std::unique_ptr<CXAudio2> titleBgm;
-	std::unique_ptr<CXAudio2> playerStepSe;
+	std::unique_ptr<CXAudio2> walk;
 
-	std::unique_ptr<CXAudio2> magicCreateSe;
-	std::unique_ptr<CXAudio2> magicDestroySe;
+	std::unique_ptr<CXAudio2> crystalCrash;
+	std::unique_ptr<CXAudio2> crystalStart;
 
-	std::unique_ptr<CXAudio2> playerAttackSwingSe;
-	std::unique_ptr<CXAudio2> playerAttackHitSe;
-	std::unique_ptr<CXAudio2> crystalBreakSe;
+	std::unique_ptr<CXAudio2> guardSpark;
+	std::unique_ptr<CXAudio2> holdShield;
+	std::unique_ptr<CXAudio2> notHoldShield;
+
+	std::unique_ptr<CXAudio2> playerDamage;
+
+	std::unique_ptr<CXAudio2> playerAttackHit;
+	std::unique_ptr<CXAudio2> playerSwing1;
+	std::unique_ptr<CXAudio2> playerSwing2;
+	std::unique_ptr<CXAudio2> playerSwing3;
 
 
 public://ä÷êî

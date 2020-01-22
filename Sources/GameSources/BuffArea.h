@@ -107,6 +107,7 @@ private:
 	int enabledBuffAreaNum;
 	bool onCollision;
 	int allArea;
+	float areaFrameSubRad;
 public:
 	std::vector<BuffAreaInfo> buffArea;
 	std::unique_ptr<Billboard> texture;

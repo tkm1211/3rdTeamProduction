@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include "CharacterSystem.h"
+#include "Crystal.h"
 
 void BuffAreaSystem::Init()
 {
@@ -19,6 +20,8 @@ void BuffAreaSystem::Init()
 	areaModelData.state = 0;
 	areaModelData.timer = 0;
 	areaModelData.addRad = 0;
+
+	areaFrameSubRad = 0.0f;
 
 	pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
@@ -115,6 +118,8 @@ void BuffAreaSystem::Update()
 	else if (areaModelData.state == 2)
 	{
 		areaModelData.areaModelData.SetAngleY(areaModelData.areaModelData.GetAngle().y + areaModelData.addRad);
+		s = areaModelData.areaModelData.GetScale().x;
+		areaModelData.areaModelData.SetScale({ s - areaFrameSubRad, s - areaFrameSubRad, s - areaFrameSubRad });
 	}
 	//ImGui();
 }
@@ -123,21 +128,23 @@ void BuffAreaSystem::Draw()
 {
 	if (areaModelData.state >= 1)
 	{
+		//areaModelData.areaModelData.SetScale({ 30, 30, 30 } );
+		SetRasterizerState(FrameWork::RS_CULL_NONE_TRUE);
 		pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-		SetBlenderMode(BM_ALPHA);
 		pArea->Render(areaModelData.areaModelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), areaModelData.areaModelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
 	}
 
 	SetBlenderMode(BM_ALPHA);
-	pCrystal->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-	for (auto& ba : buffArea)
-	{
-		if (!ba.isExist) continue;
-		//if (ba.stopFlg) continue;
-		pCrystal->Render(ba.cryData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.cryData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
-	}
+	//pCrystal->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+	//for (auto& ba : buffArea)
+	//{
+	//	if (!ba.isExist) continue;
+	//	//if (ba.stopFlg) continue;
+	//	pCrystal->Render(ba.cryData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+	//		DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), ba.cryData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+	//}
 
 	//SetBlenderMode(BM_ADD);
 	texture->Begin(FrameWork::GetInstance().GetContext().Get());
@@ -190,6 +197,10 @@ void BuffAreaSystem::SetBuffArea(BuffAreaInfo b)
 
 void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 {
+	CrystalSystem::GetInstance()->PopCrystal(pos);
+
+	PlaySoundMem(SoundLoader::GetInstance()->crystalStart.get());
+
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;
@@ -208,16 +219,21 @@ void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 	areaModelData.areaModelData.SetPos({pos.x, pos.y + 10, pos.z});
 	areaModelData.areaModelData.SetScale({0, 0, 0});
 	areaModelData.addRad = ba.addRota;
+	areaFrameSubRad = subRad;
 }
 
 void BuffAreaSystem::BreakBuffArea()
 {
+	PlaySoundMem(SoundLoader::GetInstance()->crystalCrash.get());
+
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;
 		ba.isExist = false;
-		ParticleSystem::GetInstance()->SetCrystalDestroy(ba.pos);
+		ParticleSystem::GetInstance()->SetCrystalDestroy({ba.pos.x, ba.pos.y + 80, ba.pos.z});
 	}
+	areaModelData.state = 0;
+	CrystalSystem::GetInstance()->CrystalDestroy();
 	EnemyManager* enemyManager;
 	enemyManager = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 	enemyManager->AllDelete();

@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "OBJ3D.h"
 
+#undef max
+#undef min
+
 struct TexCoord
 {
 	float x;

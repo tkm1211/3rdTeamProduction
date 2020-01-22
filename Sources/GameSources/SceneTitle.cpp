@@ -18,15 +18,6 @@
 
 void SceneTitle::Init()
 {
-	//PlaySoundMem(SoundLoader::GetInstance()->titleBgm.get());
-	//AllSoundStop();
-	//titleBgSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/Title_BG.png");
-	//titleBgSprData.texPos = { 0, 0 };		//テクスチャの左上
-	//titleBgSprData.size = { 1920, 1080 };	//テクスチャの幅、高さ
-	//startSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/UI_Title_Start.png");
-	//startSprData.texPos = { 0, 0 };		//テクスチャの左上
-	//startSprData.size = { 293, 71 };	//テクスチャの幅、高さ
-
 	gameTimer = std::make_unique<GameTimer>();
 	gameTimer->Init();
 
@@ -40,6 +31,7 @@ void SceneTitle::Init()
 void SceneTitle::Update()
 {
 	CharacterSystem::GetInstance()->Update();
+	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
 	ObjectSystem::GetInstance()->Update();
 
 	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
@@ -64,11 +56,12 @@ void SceneTitle::Update()
 		{
 			Ranking::GetInstance()->Sort(gameTimer->timeNum, gameTimer->timer, gameTimer->frameNum);
 			Fade::GetInstance()->onFadeFlg = true;
-			Fade::GetInstance()->SetNextScene(new SceneTitle());
+			Fade::GetInstance()->SetNextScene(new SceneGame());
 			//SetScene(new SceneLabo(), false);
 		}
 	}
 	gameTimer->Update();
+
 
 }
 
