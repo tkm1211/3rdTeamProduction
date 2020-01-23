@@ -52,8 +52,8 @@ WarkerKokim::WarkerKokim(int num)
 	randAng = 0;
 	stWandering = 0;
 	wanderingCnt = 0;
-	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 
 	state = WARKER_STATE::WAIT;
 	Update();
@@ -94,7 +94,7 @@ void WarkerKokim::Init()
 	}
 	/*velocity = 3.0f;*/
 
-
+	modelData->SetScale(DirectX::XMFLOAT3(2, 2, 2));
 	SetBehaviorTree(aiTreeData);
 	wanderingRct = 0;
 	wanderingRctMax = 180;
@@ -102,8 +102,8 @@ void WarkerKokim::Init()
 	randAng = 0;
 	stWandering = 0;
 	wanderingCnt = 0;
-	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 	state = WARKER_STATE::WAIT;
 }
 

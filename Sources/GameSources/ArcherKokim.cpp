@@ -37,8 +37,9 @@ ArcherKokim::ArcherKokim(int num)
 	SetBehaviorTree(aiTreeData);
 	state = ARCHER_STATE::WAIT;
 
-	bodyCol= std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+	bodyCol= std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
+
 
 
 	index = num;
@@ -72,10 +73,10 @@ void ArcherKokim::Init()
 
 	SetBehaviorTree(aiTreeData);
 	state = ARCHER_STATE::WAIT;
-	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 
-
+	modelData->SetScale(DirectX::XMFLOAT3(2, 2, 2));
 
 }
 
@@ -85,8 +86,8 @@ void ArcherKokim::Add()
 
 	SetBehaviorTree(aiTreeData);
 	state = ARCHER_STATE::WAIT;
-	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 
 }
 
@@ -94,37 +95,58 @@ void ArcherKokim::Update()
 {
 	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
-	DirectX::XMFLOAT3 vec;
-	DirectX::XMStoreFloat3(&vec,
-		DirectX::XMVectorSubtract(
-			DirectX::XMLoadFloat3(&pTrs.GetPos()),
-			DirectX::XMLoadFloat3(&modelData->GetPos())));
+	if (!nowAsphyxia)
+	{
+		DirectX::XMFLOAT3 vec;
+		DirectX::XMStoreFloat3(&vec,
+			DirectX::XMVectorSubtract(
+				DirectX::XMLoadFloat3(&pTrs.GetPos()),
+				DirectX::XMLoadFloat3(&modelData->GetPos())));
 
-	float dis;
-	DirectX::XMStoreFloat(&dis, DirectX::XMVector3Length(
-		DirectX::XMLoadFloat3(&vec)));
-
-	SetEtoPdis(dis);
-
-	DirectX::XMVECTOR plForward = DirectX::XMVectorSet(sinf(modelData->GetAngle().y),0,cosf(modelData->GetAngle().y),1);
-
-	plForward = DirectX::XMVector3Normalize(plForward);
-	DirectX::XMStoreFloat3(&vec,
-		DirectX::XMVector3Normalize(
+		float dis;
+		DirectX::XMStoreFloat(&dis, DirectX::XMVector3Length(
 			DirectX::XMLoadFloat3(&vec)));
 
-	DirectX::XMStoreFloat(&plDot,
-		DirectX::XMVector3Dot(
-			DirectX::XMLoadFloat3(&vec),
-			plForward));
+		SetEtoPdis(dis);
+
+		DirectX::XMVECTOR plForward = DirectX::XMVectorSet(sinf(modelData->GetAngle().y), 0, cosf(modelData->GetAngle().y), 1);
+
+		plForward = DirectX::XMVector3Normalize(plForward);
+		DirectX::XMStoreFloat3(&vec,
+			DirectX::XMVector3Normalize(
+				DirectX::XMLoadFloat3(&vec)));
+
+		DirectX::XMStoreFloat(&plDot,
+			DirectX::XMVector3Dot(
+				DirectX::XMLoadFloat3(&vec),
+				plForward));
 
 
-	recast++;
-	AI::Update();
-	bodyCol->SetPos(modelData->GetPos());
-	if (arrow)
+		recast++;
+		AI::Update();
+		bodyCol->SetPos(modelData->GetPos());
+
+
+		if (damageRecast > 0)
+		{
+			damageRecast--;
+		}
+
+
+		if (hp <= 0)
+		{
+			ChangeNowAsphyxia();
+		}
+
+		if (arrow)
+		{
+			weaponCol->SetPos(arrow->GetModelData().GetPos());
+		}
+	}
+	else
 	{
-		weaponCol->SetPos(arrow->GetModelData().GetPos());
+		state = ARCHER_STATE::TPOSE;
+		modelData->SetPosY(110);
 	}
 }
 

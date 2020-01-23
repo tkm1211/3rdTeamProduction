@@ -27,32 +27,6 @@ EnemyManager::EnemyManager()
 	{
 		waveMgr->GetWaves().emplace_back();
 	}
-	//WarkerKokim w(enmNum++);
-	//w.GetModelData()->SetPos(DirectX::XMFLOAT3(1000, 0, 0));
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().emplace_back(w);
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().emplace_back(
-	//	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(
-	//		waveMgr->GetWaveNowIndex()).GetWarker().size() - 1).GetModelData(),
-	//		ENEMY_TYPE::WARKER,
-	//		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() - 1).GetIndex());
-	//
-	//WarkerKokim w2(enmNum++);
-	//w2.GetModelData()->SetPos(DirectX::XMFLOAT3(-1000, 0, 0));
-
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().emplace_back(w2);
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().emplace_back(
-	//	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(
-	//		waveMgr->GetWaveNowIndex()).GetWarker().size() - 1).GetModelData(),
-	//	ENEMY_TYPE::WARKER,
-	//	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() - 1).GetIndex());
-
-	//ArcherKokim a(enmNum++);
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().emplace_back(a);
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().emplace_back(
-	//	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() - 1).GetModelData(),
-	//	ENEMY_TYPE::ARCHER,
-	//	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() - 1).GetIndex());
-	///*enowCatch.resize(enmList.size());*/
 }
 
 EnemyManager::~EnemyManager()
@@ -79,7 +53,12 @@ void EnemyManager::Update()
 	if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
 	{
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).SetTimer(0);
-		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+		if (waveMgr->GetWaves().size() - 1 == waveMgr->GetWaveNowIndex() &&
+			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() <=0 &&
+			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size()<=0)
+		{
+			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+		}
 
 		if (waveMgr->GetWaves().size()-1 > waveMgr->GetWaveNowIndex())
 		{
@@ -342,6 +321,9 @@ void EnemyManager::ImGui()
 		ImGui::Begin("EnemyManager");
 		{
 
+			
+			
+
 			if (ImGui::Button("AllDelete"))
 			{
 				AllDelete();
@@ -524,11 +506,19 @@ void EnemyManager::ImGui()
 		}
 		ImGui::End();
 	}
-
-	ImGui::Begin("chinpo");
+	else
 	{
-		ImGui::DragFloat3("vPosWA", &vPoswa.x);
-		/*ImGui::DragFloat3("")*/
+		ImGui::Begin("WaveManager");
+		{
+			if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish)
+			{
+				ImGui::Text("true");
+			}
+			else
+			{
+				ImGui::Text("false");
+			}
+		}
+		ImGui::End();
 	}
-	ImGui::End();
 }
