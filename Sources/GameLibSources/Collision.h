@@ -18,7 +18,7 @@ public:
 	static bool RectVsRectAndExtrusion(DirectX::XMFLOAT2& pos1, DirectX::XMFLOAT2 scale1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 scale2);
 
 	// 2ŸŒ³‚Å‚Ì‰~‚Æ‰~‚ÌÕ“Ë”»’è & ‰Ÿ‚µo‚µ ŠÖ”
-	static bool CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2);
+	static bool CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2, bool extrusion =  true);
 
 	// 2ŸŒ³‚Å‚Ì‰~‚Ì‰Ÿ‚µo‚µ ŠÖ”
 	static void CircleExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2);

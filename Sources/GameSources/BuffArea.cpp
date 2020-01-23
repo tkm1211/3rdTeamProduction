@@ -23,7 +23,7 @@ void BuffAreaSystem::Init()
 
 	areaFrameSubRad = 0.0f;
 
-	pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
+	//pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
 	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
 	onceLightNum = 0;
 	enabledBuffAreaNum = 0;
@@ -64,7 +64,7 @@ void BuffAreaSystem::Update()
 		case 1:	 //XV
 
 			//if( rand() % 100 == 33 ) ParticleSystem::GetInstance()->SetBuffAreaParticle(ba.pos, ba.radius);
-			if (rand() % 100 >= 80) ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos().x, ba.modelData.GetPos().y + 20, ba.modelData.GetPos().z }, ba.modelData.GetScale().x);
+			if (rand() % 1000 >= 980) ParticleSystem::GetInstance()->SetBuffAreaParticle({ ba.modelData.GetPos().x, ba.modelData.GetPos().y + 20, ba.modelData.GetPos().z }, ba.modelData.GetScale().x);
 
 			if (ba.stopFlg)
 			{
@@ -129,6 +129,7 @@ void BuffAreaSystem::Draw()
 	if (areaModelData.state >= 1)
 	{
 		//areaModelData.areaModelData.SetScale({ 30, 30, 30 } );
+		areaModelData.areaModelData.SetPosY(15);
 		SetRasterizerState(FrameWork::RS_CULL_NONE_TRUE);
 		pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 		pArea->Render(areaModelData.areaModelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
@@ -153,7 +154,7 @@ void BuffAreaSystem::Draw()
 		if (!ba.isExist) continue;
 		{
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-				{ ba.pos.x, ba.pos.y + 10, ba.pos.z }, 1024 * 2, 0, 1024, 1024,
+				{ ba.pos.x, 0 + 10, ba.pos.z }, 1024 * 2, 0, 1024, 1024,
 				{ DirectX::XMConvertToRadians(90) + CameraSystem::GetInstance()->mainView.GetRotateX(), 0, 0 }, { ba.modelData.GetScale().x * 3.0f, ba.modelData.GetScale().y * 3.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
 			if (onCollision) ba.pArea_collision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), false);
 		}
@@ -216,7 +217,7 @@ void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 	SetBuffArea(ba);
 	areaModelData.state = 1;
 	areaModelData.timer = 0;
-	areaModelData.areaModelData.SetPos({pos.x, pos.y + 10, pos.z});
+	areaModelData.areaModelData.SetPos({pos.x, 0 + 5, pos.z});
 	areaModelData.areaModelData.SetScale({0, 0, 0});
 	areaModelData.addRad = ba.addRota;
 	areaFrameSubRad = subRad;

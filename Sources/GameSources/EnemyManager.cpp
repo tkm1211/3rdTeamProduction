@@ -37,6 +37,7 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::Update()
 {
+	finishWave = waveMgr->GetFinishLastWave();
 	if (Editer::GetInstance()->GetNowEditer())
 	{
 		
@@ -78,7 +79,7 @@ void EnemyManager::Update()
 			}
 			waveMgr->GetWaveNowIndex()++;
 		}
-		UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex()+1);
+		//UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex()+1);
 	}
 	else
 	{
@@ -332,36 +333,15 @@ void EnemyManager::WarkerRenderer()
 
 void EnemyManager::AllDelete()
 {
-	/*waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().clear();
-	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().shrink_to_fit();*/
+	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().clear();
+	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().shrink_to_fit();
 
-	for (int i = 0; i < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size(); i++)
-	{
-		if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(i).GetNowAsphyxia())
-		{
-			bool con = false;
-			for (int j = 0; j < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().size(); j++)
-			{
-				
-				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().at(j).index == waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(i).GetIndex())
-				{
-					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().begin() + j);
-					con = true;
-					break;
-				}
-			}
-			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().erase(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().begin()+i);
-			if (con)
-			{
-				i = -1;
-			}
-		}
-	}
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().clear();
-	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().shrink_to_fit();
+	
+	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().clear();
+	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().shrink_to_fit();
 
-	////waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().clear();
-	////waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().shrink_to_fit();
+	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().clear();
+	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEliteWarker().shrink_to_fit();
 
 	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().clear();
 	//waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetEnemyList().shrink_to_fit();
@@ -581,6 +561,9 @@ void EnemyManager::ImGui()
 			{
 				ImGui::Text("false");
 			}
+
+			ImGui::Checkbox("StopTimer", &stopTimer);
+
 		}
 		ImGui::End();
 	}

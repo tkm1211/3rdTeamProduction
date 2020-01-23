@@ -433,11 +433,11 @@ bool Collision::RectVsRectAndExtrusion(DirectX::XMFLOAT2& pos1, DirectX::XMFLOAT
 //******************************************************
 //â~Å@vsÅ@â~
 //******************************************************
-bool Collision::CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2)
+bool Collision::CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2, bool extrusion)
 {
 	if ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (radius1 + radius2) * (radius1 + radius2))
 	{
-		CircleExtrusion(pos1, radius1, pos2, radius2);
+		if (extrusion) CircleExtrusion(pos1, radius1, pos2, radius2);
 
 		return true;
 	}

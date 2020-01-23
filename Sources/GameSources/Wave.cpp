@@ -35,6 +35,8 @@ void Wave::Update()
 		ewrk.Update();
 	}
 
-	timer++;
-
+	if (!enmMgr->stopTimer)
+	{
+		timer++;
+	}
 }

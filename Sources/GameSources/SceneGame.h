@@ -16,6 +16,7 @@
 #include "WaveTex.h"
 #include "GameTimer.h"
 #include "GameOver.h"
+#include "GameClear.h"
 
 class SceneGame : public Scene
 {
@@ -23,7 +24,7 @@ private:
 	WaveTex waveTex;
 	std::unique_ptr<GameTimer> gameTimer;
 	std::unique_ptr<GameOver> gameOver;
-
+	std::unique_ptr<GameClear> gameClear;
 	std::unique_ptr<Sprite> back;
 	/*std::unique_ptr<Sprite> nowLoading;
 

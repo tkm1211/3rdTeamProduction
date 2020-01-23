@@ -68,6 +68,9 @@ public:
 	WaveManager* GetWaveManager() { return waveMgr.get(); };
 	std::vector<bool> nowCatch;
 
+	bool finishWave;
+	bool stopTimer = false;
+
 	void Update();
 	void Draw();
 

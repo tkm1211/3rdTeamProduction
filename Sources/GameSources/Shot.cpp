@@ -1,4 +1,5 @@
 #include "Shot.h"
+#include "ParticleSystem.h"
 
 Shot::Shot(DirectX::XMFLOAT3 pPos, DirectX::XMFLOAT3 ePos)
 {
@@ -27,6 +28,8 @@ void Shot::Update()
 			DirectX::XMLoadFloat3(&modelData.GetPos()),
 			DirectX::XMLoadFloat3(&modelData.GetSpeed())));
 	modelData.SetPos(temp);
+
+	ParticleSystem::GetInstance()->SetArrowParticle(temp, 20.0f);
 
 }
 

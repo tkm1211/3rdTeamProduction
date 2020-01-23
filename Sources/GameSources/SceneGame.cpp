@@ -26,6 +26,8 @@ void SceneGame::Init()
 	gameTimer->Init();
 	gameOver = std::make_unique<GameOver>();
 	gameOver->Init();
+	gameClear = std::make_unique<GameClear>();
+	gameClear->Init();
 
 	back = std::make_unique<Sprite>(L"Data/Assets/Texture/blackFade.png");
 	/*nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
@@ -76,6 +78,7 @@ void SceneGame::Update()
 	//}
 
 	if (Fade::GetInstance()->onFadeFlg) return;
+	EnemyManager* enm = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 
 	CharacterSystem::GetInstance()->Update();
 	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead()) CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
@@ -87,14 +90,30 @@ void SceneGame::Update()
 	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z });
 	
 	ParticleSystem::GetInstance()->Update();
-
+	CollisionJudge::DeathBlowVsEnemies();
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetFinalBlow()) return;
 	ObjectSystem::GetInstance()->Update();
 
 	UiSystem::GetInstance()->Update();
 	CrystalSystem::GetInstance()->Update();
 
-	gameTimer->Update();
+	if (enm->finishWave)
+	{
+		CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
+	}
+
+	if(!enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
+	{
+		gameTimer->Update();
+	}
+	 if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
+	{
+		gameOver->Update();
+	}
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->clearFlg)
+	{
+		gameClear->Update(gameTimer->timeNum, gameTimer->timer, gameTimer->frameNum);
+	}
 
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
@@ -119,7 +138,9 @@ void SceneGame::Update()
 	CollisionJudge::PlayerVsStage();
 	CollisionJudge::PlayerAttackVsEnemies();
 	CollisionJudge::EnemiesAttackVsPlayer();
+	CollisionJudge::EnemyVsEnemies();
 	CollisionJudge::PlayerVsEnemies();
+	CollisionJudge::EnemiesVsStage();
 
 	//TODO TITLE
 	/*if (UiSystem::GetInstance()->GetHpAddress()->GetSubHp() >= 610 || 
@@ -153,7 +174,7 @@ void SceneGame::Update()
 	}
 
 #ifdef _DEBUG
-	SceneGame::ImGui();
+	//SceneGame::ImGui();
 #endif // _DEBUG
 
 }
@@ -176,13 +197,20 @@ void SceneGame::Render()
 	//UiSystem::GetInstance()->Draw();
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
 	{
-		Ranking::GetInstance()->Draw();
 		gameOver->Draw();
+	}
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->clearFlg)
+	{
+		Ranking::GetInstance()->Draw();
+		gameClear->Draw();
 	}
 }
 
 void SceneGame::ImGui()
 {
+
+	CharacterSystem::GetInstance()->GetPlayerAddress()->ImGui();
+
 	ImGui::Begin("Title");
 	if (ImGui::Button("BuffArea  POP "))
 	{

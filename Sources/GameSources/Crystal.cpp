@@ -26,16 +26,16 @@ void CrystalSystem::Draw()
 	//}
 	//pModelBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 	SetBlenderMode(BM_ALPHA);
-	//crystal->Begin(ShaderSystem::GetInstance()->GetShaderOfStaticMeshBatch(), false);
-	//for (int i = 0; i < data.size(); i++)
-	//{
-	//	if (!data.at(i).isExist) continue;
-	//	data.at(i).crystalData.SetColor({3.0f, 3.0f ,3.0f, 0.6f});
-	//	//data.at(i).crystalData.SetScale({10.0f, 10.0f, 10.0f});
-	//	data.at(i).crystalData.SetPosY(80.0f);
-	//	crystal->Render(data.at(i).crystalData, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
-	//}
-	//crystal->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f));
+	crystal->Begin(ShaderSystem::GetInstance()->GetShaderOfStaticMeshBatch(), false);
+	for (int i = 0; i < data.size(); i++)
+	{
+		if (!data.at(i).isExist) continue;
+		data.at(i).crystalData.SetColor({3.0f, 3.0f ,3.0f, 0.6f});
+		data.at(i).crystalData.SetScale({3.0f, 3.0f, 3.0f});
+		data.at(i).crystalData.SetPosY(80.0f);
+		crystal->Render(data.at(i).crystalData, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+	}
+	crystal->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f));
 	SetBlenderMode(BM_NONE);
 }
 
@@ -45,6 +45,7 @@ void CrystalSystem::PopCrystal(DirectX::XMFLOAT3 pos)
 
 	tmp.isExist = true;
 	tmp.crystalData.SetPos(pos);
+	tmp.crystalData.SetPosY(5.0f);
 
 	for (int i = 0; i < data.size(); i++)
 	{

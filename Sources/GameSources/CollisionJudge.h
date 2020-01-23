@@ -35,4 +35,7 @@ public:
 
 	// 雑魚達 vs ステージ
 	static void EnemiesVsStage();
+
+	// 必殺技 vs 雑魚達
+	static void DeathBlowVsEnemies();
 };

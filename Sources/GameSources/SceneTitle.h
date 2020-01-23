@@ -18,8 +18,12 @@ private:
 	TexData titleBgSprData;
 	std::unique_ptr<SpriteBatch> startSpr;
 	TexData startSprData;
+	std::unique_ptr<SpriteBatch> textSpr;
+	TexData textSprData;
 
-	std::unique_ptr<GameTimer> gameTimer;
+	float addSize;
+	int cnt;
+
 
 	std::unique_ptr<Sprite> nowLoading;
 

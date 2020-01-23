@@ -103,6 +103,7 @@ void CollisionJudge::PlayerAttackVsEnemies()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
+		if (warkerKokim.GetHp() <= 0) continue;
 		if (Collision::SphereVsSphere(player->atkCollision->GetPos(), warkerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, warkerKokim.GetBodyCollision()->GetCollisionScale().x) && !warkerKokim.GetNowAsphyxia() && warkerKokim.GetDamageRecast() == 0)
 		{
 			warkerKokim.Damage(CharacterSystem::GetInstance()->GetPlayerAddress()->GetAttackDamage());
@@ -121,6 +122,7 @@ void CollisionJudge::PlayerAttackVsEnemies()
 
 	for (auto& archerKokim : waveData->GetArcher())
 	{
+		if (archerKokim.GetHp() <= 0) continue;
 		if (Collision::SphereVsSphere(player->atkCollision->GetPos(), archerKokim.GetModelData()->GetPos(), player->atkCollision->GetCollisionScale().x, archerKokim.GetBodyCollision()->GetCollisionScale().x) && !archerKokim.nowAsphyxia && archerKokim.damageRecast == 0)
 		{
 			archerKokim.Damage(CharacterSystem::GetInstance()->GetPlayerAddress()->GetAttackDamage());
@@ -185,26 +187,33 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 	{
 		if (archerKokim.state != ARCHER_STATE::STRIKE || archerKokim.nowAsphyxia) continue;
 
+		if (player->guardCrash) return;
 		if (player->GetonGrdCollision())
 		{
 			if (Collision::SphereVsSphere(player->grdCollision->GetPos(), archerKokim.GetWeaponCollision()->GetPos(), player->grdCollision->GetCollisionScale().x, archerKokim.GetWeaponCollision()->GetCollisionScale().x))
 			{
 				player->SuccessGuard();
+				
+				ParticleSystem::GetInstance()->SetSpark(archerKokim.GetWeaponCollision()->GetPos());
+				
 			}
 		}
 		else
 		{
-			if (Collision::SphereVsSphere(player->GetModelData().GetPos(), archerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, archerKokim.GetWeaponCollision()->GetCollisionScale().x))
+			if (player->guardCrash) return;
+			DirectX::XMFLOAT3 tmp = archerKokim.GetWeaponCollision()->GetPos();
+			tmp.y = 0.0f;
+			if (Collision::SphereVsSphere(player->GetModelData().GetPos(), tmp, player->bodyCollision->GetCollisionScale().x, archerKokim.GetWeaponCollision()->GetCollisionScale().x))
 			{
 				player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
-				DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
-				DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&archerKokim.GetWeaponCollision()->GetPos());
-				DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
-				d = DirectX::XMVectorNegate(d);
-				d = DirectX::XMVector3Normalize(d);
-				DirectX::XMFLOAT3 sp = {};
-				DirectX::XMStoreFloat3(&sp, d);
-				CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({ sp.x * 10, 0, sp.z * 10 });
+				//DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
+				//DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&archerKokim.GetWeaponCollision()->GetPos());
+				//DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
+				//d = DirectX::XMVectorNegate(d);
+				//d = DirectX::XMVector3Normalize(d);
+				//DirectX::XMFLOAT3 sp = {};
+				//DirectX::XMStoreFloat3(&sp, d);
+				//CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({ sp.x * 10, 0, sp.z * 10 });
 				//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
 			}
 		}
@@ -378,6 +387,74 @@ void CollisionJudge::EnemiesVsStage()
 			if (Collision::RectVsRectAndExtrusion(enemyPos, bgPos, enemyScale, bgScale))
 			{
 				//warkerKokim.SetModelPosition(DirectX::XMFLOAT3(enemyPos.x, enemyPosFloat3.y, enemyPos.y));
+			}
+		}
+	}
+}
+
+void CollisionJudge::DeathBlowVsEnemies()
+{
+	Player* player;
+	player = CharacterSystem::GetInstance()->GetPlayerAddress();
+
+	if (!player->GetOnBlowCollision()) return;
+
+	DirectX::XMFLOAT2 deathBlowPos = { player->blowCollision->GetPos().x, player->blowCollision->GetPos().z };
+	float  deathBlowScale = player->blowCollision->GetScale().x;
+
+	EnemyManager* enemyManager;
+	enemyManager = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
+
+	WaveManager* waveManager;
+	waveManager = enemyManager->GetWaveManager();
+
+	Wave* waveData = &waveManager->GetWaves()[waveManager->GetWaveNowIndex()];
+
+
+	if (waveData->GetWarker().size() > 0)
+	{
+		for (auto& warkerKokim : waveData->GetWarker())
+		{
+			DirectX::XMFLOAT3 enemyPosFloat3 = warkerKokim.GetBodyCollision()->GetPos();
+			DirectX::XMFLOAT2 enemyPos = DirectX::XMFLOAT2(enemyPosFloat3.x, enemyPosFloat3.z);
+			float enemyScale = warkerKokim.GetBodyCollision()->GetScale().x;
+
+			if (Collision::CircleVsCircleAndExtrusion(deathBlowPos, deathBlowScale, enemyPos, enemyScale))
+			{
+				warkerKokim.Damage(10000);
+				warkerKokim.SetDamageRecast(50);
+				DirectX::XMFLOAT3 emit = warkerKokim.GetModelData()->GetPos();
+				ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({ emit.x, emit.y + 20.0f, emit.z });
+				PlaySoundMem(SoundLoader::GetInstance()->playerAttackHit.get());
+				SetVolume(SoundLoader::GetInstance()->playerAttackHit.get(), 1.0f);
+				if (warkerKokim.GetHp() <= 0)
+				{
+					UiSystem::GetInstance()->GetSpecialAttackGauge()->SetAttckPoint(/*MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f))*/5000);
+					ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(warkerKokim.GetModelData()->GetPos());
+				}
+			}
+		}
+	}
+
+	if (waveData->GetArcher().size() > 0)
+	{
+		for (auto& archerKokim : waveData->GetArcher())
+		{
+			DirectX::XMFLOAT3 enemyPosFloat3 = archerKokim.GetBodyCollision()->GetPos();
+			DirectX::XMFLOAT2 enemyPos = DirectX::XMFLOAT2(enemyPosFloat3.x, enemyPosFloat3.z);
+			float enemyScale = archerKokim.GetBodyCollision()->GetScale().x;
+
+			if (Collision::CircleVsCircleAndExtrusion(deathBlowPos, deathBlowScale, enemyPos, enemyScale))
+			{
+				archerKokim.Damage(10000);
+				archerKokim.damageRecast = 50;
+				DirectX::XMFLOAT3 emit = archerKokim.GetModelData()->GetPos();
+				ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle({ emit.x, emit.y + 20.0f, emit.z });
+				if (archerKokim.GetHp() <= 0)
+				{
+					UiSystem::GetInstance()->GetSpecialAttackGauge()->SetAttckPoint(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+					ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(archerKokim.GetModelData()->GetPos());
+				}
 			}
 		}
 	}

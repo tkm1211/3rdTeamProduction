@@ -17,6 +17,8 @@ public:
 	std::unique_ptr<CXAudio2> notHoldShield;
 
 	std::unique_ptr<CXAudio2> thunder;
+	std::unique_ptr<CXAudio2> lightning;
+	std::unique_ptr<CXAudio2> lightningClone;
 
 	std::unique_ptr<CXAudio2> playerDamage;
 

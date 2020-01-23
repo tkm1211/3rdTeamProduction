@@ -13,19 +13,19 @@
 
 
 
-class GameOver
+class GameClear
 {
 private:
 
 
-	std::unique_ptr<SpriteBatch> gameOverSpr;
+	std::unique_ptr<SpriteBatch> gameClearSpr;
 	std::unique_ptr<SpriteBatch> textSpr;
 
 public:
-	GameOver() {}
-	~GameOver() {}
+	GameClear() {}
+	~GameClear() {}
 
 	void Init();
-	void Update();
+	void Update(std::vector<int> num, int timer, int frame[]);
 	void Draw();
 };

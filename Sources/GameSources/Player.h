@@ -55,6 +55,7 @@ private:
 		GUARD4,
 		DAMAGE,
 		FINALBLOW,
+		CLEAR,
 		DEAD
 	};
 
@@ -106,6 +107,7 @@ private:
 	std::unique_ptr<Model> pDamage;
 	std::unique_ptr<Model> pGuard[4];
 	std::unique_ptr<Model> pFinalBlow;
+	std::unique_ptr<Model> pClear;
 	std::unique_ptr<Model> pDead;
 
 	OBJ3D modelData;
@@ -115,6 +117,8 @@ private:
 
 	// 移動スピード
 	DirectX::XMFLOAT3 moveSpeed;
+
+	DirectX::XMFLOAT3 emitFinalBlowPos;
 
 	// 段階攻撃別情報
 	PlayerAttackInfo attackInfo[3];
@@ -147,6 +151,8 @@ private:
 	bool isGuard;
 	// ガード当たり判定
 	bool onGuardCollision;
+	// ガード当たり判定
+	bool onFinalBlowCollision;
 	// ガードが弾かれたらtrue
 	bool isFlip;
 	// 攻撃してたらtrue
@@ -179,7 +185,11 @@ public:
 	std::unique_ptr<CollisionPrimitive> atkCollision;
 	std::unique_ptr<CollisionPrimitive> grdCollision;
 	std::unique_ptr<CollisionPrimitive> bodyCollision;
+	std::unique_ptr<CollisionPrimitive> blowCollision;
 
+	bool clearFlg;
+	bool finish;
+	bool guardCrash;
 private:
 	//モーションの切り替え関数
 	void SwitchMotion(ModelState state);
@@ -209,6 +219,7 @@ public:
 	void SuccessGuard();
 	bool GetonGrdCollision() { return onGuardCollision; }
 	bool GetOnAtkCollision() { return onAtkCollision; }
+	bool GetOnBlowCollision() { return onFinalBlowCollision; }
 	bool GetFinalBlow() { return isFinalBlow; }
 	bool GetisDamage() { return isDamage; }
 	bool GetEmitLocus() { return speedDownTrg; }

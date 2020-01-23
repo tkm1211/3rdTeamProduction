@@ -41,7 +41,7 @@ void SpecialAttackGauge::Update()
 		{
 			if (GetKeyState(VK_F1) < 0)
 			{
-				if (GetKeyState(' ') < 0)
+				//if (GetKeyState(' ') < 0)
 				{
 					totalPoint = 10000;
 				}

@@ -467,7 +467,7 @@ bool Particle::SetSpark(SparkParticle* p, DirectX::XMFLOAT3 pos)
 	if (p->data.isExist) return false;
 
 	p->data.pos = pos;
-	float s = rand() % 50 + 10.0f;
+	float s = rand() % 30 + 10.0f;
 	p->data.scale = { s, s};
 
 	p->data.angle = { 0, 0, 0 };

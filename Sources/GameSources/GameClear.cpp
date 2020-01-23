@@ -1,28 +1,30 @@
-#include "GameOver.h"
+#include "GameClear.h"
 #include "Blender.h"
+#include "Ranking.h"
 
-void GameOver::Init()
+void GameClear::Init()
 {
-	gameOverSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/text02.png", 2);
+	gameClearSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/text02.png", 2);
 	textSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/text.png", 2);
 
 }
 
-void GameOver::Update()
+void GameClear::Update(std::vector<int> num, int timer, int frame[])
 {
 	if (xInput[0].bAt)
 	{
+		Ranking::GetInstance()->Sort(num, timer, frame);
 		Fade::GetInstance()->onFadeFlg = true;
 		Fade::GetInstance()->SetNextScene(new SceneTitle());
 	}
 }
 
-void GameOver::Draw()
+void GameClear::Draw()
 {
 	SetBlenderMode(BM_ALPHA);
-	gameOverSpr->Begin();
-	gameOverSpr->Draw({ (1920 / 2 - (735.0f / 2.0f)) , 32 }, { 735.0f * 1.0f, 110.0f * 1.0f }, { 0.0f, 110.0f }, { 735.0f, 110.0f }, 0, { 1, 1, 1, 1 });
-	gameOverSpr->End();
+	gameClearSpr->Begin();
+	gameClearSpr->Draw({ (1920 / 2 - (735.0f / 2.0f)) , 32 }, { 735.0f * 1.0f, 110.0f * 1.0f }, { 0.0f, 0.0f }, { 735.0f, 110.0f }, 0, { 1, 1, 1, 1 });
+	gameClearSpr->End();
 
 	textSpr->Begin();
 	textSpr->Draw({ (1920 / 2 - (735.0f / 2.0f)) , 900 }, { 735.0f * 1.0f, 110.0f * 1.0f }, { 0.0f, 110.0f * 3.0f }, { 735.0f, 110.0f }, 0, { 1, 1, 1, 1 });

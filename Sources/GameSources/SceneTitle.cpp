@@ -18,14 +18,19 @@
 
 void SceneTitle::Init()
 {
-	gameTimer = std::make_unique<GameTimer>();
-	gameTimer->Init();
+	titleBgSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/title.png", 1);
+	titleBgSprData.texPos = { 0.0f, 0.0f };
+	titleBgSprData.size = { 1920.0f, 1080.0f };
 
-	CharacterSystem::GetInstance()->Init();
-	ObjectSystem::GetInstance()->Init();
-	ParticleSystem::GetInstance()->Init();
-	UiSystem::GetInstance()->Init();
-	Ranking::GetInstance()->Init();
+	startSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/title_tex.png", 1);
+	startSprData.texPos = { 0, 0 };
+	startSprData.size = { 890, 470 };
+
+	textSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/text.png", 1);
+	textSprData.texPos = { 0, 0 };
+	textSprData.size = { 735, 110 };
+
+	
 
 	/*nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
 
@@ -45,39 +50,16 @@ void SceneTitle::Update()
 {
 	if (Fade::GetInstance()->loading) return;
 
-	CharacterSystem::GetInstance()->Update();
-	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
-	ObjectSystem::GetInstance()->Update();
+	
 
-	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
-	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
-
-	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z});
-	DirectX::XMFLOAT3 l = CameraSystem::GetInstance()->mainView.GetPos();
-
-	ParticleSystem::GetInstance()->Update();
-	UiSystem::GetInstance()->Update();
-
-	DirectX::XMFLOAT3 _p = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
-	float _a = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
-	if (xInput->bDOWNt)
+	if (xInput[0].bAt)
 	{
-		UiSystem::GetInstance()->GetDamageEffectsTexAddress()->AddToEffects(_p, {0, 0, 0});
+		Fade::GetInstance()->onFadeFlg = true;
+		Fade::GetInstance()->loading = true;
+		Fade::GetInstance()->SetNextScene(new SceneGame());
 	}
-
-	if (GetKeyState (' ') < 0/* || xInput[0].bAt*/)
-	{
-		if (!Fade::GetInstance()->onFadeFlg)
-		{
-			Ranking::GetInstance()->Sort(gameTimer->timeNum, gameTimer->timer, gameTimer->frameNum);
-			Fade::GetInstance()->onFadeFlg = true;
-			Fade::GetInstance()->loading = true;
-			Fade::GetInstance()->SetNextScene(new SceneGame());
-			//SetScene(new SceneLabo(), false);
-		}
-	}
-	gameTimer->Update();
-
+	addSize = (sinf(cnt / 15.0f)) / 4.0f + 1.0f;
+	cnt++;
 
 }
 
@@ -85,23 +67,22 @@ void SceneTitle::Render()
 {
 	//nowLoading->Draw(nowLoadingData.pos, nowLoadingData.size, nowLoadingData.texPos, nowLoadingData.size, 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CharacterSystem::GetInstance()->Draw();
-	ObjectSystem::GetInstance()->Draw();
-	ParticleSystem::GetInstance()->Draw();
-	UiSystem::GetInstance()->Draw();
-	gameTimer->Draw();
-	//Ranking::GetInstance()->Draw();
-	//titleBgSpr->Begin();
-	//titleBgSpr->Draw({ 0, 0 }, { 1920, 1080 }, titleBgSprData.texPos, titleBgSprData.size, 0, { 1, 1, 1, 1 });
-	//titleBgSpr->End();
-	//startSpr->Begin();
-	//startSpr->Draw({ 1920 / 2.0f - 293 / 2.0f, 900 }, { 293, 71 }, startSprData.texPos, startSprData.size, 0, { 1, 1, 1, 1 });
-	//startSpr->End();
+	titleBgSpr->Begin();
+	titleBgSpr->Draw({ 0, 0 }, { 1920, 1080 }, titleBgSprData.texPos, titleBgSprData.size, 0, { 1, 1, 1, 1 });
+	titleBgSpr->End();
+
+	startSpr->Begin();
+	startSpr->Draw({ 1920 / 2.0f + 10 , 64 }, { 890, 470 }, startSprData.texPos, startSprData.size, 0, { 1, 1, 1, 1 });
+	startSpr->End();
+
+	textSpr->Begin();
+	textSpr->Draw({ 1920 / 2.0f + 130, 860 + (addSize * 30) }, { 735, 110 }, textSprData.texPos, textSprData.size, 0, { 1, 1, 1, 1 });
+	textSpr->End();
 }
 
 void SceneTitle::ImGui()
 {
-	CharacterSystem::GetInstance()->GetPlayerAddress()->ImGui();
+	//CharacterSystem::GetInstance()->GetPlayerAddress()->ImGui();
 
 	//ImGui::Begin("tex");
 

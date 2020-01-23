@@ -2,6 +2,7 @@
 #include "Billboard.h"
 #include "Particle.h"
 #include "SwordLocus.h"
+#include "SoundLoader.h"
 
 class ParticleSystem
 {
@@ -110,7 +111,7 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			if (ptc.SetCrystalDestroy(&crystalDestroy[i], pos)) num++;
-			if (num >= 15)
+			if (num >= 5)
 			{
 				SetSmoke(pos);
 				return;
@@ -154,6 +155,7 @@ public:
 		{
 			if (ptc.SetUltimateThuder(&ultimetThunder[i], { pos.x + _p.x, pos.y +300, pos.z + _p.z }))
 			{
+				PlaySoundMem(SoundLoader::GetInstance()->lightningClone.get());
 				DirectX::XMFLOAT3 _sp = {};
 				DirectX::XMStoreFloat3(&_sp, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&_p)));
 				num = 0;
@@ -181,7 +183,7 @@ public:
 		{
 			if (ptc.SetSpark(&spark[i], pos)) num++;
 				
-			if (num > 10)
+			if (num > 3)
 			{
 				for (int k = 0; k < MAX; k++)
 				{

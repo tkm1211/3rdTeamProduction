@@ -19,6 +19,8 @@ void SoundLoader::load()
 	notHoldShield = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Shield/not_Hold_Shield.wav", 0);
 	
 	thunder = std::make_unique<CXAudio2>(L"Data/Sound/SE/Thunder.wav", 0);
+	lightning = std::make_unique<CXAudio2>(L"Data/Sound/SE/Lightning.wav", 0);
+	lightningClone = std::make_unique<CXAudio2>(L"Data/Sound/SE/Lightning_clone.wav", 0);
 
 	playerDamage = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Damage/hit.wav", 0);
 
@@ -46,6 +48,8 @@ void SoundLoader::Update()
 	notHoldShield->Update();
 
 	thunder->Update();
+	lightning->Update();
+	lightningClone->Update();
 
 	playerDamage->Update();
 
@@ -72,6 +76,8 @@ void SoundLoader::Release()
 	notHoldShield->Relese();
 
 	thunder->Relese();
+	lightning->Relese();
+	lightningClone->Relese();
 
 	playerDamage->Relese();
 
@@ -95,6 +101,8 @@ void AllSoundStop()
 	StopSoundMem(SoundLoader::GetInstance()->holdShield.get());
 	StopSoundMem(SoundLoader::GetInstance()->notHoldShield.get());
 	StopSoundMem(SoundLoader::GetInstance()->thunder.get());
+	StopSoundMem(SoundLoader::GetInstance()->lightning.get());
+	StopSoundMem(SoundLoader::GetInstance()->lightningClone.get());
 	StopSoundMem(SoundLoader::GetInstance()->playerDamage.get());
 
 	StopSoundMem(SoundLoader::GetInstance()->playerAttackHit.get());

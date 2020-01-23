@@ -58,6 +58,8 @@ void BG::Draw()
 
 		for (size_t i = 0; i < bgObject.size(); i++)
 		{
+			if (bgObject[i].type == ModelType::STONE1 || bgObject[i].type == ModelType::STONE2) continue;
+
 			bgModel[i]->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
 			bgModel[i]->Render(bgObject[i].GetOBJ3D().GetWorldMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), bgObject[i].GetOBJ3D().GetColor(), FrameWork::GetInstance().GetElapsedTime());
@@ -79,6 +81,8 @@ void BG::Draw()
 
 		for (size_t i = 0; i < bgObject.size(); i++)
 		{
+			if (bgObject[i].type == ModelType::STONE1 || bgObject[i].type == ModelType::STONE2) continue;
+
 			bgModel[i]->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
 			bgModel[i]->Render(bgObject[i].GetOBJ3D().GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), bgObject[i].GetOBJ3D().GetColor(), FrameWork::GetInstance().GetElapsedTime());

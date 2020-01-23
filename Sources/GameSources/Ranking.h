@@ -43,6 +43,7 @@ private:
 	
 	RankingInfo info[5];
 	std::unique_ptr<SpriteBatch> numSpr;
+	std::unique_ptr<SpriteBatch> texSpr;
 
 public:
 	Ranking() {}

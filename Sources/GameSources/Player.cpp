@@ -25,6 +25,7 @@ void Player::Init()
 	pGuard[3]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Back.fbx"  , false);
 	pDamage    = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerOuch.fbx"          , false);
 	pFinalBlow  = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerFinalBrow.fbx"    , false);
+	pClear        = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerWin.fbx"          , false);
 	pDead        = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerDead.fbx"          , false);
 
 
@@ -43,6 +44,9 @@ void Player::Init()
 	// geometry collision
 	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(100, 100, 100));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
+
+	blowCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(800, 800, 800));
+	blowCollision->SetColor({ 0, 1, 0, 1 });
 
 	grdCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(30, 30, 30));
 	grdCollision->SetColor({ 0, 1, 0, 1 });
@@ -64,6 +68,7 @@ void Player::Init()
 	leftStickVec                    = {0, 0};
 
 	moveSpeed                    = {0, 0, 0};
+	emitFinalBlowPos           = {0, 0, 0};
 
 	attackMag                      = 0.0f;
 	totalAttack                     = 0.0f;
@@ -104,6 +109,7 @@ void Player::Init()
 
 	isMove                    = false;
 	isFinalBlow              = false;
+	finish                       = false;
 	speedDownTrg         = false;
 	emitThunderStore    = false;
 	isAttack                   = false;
@@ -120,7 +126,9 @@ void Player::Init()
 	makeLeftFoot           = false;
 	isAttackLocusDisplay = false;
 	isDead                     = false;
-
+	onFinalBlowCollision = false;
+	clearFlg                   = false;
+	guardCrash              = false;
 	// json読み込み
 	std::ifstream ifs;
 	ifs.open("./Data/Document/Player.json", std::ios::out);
@@ -150,6 +158,16 @@ void Player::UnInit()
 
 void Player::Update()
 {
+	if (finish)
+	{
+		SwitchMotion(ModelState::CLEAR);
+		if (pClear->GetAnimationFrame() >= 63)
+		{
+			pClear->PauseAnimation();
+			clearFlg = true;
+		}
+		return;
+	}
 
 	if (hp <= 0)
 	{
@@ -178,7 +196,7 @@ void Player::Update()
 		onAtkCollision = false;
 		enableNextAttack = false;
 		attackState = AttackState::ATK1ST;
-
+		onFinalBlowCollision = false;
 		finalBlowSpeedY = FINALBLOW_MAX_SPEEDY;
 		moveSpeed = { 0.0f, 0.0f, 0.0f, };
 		isFinalBlow = true;
@@ -186,14 +204,14 @@ void Player::Update()
 		SwitchMotion(ModelState::FINALBLOW);
 		UiSystem::GetInstance()->GetSpecialAttackGauge()->ResetPoint();
 	}
-
+	static int t = 0;
 	if (isFinalBlow)
 	{	
-		if (pFinalBlow->GetAnimationFrame() >= 25 && pFinalBlow->GetAnimationFrame() <= 30)
+		if (pFinalBlow->GetAnimationFrame() >= 20 && pFinalBlow->GetAnimationFrame() <= 25)
 		{
 			moveSpeed = { 0.0f, finalBlowSpeedY, 0.0f };
 		}
-		else if (pFinalBlow->GetAnimationFrame() > 40 && pFinalBlow->GetAnimationFrame() <= 120)
+		else if (pFinalBlow->GetAnimationFrame() > 25 && pFinalBlow->GetAnimationFrame() <= 90)
 		{
 			if (pFinalBlow->GetAnimationFrame() == 43)
 			{
@@ -205,39 +223,43 @@ void Player::Update()
 			emitThunderStore = true;
 			SetXInputVibration(10000, 10000, 60);
 			moveSpeed = { 0.0f, finalBlowSpeedY, 0.0f };
-			finalBlowSpeedY -= 0.3f;
+			finalBlowSpeedY -= 0.5f;
 			if (finalBlowSpeedY <= 0) finalBlowSpeedY = 0.0f;
 		}
-		else if (pFinalBlow->GetAnimationFrame() > 120 && pFinalBlow->GetAnimationFrame() <= 130)
+		else if (pFinalBlow->GetAnimationFrame() > 90 && pFinalBlow->GetAnimationFrame() <= 100)
 		{
 			emitThunderStore = false;
 			if (!speedDownTrg)
 			{
 				float y = 0.0f - modelData.GetPos().y;
-				moveSpeed = { 0.0f, y / 20.0f, 0.0f };
+				moveSpeed = { 0.0f, y / 25.0f, 0.0f };
 				speedDownTrg = true;
 			}
+			t++;
 		}
-		else if (pFinalBlow->GetAnimationFrame() > 130 && pFinalBlow->GetAnimationFrame() <= 180)
+		else if (pFinalBlow->GetAnimationFrame() > 100 && pFinalBlow->GetAnimationFrame() <= 140)
 		{
-			if (pFinalBlow->GetAnimationFrame() == 135)
+			onFinalBlowCollision = false;
+			if (pFinalBlow->GetAnimationFrame() == 132)
 			{
-				PlaySoundMem(SoundLoader::GetInstance()->thunder.get());
-				SetVolume(SoundLoader::GetInstance()->thunder.get(), 1.0f);
+				onFinalBlowCollision = true;
+				PlaySoundMem(SoundLoader::GetInstance()->lightning.get());
+				SetVolume(SoundLoader::GetInstance()->lightning.get(), 1.0f);
 			}
-
-			DirectX::XMFLOAT3 emitPos = { sinf(modelData.GetAngle().y) * 300.0f, 50.0f, cosf(modelData.GetAngle().y) * 300.0f };
+			emitFinalBlowPos = { sinf(modelData.GetAngle().y) * 300.0f, 50.0f, cosf(modelData.GetAngle().y) * 300.0f };
 			moveSpeed = { 0.0f, 0.0f, 0.0f };
+			blowCollision->SetPos(modelData.GetPos());
 			speedDownTrg = false;
-			ParticleSystem::GetInstance()->SetUltimateThunder(emitPos);
+			ParticleSystem::GetInstance()->SetUltimateThunder(modelData.GetPos());
 			SetXInputVibration(65000, 65000, 60);
 		}
 
-		if (pFinalBlow->GetAnimationFrame() >= 180)
+		if (pFinalBlow->GetAnimationFrame() >= 140)
 		{
 			emitThunderStore = false;
 			modelData.SetPosY(0.0f);
 			isFinalBlow = false;
+			onFinalBlowCollision = false;
 			finalBlowSpeedY = FINALBLOW_MAX_SPEEDY;
 		}
 	}
@@ -246,20 +268,11 @@ void Player::Update()
 	CollisionInformation();
 
 	DamageCalc();
-	DirectX::XMFLOAT3 z = modelData.GetPos();
-	z.y += 50;
-	if (xInput[0].bYs)
-	{
-		ParticleSystem::GetInstance()->SetUltimateThunder(z);
-	}
+
 	modelData.SetPosX(modelData.GetPos().x + moveSpeed.x);
 	modelData.SetPosY(modelData.GetPos().y + moveSpeed.y);
 	modelData.SetPosZ(modelData.GetPos().z + moveSpeed.z);
 
-	if (GetKeyState('S') < 0)
-	{
-		ParticleSystem::GetInstance()->SetSpark({0, 300, 0});
-	}
 
 }
 
@@ -339,6 +352,12 @@ void Player::Draw()
 		pFinalBlow->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
+	case ModelState::CLEAR:
+		pClear->Preparation      (ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+
+		pClear->Render            ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		break;
 	case ModelState::DEAD:
 		pDead->Preparation      (ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
@@ -352,6 +371,7 @@ void Player::Draw()
 		if (onAtkCollision)  atkCollision->Render       (CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 		if (onGuardCollision)  grdCollision->Render       (CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 		                            bodyCollision->Render     (CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+		if(onFinalBlowCollision) blowCollision->Render     (CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 		if(makeLeftFoot)    footLStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 		if(makeRightFoot)  footRStepSound->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	}
@@ -526,6 +546,12 @@ void Player::SwitchMotion( ModelState state )
 		pFinalBlow->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
 		pFinalBlow->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
 		pFinalBlow->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		break;
+	case Player::ModelState::CLEAR:
+
+		motionState = ModelState::CLEAR;
+		pClear->StartAnimation( 0, false );
+		pClear->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		break;
 	case Player::ModelState::DEAD:
 
@@ -813,6 +839,7 @@ void Player::Guard()
 
 	if (xInput[0].bRBs && !isGuard)
 	{
+		guardCrash = false;
 		attackCnt                  = 0;
 		isAttack                    = false;
 		isFinishAttack            = false;
@@ -848,8 +875,10 @@ void Player::Guard()
 			onGuardCollision = true;
 			break;
 		case GuardState::GRD3RD:
+			guardCrash = true;
 			if (pGuard[2]->GetAnimationFrame() >= 18)
 			{
+				guardCrash = false;
 				SwitchMotion(ModelState::GUARD2);
 				guardState = GuardState::GRD2ND;
 				isFlip = false;
@@ -859,6 +888,7 @@ void Player::Guard()
 		case GuardState::GRD4TH:
 			if (pGuard[3]->GetAnimationFrame() >= 4)
 			{
+				guardCrash = false;
 				guardState = GuardState::GRD1ST;
 				isGuard = false;
 				onGuardCollision = false;
@@ -1227,7 +1257,7 @@ void Player::ImGui()
 	ImGui::Begin(u8"Player");
 	
 	ImGui::Text (u8"合計攻撃                 : %f" , totalAttack);
-	ImGui::Text (u8"アニメーションフレーム   : %d" , pFinalBlow->GetAnimationFrame());
+	ImGui::Text (u8"アニメーションフレーム   : %d" , pClear->GetAnimationFrame());
 
 	ImGui::Text (u8"パーティクル数           : %d" , ParticleSystem::GetInstance()->popParticleNum);
 	ParticleSystem::GetInstance()->popParticleNum = 0;

@@ -55,8 +55,8 @@ void WaveTex::Draw()
 	{
 		SetBlenderMode(BM_ALPHA);
 		wave->Draw(wavePos, DirectX::XMFLOAT2(1920.0f, 1080.0f), DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1920.0f, 1080.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-		num->Draw(waveNumPos, DirectX::XMFLOAT2(200.0f, 200.0f), DirectX::XMFLOAT2(200.0f * static_cast<float>(no[0]), 0.0f), DirectX::XMFLOAT2(200.0f, 200.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-		num->Draw(DirectX::XMFLOAT2(waveNumPos.x + 200.0f, waveNumPos.y), DirectX::XMFLOAT2(200.0f, 200.0f), DirectX::XMFLOAT2(200.0f * static_cast<float>(no[1]), 0.0f), DirectX::XMFLOAT2(200.0f, 200.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+		num->Draw(waveNumPos, DirectX::XMFLOAT2(96.0f*2, 128.0f*2), DirectX::XMFLOAT2(96.0f * static_cast<float>(no[0]), 0.0f), DirectX::XMFLOAT2(96.0f, 128.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+		num->Draw(DirectX::XMFLOAT2(waveNumPos.x + 96.0f*2, waveNumPos.y), DirectX::XMFLOAT2(96.0f*2, 128.0f*2), DirectX::XMFLOAT2(96.0f * static_cast<float>(no[1]), 0.0f), DirectX::XMFLOAT2(96.0f, 128.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 		SetBlenderMode(BM_NONE);
 	}
 }
