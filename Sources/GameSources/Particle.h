@@ -31,6 +31,7 @@ public:
 
 	void UltimetThuderUpdate(UltimetThuderEffectInfo* p);
 	bool SetUltimateThuder(UltimetThuderEffectInfo* p, DirectX::XMFLOAT3 pos);
+	bool SetStoreUltimateThuder(UltimetThuderEffectInfo* p, DirectX::XMFLOAT3 pos);
 
 	void UltimetThuderStoneUpdate(UltimetThuderStoneParticle* p);
 	bool SetUltimateThuderStone(UltimetThuderStoneParticle* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 nmlSpeed, float scale, bool isBreak);

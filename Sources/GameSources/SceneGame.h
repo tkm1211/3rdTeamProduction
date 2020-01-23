@@ -15,12 +15,14 @@
 #include "Sprite.h"
 #include "WaveTex.h"
 #include "GameTimer.h"
+#include "GameOver.h"
 
 class SceneGame : public Scene
 {
 private:
 	WaveTex waveTex;
 	std::unique_ptr<GameTimer> gameTimer;
+	std::unique_ptr<GameOver> gameOver;
 
 public:
 	void Init();

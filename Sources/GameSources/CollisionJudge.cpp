@@ -113,7 +113,7 @@ void CollisionJudge::PlayerAttackVsEnemies()
 			SetVolume(SoundLoader::GetInstance()->playerAttackHit.get(), 1.0f);
 			if (warkerKokim.GetHp() <= 0)
 			{
-				UiSystem::GetInstance()->GetSpecialAttackGauge()->SetAttckPoint(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+				UiSystem::GetInstance()->GetSpecialAttackGauge()->SetAttckPoint(/*MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f))*/5000);
 				ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(warkerKokim.GetModelData()->GetPos());
 			}
 		}
@@ -325,7 +325,7 @@ void CollisionJudge::CameraVsStage()
 	bg = ObjectSystem::GetInstance()->GetBgAddress();
 
 	DirectX::XMFLOAT2 bgPos = DirectX::XMFLOAT2(bg->wallCollision->GetPos().x, bg->wallCollision->GetPos().z);
-	DirectX::XMFLOAT2 bgScale = DirectX::XMFLOAT2(bg->wallCollision->GetCollisionScale().x, bg->wallCollision->GetCollisionScale().z);
+	DirectX::XMFLOAT2 bgScale = DirectX::XMFLOAT2(bg->wallCollision->GetCollisionScale().x + 200, bg->wallCollision->GetCollisionScale().z + 200);
 
 
 	if (Collision::RectVsRectAndExtrusion(playerPos, bgPos, playerScale, bgScale))

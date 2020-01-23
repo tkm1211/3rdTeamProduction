@@ -7,6 +7,7 @@
 #include "CameraControl.h"
 #include "ParticleSystem.h"
 #include "SoundLoader.h"
+#include "UiSystem.h"
 #include <fstream>
 #include <string>
 
@@ -23,7 +24,8 @@ void Player::Init()
 	pGuard[2]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd.fbx"         , false);
 	pGuard[3]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Back.fbx"  , false);
 	pDamage    = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerOuch.fbx"          , false);
-	pDead         = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerDead.fbx"          , false);
+	pFinalBlow  = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerFinalBrow.fbx"    , false);
+	pDead        = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerDead.fbx"          , false);
 
 
 	//pT         = std::make_unique<Model>("Data/Assets/Model/val/PlayerT.fbx"   , false);
@@ -39,7 +41,7 @@ void Player::Init()
 	SwitchMotion(ModelState::WAIT);
 
 	// geometry collision
-	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(80, 80, 80));
+	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(100, 100, 100));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
 
 	grdCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(30, 30, 30));
@@ -65,7 +67,7 @@ void Player::Init()
 
 	attackMag                      = 0.0f;
 	totalAttack                     = 0.0f;
-
+	finalBlowSpeedY             = FINALBLOW_MAX_SPEEDY;
 	// 攻撃カウント( 0 ~ 2 )
 	attackCnt                       = 0;
 	// ダメージ量
@@ -101,6 +103,9 @@ void Player::Init()
 	guardState          = GuardState::GRD1ST;
 
 	isMove                    = false;
+	isFinalBlow              = false;
+	speedDownTrg         = false;
+	emitThunderStore    = false;
 	isAttack                   = false;
 	isFinishAttack          = false;
 	isGuard                   = false;
@@ -164,6 +169,79 @@ void Player::Update()
 
 	Guard();
 
+	if (xInput[0].bBt && !isFinalBlow && UiSystem::GetInstance()->GetSpecialAttackGauge()->GetPoint() >= 10000)
+	{
+		attackCnt = 0;
+		isAttack = false;
+		isFinishAttack = false;
+		isAttackLocusDisplay = false;
+		onAtkCollision = false;
+		enableNextAttack = false;
+		attackState = AttackState::ATK1ST;
+
+		finalBlowSpeedY = FINALBLOW_MAX_SPEEDY;
+		moveSpeed = { 0.0f, 0.0f, 0.0f, };
+		isFinalBlow = true;
+		emitThunderStore = false;
+		SwitchMotion(ModelState::FINALBLOW);
+		UiSystem::GetInstance()->GetSpecialAttackGauge()->ResetPoint();
+	}
+
+	if (isFinalBlow)
+	{	
+		if (pFinalBlow->GetAnimationFrame() >= 25 && pFinalBlow->GetAnimationFrame() <= 30)
+		{
+			moveSpeed = { 0.0f, finalBlowSpeedY, 0.0f };
+		}
+		else if (pFinalBlow->GetAnimationFrame() > 40 && pFinalBlow->GetAnimationFrame() <= 120)
+		{
+			if (pFinalBlow->GetAnimationFrame() == 43)
+			{
+				PlaySoundMem(SoundLoader::GetInstance()->thunder.get());
+				SetVolume(SoundLoader::GetInstance()->thunder.get(), 1.0f);
+			}
+
+			ParticleSystem::GetInstance()->SetStoreUltimateThunder(atkCollision->GetPos());
+			emitThunderStore = true;
+			SetXInputVibration(10000, 10000, 60);
+			moveSpeed = { 0.0f, finalBlowSpeedY, 0.0f };
+			finalBlowSpeedY -= 0.3f;
+			if (finalBlowSpeedY <= 0) finalBlowSpeedY = 0.0f;
+		}
+		else if (pFinalBlow->GetAnimationFrame() > 120 && pFinalBlow->GetAnimationFrame() <= 130)
+		{
+			emitThunderStore = false;
+			if (!speedDownTrg)
+			{
+				float y = 0.0f - modelData.GetPos().y;
+				moveSpeed = { 0.0f, y / 20.0f, 0.0f };
+				speedDownTrg = true;
+			}
+		}
+		else if (pFinalBlow->GetAnimationFrame() > 130 && pFinalBlow->GetAnimationFrame() <= 180)
+		{
+			if (pFinalBlow->GetAnimationFrame() == 135)
+			{
+				PlaySoundMem(SoundLoader::GetInstance()->thunder.get());
+				SetVolume(SoundLoader::GetInstance()->thunder.get(), 1.0f);
+			}
+
+			DirectX::XMFLOAT3 emitPos = { sinf(modelData.GetAngle().y) * 300.0f, 50.0f, cosf(modelData.GetAngle().y) * 300.0f };
+			moveSpeed = { 0.0f, 0.0f, 0.0f };
+			speedDownTrg = false;
+			ParticleSystem::GetInstance()->SetUltimateThunder(emitPos);
+			SetXInputVibration(65000, 65000, 60);
+		}
+
+		if (pFinalBlow->GetAnimationFrame() >= 180)
+		{
+			emitThunderStore = false;
+			modelData.SetPosY(0.0f);
+			isFinalBlow = false;
+			finalBlowSpeedY = FINALBLOW_MAX_SPEEDY;
+		}
+	}
+
 	// Collsion
 	CollisionInformation();
 
@@ -175,6 +253,7 @@ void Player::Update()
 		ParticleSystem::GetInstance()->SetUltimateThunder(z);
 	}
 	modelData.SetPosX(modelData.GetPos().x + moveSpeed.x);
+	modelData.SetPosY(modelData.GetPos().y + moveSpeed.y);
 	modelData.SetPosZ(modelData.GetPos().z + moveSpeed.z);
 
 	if (GetKeyState('S') < 0)
@@ -252,6 +331,12 @@ void Player::Draw()
 		pDamage->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
 		pDamage->Render        ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+		break;
+	case ModelState::FINALBLOW:
+		pFinalBlow->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+
+		pFinalBlow->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	case ModelState::DEAD:
@@ -431,6 +516,17 @@ void Player::SwitchMotion( ModelState state )
 		pDamage->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		PlaySoundMem(SoundLoader::GetInstance()->playerDamage.get());
 		break;
+	case Player::ModelState::FINALBLOW:
+
+		motionState = ModelState::FINALBLOW;
+		pFinalBlow->StartAnimation( 0, false );
+
+		pFinalBlow->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		pFinalBlow->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		pFinalBlow->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		pFinalBlow->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		pFinalBlow->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		break;
 	case Player::ModelState::DEAD:
 
 		motionState = ModelState::DEAD;
@@ -442,12 +538,12 @@ void Player::SwitchMotion( ModelState state )
 
 void Player::Move()
 {
-	if ( isAttack || isDamage || isGuard) return;
+	if ( isAttack || isDamage || isGuard || isFinalBlow) return;
 
 	if ( abs( xInput[0].sLX ) > 250 || abs( xInput[0].sLY ) > 250)
 	{
 #if 1
-		if ( xInput->bL3s )
+		if ( xInput->bLBs )
 		{
 			// 走りモーションに切り替え
 			SwitchMotion(ModelState::DASH);
@@ -510,7 +606,7 @@ void Player::Move()
 void Player::Attack()
 {
 
-	if (isDamage || isGuard) return;
+	if (isDamage || isGuard || isFinalBlow) return;
 
 	if (xInput[0].bXt && !isAttack)
 	{
@@ -712,10 +808,10 @@ void Player::Attack()
 
 void Player::Guard()
 {
-	if (isDamage) return;
+	if (isDamage || isFinalBlow) return;
 	if (isAttack && !isFinishAttack) return;
 
-	if (xInput[0].bLBs && !isGuard)
+	if (xInput[0].bRBs && !isGuard)
 	{
 		attackCnt                  = 0;
 		isAttack                    = false;
@@ -731,7 +827,7 @@ void Player::Guard()
 		onGuardCollision = false;
 		guardState = GuardState::GRD1ST;
 	}
-	else if (!xInput[0].bLBs && isGuard && !isFlip)
+	else if (!xInput[0].bRBs && isGuard && !isFlip)
 	{
 		guardState = GuardState::GRD4TH;
 		SwitchMotion(ModelState::GUARD4);
@@ -935,7 +1031,7 @@ void Player::CollisionInformation()
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
 
 		// arm
-		boneTransform = pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = pAttack[0]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform)* modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -971,7 +1067,7 @@ void Player::CollisionInformation()
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
 
 		// arm
-		boneTransform = pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = pAttack[1]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform)* modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1006,7 +1102,7 @@ void Player::CollisionInformation()
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
 
 		// arm
-		boneTransform = pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = pAttack[2]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform)* modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1081,7 +1177,40 @@ void Player::CollisionInformation()
 		grdCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		break;
+	case ModelState::FINALBLOW:
+		// body
+		boneTransform = pFinalBlow->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
+		// bone information
+		boneTransform = pFinalBlow->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+
+		// arm
+		boneTransform = pFinalBlow->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
+
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
+
+		// R_Foot
+		boneTransform = pFinalBlow->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
+
+		// L_Foot
+		boneTransform = pFinalBlow->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
+		break;
 	case ModelState::DAMAGE:
 		// body
 		boneTransform = pDamage->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
@@ -1098,7 +1227,7 @@ void Player::ImGui()
 	ImGui::Begin(u8"Player");
 	
 	ImGui::Text (u8"合計攻撃                 : %f" , totalAttack);
-	ImGui::Text (u8"アニメーションフレーム   : %d" , pDead->GetAnimationFrame());
+	ImGui::Text (u8"アニメーションフレーム   : %d" , pFinalBlow->GetAnimationFrame());
 
 	ImGui::Text (u8"パーティクル数           : %d" , ParticleSystem::GetInstance()->popParticleNum);
 	ParticleSystem::GetInstance()->popParticleNum = 0;

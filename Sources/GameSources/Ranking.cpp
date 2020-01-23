@@ -5,7 +5,7 @@
 
 void Ranking::Init()
 {
-	numSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/numText.png", 1000);
+	numSpr = std::make_unique<SpriteBatch>(L"Data/Assets/Texture/number.png", 1000);
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -27,15 +27,26 @@ void Ranking::Draw()
 	{
 		float posY = 128.0f * i;
 
-		numSpr->Draw({ 1920.0f - 100.0f * 1.0f,    32.0f + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * info[i].frameNum[0], 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
-		numSpr->Draw({ 1920.0f - 100.0f * 1.5f,    32.0f + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * info[i].frameNum[1], 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
-		numSpr->Draw({ 1920.0f - 100.0f * 2.0f,    32.0f + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * 10                          , 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
+		numSpr->Draw({ 1920 - 100 * 1, 32 + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * info[i].frameNum[0], 0.0f }, { 96.0f, 128.0f }, 0, { 1, 1, 1, 1 });
+		numSpr->Draw({ 1920 - 100 * 1.75, 32 + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * info[i].frameNum[1], 0.0f }, { 96.0f, 128.0f }, 0, { 1, 1, 1, 1 });
+
+		numSpr->Draw({ 1920 - 100 * 2.3, 32 + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * 10, 0.0f }, { 96.0f, 128.0f }, 0, { 1, 1, 1, 1 });
+
+		if (info[i].timeNum.size() > 2) numSpr->Draw({ 1920 - 100 * 4.2f, 32 + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * 10, 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
+
+
 		for (int j = 0; j < info[i].timeNum.size(); j++)
 		{
-			numSpr->Draw({ 1920 - (100 * (2.5f + (0.5f * j))), 32 + (128.0f * i) }, { 96.0f * 1.0f, 128.0f * 1.0f }, { 0.0f + 96 * info[i].timeNum.at(j), 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
+			if (j < 2) numSpr->Draw({ 1920 - (100 * (2.9f + (0.75f * j))), 32 + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * info[i].timeNum.at(j), 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
+			if (j >= 2) numSpr->Draw({ 1920 - (100 * (3.2f + (0.75f * j))), 32 + posY }, { 96 * 1.0f, 128 * 1.0f }, { 0.0f + 96 * info[i].timeNum.at(j), 0.0f }, {96.0f, 128.0f}, 0, { 1, 1, 1, 1 });
 		}
+
+
 	}
 	numSpr->End();
+
+
+
 
 }
 

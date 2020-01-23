@@ -4,7 +4,7 @@
 
 void BG::Init()
 {
-	wallCollision = std::make_unique<CollisionPrimitive>(0, true, DirectX::XMFLOAT3(1100, 200, 2100));
+	wallCollision = std::make_unique<CollisionPrimitive>(0, true, DirectX::XMFLOAT3(980, 200, 2000));
 	wallCollision->SetColor({ 1, 0, 0, 1 });
 
 	ground = std::make_unique<Model>("Data/Assets/Model/BG/Ground_MDL.fbx", true);

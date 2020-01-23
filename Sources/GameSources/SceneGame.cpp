@@ -17,12 +17,15 @@
 #include "UiSystem.h"
 #include "Ranking.h"
 #include "Crystal.h"
+#include "ScenePause.h"
 
 void SceneGame::Init()
 {
 	AllSoundStop();
 	gameTimer = std::make_unique<GameTimer>();
 	gameTimer->Init();
+	gameOver = std::make_unique<GameOver>();
+	gameOver->Init();
 
 	CharacterSystem::GetInstance()->Init();
 	ObjectSystem::GetInstance()->Init();
@@ -46,15 +49,15 @@ void SceneGame::Update()
 	else CameraControl::CameraRotation(&CameraSystem::GetInstance()->mainView);
 	CollisionJudge::CameraVsStage();
 
-	ObjectSystem::GetInstance()->Update();
-
 	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
 	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
-
 	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z });
-	DirectX::XMFLOAT3 l = CameraSystem::GetInstance()->mainView.GetPos();
-
+	
 	ParticleSystem::GetInstance()->Update();
+
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetFinalBlow()) return;
+	ObjectSystem::GetInstance()->Update();
+
 	UiSystem::GetInstance()->Update();
 	CrystalSystem::GetInstance()->Update();
 
@@ -98,6 +101,11 @@ void SceneGame::Update()
 		UiSystem::GetInstance()->GetWaveTexAddress()->Start(10);
 	}*/
 
+	if (xInput[0].bSTARTt)
+	{
+		SceneManager::GetInstance()->SetScene(new ScenePause(), true);
+	}
+
 #ifdef _DEBUG
 	SceneGame::ImGui();
 #endif // _DEBUG
@@ -116,9 +124,13 @@ void SceneGame::Render()
 		ParticleSystem::GetInstance()->Draw();
 	}
 
-	/*CrystalSystem::GetInstance()->Draw();*/
+	CrystalSystem::GetInstance()->Draw();
 	//UiSystem::GetInstance()->Draw();
-
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
+	{
+		Ranking::GetInstance()->Draw();
+		gameOver->Draw();
+	}
 }
 
 void SceneGame::ImGui()
@@ -146,7 +158,7 @@ void SceneGame::ImGui()
 			CameraSystem::GetInstance()->enemyEditorView.Init(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0));
 			CameraSystem::GetInstance()->enemyEditorView.Set(DirectX::XMFLOAT3(0, 1000, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 1, 0));
 
-			CameraSystem::GetInstance()->enemyEditorView.SetPerspectiveMatrix(DirectX::XMConvertToRadians(30.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000000.0f);
+			CameraSystem::GetInstance()->enemyEditorView.SetPerspectiveMatrix(DirectX::XMConvertToRadians(30.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 5000.0f);
 			/*CameraSystem::GetInstance()->enemyEditorView.SetOrthographicMatrix(1920,1080, 0.1f, 1000000.0f);*/
 		}
 	}

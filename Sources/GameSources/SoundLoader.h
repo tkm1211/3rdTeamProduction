@@ -16,6 +16,8 @@ public:
 	std::unique_ptr<CXAudio2> holdShield;
 	std::unique_ptr<CXAudio2> notHoldShield;
 
+	std::unique_ptr<CXAudio2> thunder;
+
 	std::unique_ptr<CXAudio2> playerDamage;
 
 	std::unique_ptr<CXAudio2> playerAttackHit;

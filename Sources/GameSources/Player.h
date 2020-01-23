@@ -54,6 +54,7 @@ private:
 		GUARD3,
 		GUARD4,
 		DAMAGE,
+		FINALBLOW,
 		DEAD
 	};
 
@@ -78,7 +79,7 @@ private:
 	int DAMAGE_TIMER  = 30;
 	int ATK_NUMBER    = PlayerAtkCountImGui::ATTACK_1ST;
 	float ATK_MAG     = 0.01f;
-
+	float FINALBLOW_MAX_SPEEDY = 20.0f;
 	// 何段攻撃目か
 	int attackCnt;
 	// 体力
@@ -93,6 +94,8 @@ private:
 	// 合計の攻撃力
 	float totalAttack;
 
+	float finalBlowSpeedY;
+
 	ModelState motionState;
 
 	std::unique_ptr<Model> pT;
@@ -102,6 +105,7 @@ private:
 	std::unique_ptr<Model> pAttack[3];
 	std::unique_ptr<Model> pDamage;
 	std::unique_ptr<Model> pGuard[4];
+	std::unique_ptr<Model> pFinalBlow;
 	std::unique_ptr<Model> pDead;
 
 	OBJ3D modelData;
@@ -133,6 +137,12 @@ private:
 
 	// 移動していたらtrue
 	bool isMove;
+	//	スキルを使用したらtrue
+	bool isFinalBlow;
+	//	スキル中下におろすスピード保持
+	bool speedDownTrg;
+	//	雷ため
+	bool emitThunderStore;
 	// ガードしていたらture
 	bool isGuard;
 	// ガード当たり判定
@@ -199,7 +209,10 @@ public:
 	void SuccessGuard();
 	bool GetonGrdCollision() { return onGuardCollision; }
 	bool GetOnAtkCollision() { return onAtkCollision; }
+	bool GetFinalBlow() { return isFinalBlow; }
 	bool GetisDamage() { return isDamage; }
+	bool GetEmitLocus() { return speedDownTrg; }
+	bool GetEmitThunderStore() { return emitThunderStore; }
 	bool GetisAttackLocusDisplay() { return isAttackLocusDisplay; }
 	bool GetisDead() { return isDead; }
 	template<class Archive>

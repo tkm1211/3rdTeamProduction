@@ -234,9 +234,7 @@ void BuffAreaSystem::BreakBuffArea()
 	}
 	areaModelData.state = 0;
 	CrystalSystem::GetInstance()->CrystalDestroy();
-	EnemyManager* enemyManager;
-	enemyManager = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
-	enemyManager->AllDelete();
+	CharacterSystem::GetInstance()->GetEnemyManagerAddress()->AllDelete();
 }
 
 void BuffAreaSystem::ImGui()

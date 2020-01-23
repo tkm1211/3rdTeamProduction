@@ -12,6 +12,7 @@ void SpecialAttackGauge::Init()
 	addGauge = 0.0;
 	attackPoint = 0;
 	totalPoint = 0;
+	isReset = false;
 }
 
 void SpecialAttackGauge::Update()
@@ -20,8 +21,35 @@ void SpecialAttackGauge::Update()
 
 	if (totalPoint > attackPoint)
 	{
-		attackPoint += 20;
+		attackPoint += 500;
 	}
+
+	if (isReset)
+	{
+		totalPoint = 0;
+		attackPoint -= 500;
+		if (attackPoint <= 0)
+		{
+			isReset = false;
+			attackPoint = 0;
+		}
+	}
+
+	if (GetKeyState(VK_CONTROL) < 0)
+	{
+		if (GetKeyState(VK_SHIFT) < 0)
+		{
+			if (GetKeyState(VK_F1) < 0)
+			{
+				if (GetKeyState(' ') < 0)
+				{
+					totalPoint = 10000;
+				}
+			}
+		}
+	}
+
+
 
 }
 
@@ -48,4 +76,9 @@ void SpecialAttackGauge::SetAttckPoint(int _point)
 {
 	totalPoint += _point;
 	if (totalPoint > 10000) totalPoint = 10000;
+}
+
+void SpecialAttackGauge::ResetPoint()
+{
+	isReset = true;
 }

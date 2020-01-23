@@ -370,6 +370,36 @@ bool Particle::SetUltimateThuder(UltimetThuderEffectInfo* p, DirectX::XMFLOAT3 p
 	return true;
 }
 
+bool Particle::SetStoreUltimateThuder(UltimetThuderEffectInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	p->data.pos.x += rand() % 100 - 50;
+	p->data.pos.y += rand() % 200 + 300;
+	p->data.pos.z += rand() % 100 - 50;
+
+	p->originScale = 700;
+
+
+	p->data.scale = { p->originScale * 0.3f, p->originScale };
+
+	float a = rand() % 45 - (45 / 2.0f);
+	a += rand() % 2 * 180;
+	p->data.angle = { 0, 0, a * 0.01745f };
+
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+
+	p->data.existTime = rand() % 10 + 5;
+	p->data.isExist = true;
+
+	int r = rand() % 4;
+	p->data.tex.Set(1024.0f * (1 + r), 1024.0f * 2, 1024.0f, 1024.0f);
+
+	return true;
+}
+
 void Particle::UltimetThuderStoneUpdate(UltimetThuderStoneParticle* p)
 {
 	if (!p->data.isExist) return;

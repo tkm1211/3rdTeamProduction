@@ -1,6 +1,8 @@
 #include "SwordLocus.h"
 #include "CameraSystem.h"
 #include "CharacterSystem.h"
+#include "Blender.h"
+#include "CharacterSystem.h"
 
 void SwordLocus::Init()
 {
@@ -15,6 +17,7 @@ void SwordLocus::Init()
 	}
 
 	spr = std::make_unique<SwordLocusSprite>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/swordLocus.png");
+	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/thunderStore.png");
 
 	for (int i = 0; i < 9 * 11 + 1; i++)
 	{
@@ -36,11 +39,33 @@ void SwordLocus::Draw()
 	//	ci[i].handPoint->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	//	ci[i].swordPoint->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	//}
+		SetBlenderMode(BM_ALPHA);
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisAttackLocusDisplay())
 	{
 		if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDamage()) return;
 		spr->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), FrameWork::GetInstance().GetElapsedTime());
+	}
+
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetEmitLocus())
+	{
+		if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDamage()) return;
+		spr->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), FrameWork::GetInstance().GetElapsedTime());
+	}
+
+	Player* player = CharacterSystem::GetInstance()->GetPlayerAddress();
+
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetEmitThunderStore())
+	{
+		int ang = rand() % 360;
+		texture->Begin(FrameWork::GetInstance().GetContext().Get());
+		texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			{ player->atkCollision->GetPos().x, player->atkCollision->GetPos().y + 10.0f, player->atkCollision->GetPos().z }, 0.0f, 0.0f, 1024.0f, 1024.0f,
+			{ 0.0f, 0.0f, ang * 0.01745f }, { 100.0f, 100.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+		texture->End();
+
+		SetBlenderMode(BM_NONE);
 	}
 }
 
@@ -133,5 +158,6 @@ void SwordLocus::SetEffectPoint(DirectX::XMFLOAT3 oldSword, DirectX::XMFLOAT3 ol
 	}
 	num++;
 
-	spr->CreateMesh(FrameWork::GetInstance().GetDevice().Get(), { 1024, 0, 1024, 1024 });
+	if(!CharacterSystem::GetInstance()->GetPlayerAddress()->GetFinalBlow()) spr->CreateMesh(FrameWork::GetInstance().GetDevice().Get(), { 1024, 0, 1024, 1024 });
+	else spr->CreateMesh(FrameWork::GetInstance().GetDevice().Get(), { 0, 0, 1024, 1024 });
 }

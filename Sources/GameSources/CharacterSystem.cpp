@@ -21,7 +21,7 @@ void CharacterSystem::Update()
 	if (!Editer::GetInstance()->GetNowEditer())
 	{
 		player->Update();
-		enmMgr->Update();
+		if(!player->GetFinalBlow()) enmMgr->Update();
 	}
 	else
 	{

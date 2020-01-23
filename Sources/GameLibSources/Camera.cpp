@@ -21,7 +21,7 @@ void Camera::Init( const DirectX::XMFLOAT3& _pos, const DirectX::XMFLOAT3& _targ
 	float	aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 
 	//SetOrthographicMatrix(50.0f, 50.0f, 0.1f, 100000.0f);
-	SetPerspectiveMatrix(fov, aspect, 0.1f, 100000.0f);
+	SetPerspectiveMatrix(fov, aspect, 0.1f, 5000.0f);
 
 	rotateX = 0.0f;
 	rotateY = 0.0f;

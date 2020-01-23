@@ -4,6 +4,7 @@
 #include "SwordLocusSprite.h"
 #include "FrameWork.h"
 #include "MathFunction.h"
+#include "Billboard.h"
 
 
 class SwordLocus
@@ -16,6 +17,7 @@ private:
 	};
 
 	std::unique_ptr<SwordLocusSprite> spr;
+	std::unique_ptr<Billboard> texture;
 
 	collisionInfo ci[9 * 11 + 1];
 

@@ -18,6 +18,7 @@ private:
 	int attackPoint;
 	int totalPoint;
 	float addGauge;
+	bool isReset;
 private:
 	void render(float x, float y, float angle, float scalex, float scaley, DirectX::XMFLOAT4 inf, DirectX::XMFLOAT4 tex, DirectX::XMFLOAT4 color);
 
@@ -30,6 +31,8 @@ public:
 	void Draw();
 	void UnInit();
 
+	int GetPoint() { return attackPoint; }
+	void ResetPoint();
 	void SetAttckPoint(int _point);
 
 };

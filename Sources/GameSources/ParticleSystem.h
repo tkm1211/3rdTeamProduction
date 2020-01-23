@@ -138,6 +138,14 @@ public:
 			if (ptc.SetThuder(&thunder[i], pos)) return;
 		}
 	}
+	void SetStoreUltimateThunder(DirectX::XMFLOAT3 pos)
+	{
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetStoreUltimateThuder(&ultimetThunder[i], pos))  return;
+		}
+	}
+
 	void SetUltimateThunder(DirectX::XMFLOAT3 pos)
 	{
 		int num = 1000;

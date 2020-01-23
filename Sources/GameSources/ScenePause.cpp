@@ -8,7 +8,7 @@
 
 void ScenePause::Init()
 {
-	bg = std::make_unique<Sprite>(L"Data/Assets/Texture/scene_bg.png");
+	bg = std::make_unique<Sprite>(L"Data/Assets/Texture/blackFade.png");
 	ui = std::make_unique<Sprite>(L"Data/Assets/Texture/text.png");
 
 	returnGame.pos    = DirectX::XMFLOAT2(1920.0f / 2.0f, 272.0f);
@@ -145,7 +145,7 @@ void ScenePause::Render()
 {
 	SetBlenderMode(BM_ALPHA);
 
-	bg->Draw(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1920.0f, 1080.0f), DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1920.0f, 1080.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.925f));
+	bg->Draw(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1920.0f, 1080.0f), DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1920.0f, 1080.0f), 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.8f));
 
 	ui->Draw2(returnGame.pos ,  DirectX::XMFLOAT2(returnGame.size.x  * size[0], returnGame.size.y  * size[0]), returnGame.texPos , returnGame.size , 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 	ui->Draw2(restart.pos    ,  DirectX::XMFLOAT2(restart.size.x     * size[1], restart.size.y     * size[1]), restart.texPos    , restart.size    , 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
