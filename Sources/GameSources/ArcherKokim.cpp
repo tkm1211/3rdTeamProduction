@@ -38,6 +38,8 @@ ArcherKokim::ArcherKokim(int num)
 	state = ARCHER_STATE::WAIT;
 
 	bodyCol= std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+
 
 	index = num;
 }
@@ -71,6 +73,8 @@ void ArcherKokim::Init()
 	SetBehaviorTree(aiTreeData);
 	state = ARCHER_STATE::WAIT;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
+
 
 
 }
@@ -82,7 +86,7 @@ void ArcherKokim::Add()
 	SetBehaviorTree(aiTreeData);
 	state = ARCHER_STATE::WAIT;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
-
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 
 }
 
@@ -118,5 +122,9 @@ void ArcherKokim::Update()
 	recast++;
 	AI::Update();
 	bodyCol->SetPos(modelData->GetPos());
+	if (arrow)
+	{
+		weaponCol->SetPos(arrow->GetModelData().GetPos());
+	}
 }
 

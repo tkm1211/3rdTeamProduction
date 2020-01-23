@@ -69,12 +69,12 @@ bool ArcherTurnJudge::Judgement(AI * obj)
 
 	float dot;
 	DirectX::XMStoreFloat(&dot, DirectX::XMVector3Dot(oVec, vecEtoP));
-
+	archer->state = ARCHER_STATE::WAIT;
 	if (dot!=0)
 	{
 		return true;
 	}
-
+	
 
 	return false;
 }

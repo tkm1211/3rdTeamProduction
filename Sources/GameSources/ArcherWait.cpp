@@ -2,6 +2,7 @@
 
 ActionBase::STATE ArcherWaitAction::Update(AI * obj)
 {
+
 	return ActionBase::STATE();
 }
 
