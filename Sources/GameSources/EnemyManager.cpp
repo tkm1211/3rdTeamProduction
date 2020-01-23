@@ -219,6 +219,10 @@ void EnemyManager::ArcherRenderer()
 			{
 				arc.pArcherStay->StartAnimation(0, true);
 			}
+			else if (arc.GetNowAsphyxia())
+			{
+				arc.pArcherStay->PauseAnimation();
+			}
 			arc.pArcherStay->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			arc.pArcherStay->Render(arc.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
@@ -228,6 +232,10 @@ void EnemyManager::ArcherRenderer()
 			{
 				arc.pArcherRun->StartAnimation(0, true);
 			}
+			else if (arc.GetNowAsphyxia())
+			{
+				arc.pArcherRun->PauseAnimation();
+			}
 			arc.pArcherRun->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			arc.pArcherRun->Render(arc.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
@@ -236,6 +244,10 @@ void EnemyManager::ArcherRenderer()
 			if (!arc.pArcherAttack->GetAnimatingFlg())
 			{
 				arc.pArcherAttack->StartAnimation(0, false);
+			}
+			else if (arc.GetNowAsphyxia())
+			{
+				arc.pArcherAttack->PauseAnimation();
 			}
 			arc.pArcherAttack->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			arc.pArcherAttack->Render(arc.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
@@ -268,6 +280,10 @@ void EnemyManager::WarkerRenderer()
 			{
 				wrk.pWarkerWait->StartAnimation(0, true);
 			}
+			else if (wrk.GetNowAsphyxia())
+			{
+				wrk.pWarkerWait->PauseAnimation();
+			}
 			wrk.pWarkerWait->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			wrk.pWarkerWait->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
@@ -277,16 +293,28 @@ void EnemyManager::WarkerRenderer()
 			{
 				wrk.pWarkerRun->StartAnimation(0, true);
 			}
+			else if (wrk.GetNowAsphyxia())
+			{
+				wrk.pWarkerRun->PauseAnimation();
+			}
 			wrk.pWarkerRun->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			wrk.pWarkerRun->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 			break;
 		case WARKER_STATE::STRIKE:
+			if (wrk.GetNowAsphyxia())
+			{
+				wrk.pWarkerAttack->PauseAnimation();
+			}
 			wrk.pWarkerAttack->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			wrk.pWarkerAttack->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());
 			break;
 		case WARKER_STATE::JUMP_ATTACK:
+			if (wrk.GetNowAsphyxia())
+			{
+				wrk.pWarkerJumpAttack->PauseAnimation();
+			}
 			wrk.pWarkerJumpAttack->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 			wrk.pWarkerJumpAttack->Render(wrk.GetModelData()->GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), FrameWork::GetInstance().GetElapsedTime());

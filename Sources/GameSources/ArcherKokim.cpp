@@ -145,7 +145,6 @@ void ArcherKokim::Update()
 	}
 	else
 	{
-		state = ARCHER_STATE::TPOSE;
 		modelData->SetPosY(110);
 	}
 }

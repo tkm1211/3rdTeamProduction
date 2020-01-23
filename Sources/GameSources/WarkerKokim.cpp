@@ -183,7 +183,8 @@ void WarkerKokim::Update()
 	}
 	else
 	{
-		state = WARKER_STATE::TPOSE;
+		/*state = WARKER_STATE::TPOSE;*/
+
 		modelData->SetPosY(110);
 	}
 
