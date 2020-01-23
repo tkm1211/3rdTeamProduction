@@ -46,9 +46,15 @@ WarkerKokim::WarkerKokim(int num)
 	}
 
 	SetBehaviorTree(aiTreeData);
-	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(15, 90, 15));
+	wanderingRct = 0;
+	wanderingRctMax = 180;
+	velocity = 5;
+	randAng = 0;
+	stWandering = 0;
+	wanderingCnt = 0;
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
-	index = num;
+
 	state = WARKER_STATE::WAIT;
 	Update();
 	
@@ -99,7 +105,19 @@ void WarkerKokim::Init()
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(10, 10, 10));
 	state = WARKER_STATE::WAIT;
-	Update();
+}
+
+void WarkerKokim::Add()
+{
+
+	SetBehaviorTree(aiTreeData);
+	wanderingRct = 0;
+	wanderingRctMax = 180;
+	velocity = 5;
+	randAng = 0;
+	stWandering = 0;
+	wanderingCnt = 0;
+	state = WARKER_STATE::WAIT;
 }
 
 void WarkerKokim::Update()

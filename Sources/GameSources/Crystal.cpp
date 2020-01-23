@@ -26,7 +26,7 @@ void CrystalSystem::Draw()
 	//}
 	//pModelBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 	SetBlenderMode(BM_ALPHA);
-	crystal->Begin(ShaderSystem::GetInstance()->GetShaderOfStaticMeshBatch(), false);
+	crystal->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
 	for (int i = 0; i < data.size(); i++)
 	{
 		if (!data.at(i).isExist) continue;

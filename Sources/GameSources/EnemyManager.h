@@ -5,7 +5,6 @@
 #include "WarkerKokim.h"
 #include "EliteWarkerKokim.h"
 #include "Shot.h"
-#include "WaveManager.h"
 
 #include <cereal/cereal.hpp>
 

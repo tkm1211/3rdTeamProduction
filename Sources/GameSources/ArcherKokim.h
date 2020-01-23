@@ -22,7 +22,7 @@ class ArcherKokim :
 {
 public:
 
-	int atDis = 0;
+	int atDis = 100;
 	int findPdis = 1000;
 	int damageRecast = 0;
 	int recastMax=100;
@@ -45,6 +45,8 @@ public:
 	virtual ~ArcherKokim() {};
 
 	void Init();
+
+	void Add();
 
 	void Update();
 

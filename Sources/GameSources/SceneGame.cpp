@@ -115,7 +115,8 @@ void SceneGame::Render()
 	{
 		ParticleSystem::GetInstance()->Draw();
 	}
-	CrystalSystem::GetInstance()->Draw();
+
+	/*CrystalSystem::GetInstance()->Draw();*/
 	//UiSystem::GetInstance()->Draw();
 
 }

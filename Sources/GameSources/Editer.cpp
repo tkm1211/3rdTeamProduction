@@ -3,6 +3,7 @@
 #include "Collision.h"
 #include "CameraSystem.h"
 #include "CharacterSystem.h"
+#include "WaveManager.h"
 #include "Wave.h"
 Editer::Editer()
 {

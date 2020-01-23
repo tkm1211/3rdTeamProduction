@@ -10,7 +10,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/base_class.hpp>
-class Wave;
+#include "Wave.h"
 class WaveManager
 {
 public:
@@ -24,6 +24,17 @@ public:
 	std::vector<Wave>& GetWaves() 
 	{
 		return wave; 
+	};
+
+	bool GetFinishLastWave()
+	{
+		if (wave.at(wave.size() - 1)._isFinish)
+		{
+			return true;
+		}
+		
+		return false;
+
 	};
 
 	int& GetWaveNowIndex() 

@@ -78,11 +78,34 @@ void EnemyManager::Update()
 	}
 	if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
 	{
-		//waveMgr->GetWaves().emplace_back();
-	/*	waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).SetTimer(0);
-		waveMgr->GetWaveNowIndex()++;
-*/
-		//UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex()+1);
+		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).SetTimer(0);
+		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+
+		if (waveMgr->GetWaves().size()-1 > waveMgr->GetWaveNowIndex())
+		{
+			if (waveMgr->GetWaves().size() > 0)
+			{
+				for (auto &w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+				{
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()+1).GetWarker().emplace_back(w);
+				}
+				for (auto &a : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
+				{
+					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()+1).GetArcher().emplace_back(a);
+				}
+
+				for (auto &w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex() + 1).GetWarker())
+				{
+					w.Add();
+				}
+				for (auto &a : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex() + 1).GetArcher())
+				{
+					a.Add();
+				}
+			}
+			waveMgr->GetWaveNowIndex()++;
+		}
+		UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex()+1);
 	}
 	ImGui();
 }
@@ -305,7 +328,6 @@ void EnemyManager::AllDelete()
 void EnemyManager::ImGui()
 {
 
-
 	ImGui::Begin("AllDeleteE");
 	{
 
@@ -360,7 +382,7 @@ void EnemyManager::ImGui()
 			ImGui::BulletText("WARKER");
 			if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() > 0)
 			{
-				ImGui::DragInt(u8"攻撃しだす距離", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet());
+				ImGui::DragInt(u8"攻撃しだす距離w", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet());
 				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetAttackDistance() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
@@ -369,7 +391,7 @@ void EnemyManager::ImGui()
 					}
 				}
 
-				ImGui::DragInt(u8"プレイヤーを見つける距離", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
+				ImGui::DragInt(u8"プレイヤーを見つける距離w", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
 				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetFindPlayerDistance() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
@@ -377,7 +399,7 @@ void EnemyManager::ImGui()
 						w.SetFindPlayerDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
 					}
 				}
-				ImGui::DragFloat(u8"エネミー　速度", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
+				ImGui::DragFloat(u8"エネミー　速度w", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
 				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetVelocity() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
@@ -385,7 +407,7 @@ void EnemyManager::ImGui()
 						w.SetVelocity(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
 					}
 				}
-				ImGui::DragFloat(u8"攻撃　リキャスト時間", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
+				ImGui::DragInt(u8"攻撃　リキャスト時間w", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerStrikeRecastMaxForSet());
 				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().at(0).GetStrikeRecastMax() != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerStrikeRecastMaxForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
@@ -398,33 +420,33 @@ void EnemyManager::ImGui()
 			ImGui::BulletText("ARCHER");
 			if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() > 0)
 			{
-				ImGui::DragInt(u8"攻撃しだす距離", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet());
-				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).atDis != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet())
+				ImGui::DragInt(u8"攻撃しだす距離q", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherAttackDistanceForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).atDis != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherAttackDistanceForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
 					{
-						w.SetAttackDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerAttackDistanceForSet());
+						w.SetAttackDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherAttackDistanceForSet());
 					}
 				}
 
-				ImGui::DragInt(u8"プレイヤーを見つける距離", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
-				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).findPdis != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet())
+				ImGui::DragInt(u8"プレイヤーを見つける距離q", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherFindPlayerDistanceForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).findPdis != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherFindPlayerDistanceForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
 					{
-						w.SetFindPlayerDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerFindPlayerDistanceForSet());
+						w.SetFindPlayerDistance(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherFindPlayerDistanceForSet());
 					}
 				}
-				ImGui::DragFloat(u8"攻撃　リキャスト時間", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerVelocityForSet());
-				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).recastMax != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerStrikeRecastMaxForSet())
+				ImGui::DragFloat(u8"攻撃　リキャスト時間q", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherVelocityForSet());
+				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).recastMax != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherStrikeRecastMaxForSet())
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
 					{
-						w.SetRecastMax(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarkerStrikeRecastMaxForSet());
+						w.SetRecastMax(waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcherStrikeRecastMaxForSet());
 					}
 				}
 
-				ImGui::DragInt(u8"攻撃力", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).setArcherAttackPoint);
+				ImGui::DragInt(u8"攻撃力q", &waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).setArcherAttackPoint);
 				if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().at(0).attackPoint != waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).setArcherAttackPoint)
 				{
 					for (auto& w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())

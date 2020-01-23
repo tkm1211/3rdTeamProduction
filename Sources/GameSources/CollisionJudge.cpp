@@ -4,6 +4,7 @@
 #include "ObjectSystem.h"
 #include "BG.h"
 #include "EnemyManager.h"
+#include "WaveManager.h"
 #include "ParticleSystem.h"
 #include "Wave.h"
 #include "SoundLoader.h"

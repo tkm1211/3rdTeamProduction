@@ -17,6 +17,7 @@ class EditEnemy;
 class Wave
 {
 public:
+	bool _isFinish = false;
 
 	int setWarkerAttackPoint = 1000;
 	int setArcherAttackPoint = 1000;
@@ -43,6 +44,7 @@ public:
 	int& GetEliteWarkerFindPlayerDistanceForSet() { return setEliteWarkerFindPlayerDistance; };
 
 	int& GetWarkerStrikeRecastMaxForSet() { return setWarkerStrikeRecastMax; };
+	int& GetArcherStrikeRecastMaxForSet() { return setArcherStrikeRecastMax; };
 
 	float& GetWarkerVelocityForSet() { return setWarkerVelocity; };
 	float& GetArcherVelocityForSet() { return setArcherVelocity; };
@@ -56,6 +58,7 @@ public:
 
 	void SetTimer(int timer) {  this->timer= timer; };
 private:
+
 	int timer=0;
 	int timerMax = 200;
 
@@ -72,6 +75,7 @@ private:
 	int setEliteWarkerFindPlayerDistance = 1000;
 
 	int setWarkerStrikeRecastMax = 120;
+	int setArcherStrikeRecastMax = 120;
 
 	float setWarkerVelocity = 10;
 	float setArcherVelocity = 10;

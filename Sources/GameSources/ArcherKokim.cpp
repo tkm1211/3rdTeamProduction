@@ -71,6 +71,19 @@ void ArcherKokim::Init()
 	SetBehaviorTree(aiTreeData);
 	state = ARCHER_STATE::WAIT;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+
+
+}
+
+void ArcherKokim::Add()
+{
+
+
+	SetBehaviorTree(aiTreeData);
+	state = ARCHER_STATE::WAIT;
+	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(30, 90, 30));
+
+
 }
 
 void ArcherKokim::Update()

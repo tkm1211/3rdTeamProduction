@@ -50,6 +50,8 @@ public:
 
 	void Init();
 
+	void Add();
+
 	void Update();
 
 	WARKER_STATE const GetState() const { return state; };
