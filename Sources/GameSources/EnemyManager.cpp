@@ -50,16 +50,10 @@ void EnemyManager::Update()
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).Update();
 		
 	}
-	if (waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer())
+	if ((waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimerMax() < waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetTimer()))
 	{
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).SetTimer(0);
-		if (waveMgr->GetWaves().size() - 1 == waveMgr->GetWaveNowIndex() &&
-			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() <=0 &&
-			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size()<=0)
-		{
-			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
-		}
-
+		
 		if (waveMgr->GetWaves().size()-1 > waveMgr->GetWaveNowIndex())
 		{
 			if (waveMgr->GetWaves().size() > 0)
@@ -86,6 +80,47 @@ void EnemyManager::Update()
 		}
 		UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex()+1);
 	}
+	else
+	{
+		bool nextWave=false;
+		for (auto &w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+		{
+			if (w.GetNowAsphyxia())
+			{
+				nextWave = true;
+			}
+			else
+			{
+				nextWave = false;
+			}
+		}
+		for (auto &a : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher())
+		{
+			if (a.GetNowAsphyxia())
+			{
+				nextWave = true;
+			}
+			else
+			{
+				nextWave = false;
+			}
+		}
+
+		if (nextWave)
+		{
+			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+		}
+
+	}
+
+	if (waveMgr->GetWaves().size() - 1 == waveMgr->GetWaveNowIndex() &&
+		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker().size() <= 0 &&
+		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() <= 0)
+	{
+		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+	}
+
+
 	ImGui();
 }
 

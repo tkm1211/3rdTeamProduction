@@ -56,7 +56,8 @@ public:
 	bool GetNowShot() { return nowShot; };
 	int	 GetRecast() { return recast; };
 	float GetPlayerDot() { return plDot; };
-		
+	bool& GetNowAsphyxia() { return nowAsphyxia; };
+
 	void SetRecast(int hRecast) { recast = hRecast; };
 
 	void SetAttackDistance(int attackDis) { this->atDis = attackDis; };
@@ -65,7 +66,7 @@ public:
 	void SetRecastMax(int recast) { recastMax = recast; };
 	void SetAttackPoint(int a) { attackPoint = a; };
 	void ChangeNowAsphyxia() { nowAsphyxia ^= 1; };
-
+	
 	void CreateArrow(DirectX::XMFLOAT3 pPos, DirectX::XMFLOAT3 ePos) { arrow = std::make_unique<Shot>(pPos, ePos); };
 
 private:
