@@ -22,6 +22,7 @@ private:
 	TexData returnGame;
 	TexData restart;
 	TexData returnTitle;
+	TexData select;
 
 	int state;
 	int cnt;

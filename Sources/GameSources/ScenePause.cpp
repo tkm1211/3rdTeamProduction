@@ -23,6 +23,10 @@ void ScenePause::Init()
 	returnTitle.texPos = DirectX::XMFLOAT2(0.0f, 330.0f);
 	returnTitle.size   = DirectX::XMFLOAT2(735.0f, 110.0f);
 
+	select.pos = DirectX::XMFLOAT2(1920.0f - 735.0f / 2.0f + 75.0f, 1080.0f - 110.0f / 2.0f - 25.0f);
+	select.texPos = DirectX::XMFLOAT2(0.0f, 880.0f);
+	select.size = DirectX::XMFLOAT2(735.0f, 110.0f);
+
 	state = ScenePause::RETURN_GAME;
 	cnt = 0;
 
@@ -38,6 +42,8 @@ void ScenePause::Update()
 {
 	// ƒ|[ƒYˆ—
 	{
+		if (Fade::GetInstance()->loading) return;
+
 		// ã“ü—Í
 		if (xInput[0].bUPt)
 		{
@@ -101,6 +107,7 @@ void ScenePause::Update()
 
 			case ScenePause::RESTART:
 				Fade::GetInstance()->onFadeFlg = true;
+				Fade::GetInstance()->loading = true;
 				Fade::GetInstance()->SetNextScene(new SceneGame());
 				break;
 
@@ -150,6 +157,7 @@ void ScenePause::Render()
 	ui->Draw2(returnGame.pos ,  DirectX::XMFLOAT2(returnGame.size.x  * size[0], returnGame.size.y  * size[0]), returnGame.texPos , returnGame.size , 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 	ui->Draw2(restart.pos    ,  DirectX::XMFLOAT2(restart.size.x     * size[1], restart.size.y     * size[1]), restart.texPos    , restart.size    , 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 	ui->Draw2(returnTitle.pos,  DirectX::XMFLOAT2(returnTitle.size.x * size[2], returnTitle.size.y * size[2]), returnTitle.texPos, returnTitle.size, 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	ui->Draw2(select.pos     ,  DirectX::XMFLOAT2(select.size.x      * 0.75f  , select.size.y      * 0.75f  ), select.texPos     , select.size     , 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	SetBlenderMode(BM_NONE);
 }

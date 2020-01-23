@@ -116,6 +116,7 @@ void SceneManager::Render()
 void SceneManager::ImGui()
 {
 #if DEBUG_MODE
+	if (Fade::GetInstance()->loading) return;
 
 	if (GetKeyState(VK_CONTROL) < 0)
 	{
@@ -141,10 +142,10 @@ void SceneManager::ImGui()
 	}
 	if (commandFlg & useImGui)
 	{
-		Light::GetInstance()->ImGui();
 	}
 
 	pScene->ImGui();
+	Light::GetInstance()->ImGui();
 
 	static DirectX::XMFLOAT3 pos = { 0,0,0 };
 	ImGui::Begin("Particle");

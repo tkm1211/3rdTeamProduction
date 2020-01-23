@@ -27,22 +27,55 @@ void SceneGame::Init()
 	gameOver = std::make_unique<GameOver>();
 	gameOver->Init();
 
-	CharacterSystem::GetInstance()->Init();
-	ObjectSystem::GetInstance()->Init();
-	ParticleSystem::GetInstance()->Init();
-	UiSystem::GetInstance()->Init();
-	Ranking::GetInstance()->Init();
-	CrystalSystem::GetInstance()->Init();
+	back = std::make_unique<Sprite>(L"Data/Assets/Texture/blackFade.png");
+	/*nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
+
+	nowLoadingData.pos = DirectX::XMFLOAT2(600.0f, 455.0f);
+	nowLoadingData.texPos = DirectX::XMFLOAT2(0.0f, 110.0f);
+	nowLoadingData.size = DirectX::XMFLOAT2(440.0f, 110.0f);
+
+	for (int i = 0; i < 3; i++)
+	{
+		dotData[i].pos = DirectX::XMFLOAT2(1050.0f + 50.0f * i, 455.0f);
+		dotData[i].texPos = DirectX::XMFLOAT2(10013.8f, 110.0f);
+		dotData[i].size = DirectX::XMFLOAT2(30.0f, 110.0f);
+	}
+
+
+	loadingThread = std::make_unique<std::thread>([&]()
+	{
+		std::lock_guard<std::mutex> lock(loadingMutex);
+
+		CharacterSystem::GetInstance()->Init();
+		ObjectSystem::GetInstance()->Init();
+		ParticleSystem::GetInstance()->Init();
+		UiSystem::GetInstance()->Init();
+		Ranking::GetInstance()->Init();
+		CrystalSystem::GetInstance()->Init();
+	});*/
 	//UiSystem::GetInstance()->Init();
 
 	//UiSystem::GetInstance()->GetWaveTexAddress()->Start(1);
 	Editer::GetInstance()->SetNowEditer(false);
 
+
+	/*cnt = 0;
+	state = 0;*/
 }
 
 void SceneGame::Update()
 {
-	//if (Fade::GetInstance()->onFadeFlg) return;
+	//if (IsNowLoading())
+	//{
+	//	return; //ƒ[ƒh‚ªŠ®—¹‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç‘¦return
+	//}
+
+	//if (loadingThread && loadingThread->joinable())
+	//{
+	//	loadingThread->join();
+	//}
+
+	if (Fade::GetInstance()->onFadeFlg) return;
 
 	CharacterSystem::GetInstance()->Update();
 	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead()) CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
@@ -105,6 +138,19 @@ void SceneGame::Update()
 	{
 		SceneManager::GetInstance()->SetScene(new ScenePause(), true);
 	}
+	static int keycnt = 0;
+	if (GetKeyState('P') < 0)
+	{
+		if (keycnt == 0)
+		{
+			SceneManager::GetInstance()->SetScene(new ScenePause(), true);
+		}
+		keycnt++;
+	}
+	else
+	{
+		keycnt = 0;
+	}
 
 #ifdef _DEBUG
 	SceneGame::ImGui();
@@ -114,6 +160,8 @@ void SceneGame::Update()
 
 void SceneGame::Render()
 {
+	if (Fade::GetInstance()->nowLoad) return;
+
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	UiSystem::GetInstance()->Draw();

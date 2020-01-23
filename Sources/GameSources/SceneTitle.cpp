@@ -26,10 +26,25 @@ void SceneTitle::Init()
 	ParticleSystem::GetInstance()->Init();
 	UiSystem::GetInstance()->Init();
 	Ranking::GetInstance()->Init();
+
+	/*nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
+
+	nowLoadingData.pos = DirectX::XMFLOAT2(0.0f, 0.0f);
+	nowLoadingData.size = DirectX::XMFLOAT2(0.0f, 0.0f);
+	nowLoadingData.texPos = DirectX::XMFLOAT2(0.0f, 0.0f);
+
+	for (int i = 0; i < 3; i++)
+	{
+		dotData[i].pos = DirectX::XMFLOAT2(0.0f, 0.0f);
+		dotData[i].size = DirectX::XMFLOAT2(0.0f, 0.0f);
+		dotData[i].texPos = DirectX::XMFLOAT2(0.0f, 0.0f);
+	}*/
 }
 
 void SceneTitle::Update()
 {
+	if (Fade::GetInstance()->loading) return;
+
 	CharacterSystem::GetInstance()->Update();
 	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
 	ObjectSystem::GetInstance()->Update();
@@ -56,6 +71,7 @@ void SceneTitle::Update()
 		{
 			Ranking::GetInstance()->Sort(gameTimer->timeNum, gameTimer->timer, gameTimer->frameNum);
 			Fade::GetInstance()->onFadeFlg = true;
+			Fade::GetInstance()->loading = true;
 			Fade::GetInstance()->SetNextScene(new SceneGame());
 			//SetScene(new SceneLabo(), false);
 		}
@@ -67,6 +83,8 @@ void SceneTitle::Update()
 
 void SceneTitle::Render()
 {
+	//nowLoading->Draw(nowLoadingData.pos, nowLoadingData.size, nowLoadingData.texPos, nowLoadingData.size, 0.0f, DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
 	ParticleSystem::GetInstance()->Draw();
@@ -84,6 +102,19 @@ void SceneTitle::Render()
 void SceneTitle::ImGui()
 {
 	CharacterSystem::GetInstance()->GetPlayerAddress()->ImGui();
+
+	//ImGui::Begin("tex");
+
+	//ImGui::DragFloat2("pos", &nowLoadingData.pos.x, 0.1f);
+	//ImGui::DragFloat2("texPos", &nowLoadingData.texPos.x, 0.1f);
+	//ImGui::DragFloat2("size", &nowLoadingData.size.x, 0.1f);
+
+	//ImGui::DragFloat2(" pos", &dotData[0].pos.x, 0.1f);
+	//ImGui::DragFloat2(" texPos", &dotData[0].texPos.x, 0.1f);
+	//ImGui::DragFloat2(" size", &dotData[0].size.x, 0.1f);
+
+
+	//ImGui::End();
 }
 
 void SceneTitle::UnInit() {}

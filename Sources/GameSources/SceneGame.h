@@ -24,6 +24,28 @@ private:
 	std::unique_ptr<GameTimer> gameTimer;
 	std::unique_ptr<GameOver> gameOver;
 
+	std::unique_ptr<Sprite> back;
+	/*std::unique_ptr<Sprite> nowLoading;
+
+	TexData nowLoadingData;
+	TexData dotData[3];
+
+	int cnt;
+	int state;
+
+private:
+	std::unique_ptr<std::thread> loadingThread;
+	std::mutex loadingMutex;
+	bool IsNowLoading()
+	{
+		if (loadingThread && loadingMutex.try_lock())
+		{
+			loadingMutex.unlock();
+			return false;
+		}
+		return true;
+	}*/
+
 public:
 	void Init();
 	void UnInit();

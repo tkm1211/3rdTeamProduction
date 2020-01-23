@@ -21,6 +21,11 @@ private:
 
 	std::unique_ptr<GameTimer> gameTimer;
 
+	std::unique_ptr<Sprite> nowLoading;
+
+	TexData nowLoadingData;
+	TexData dotData[3];
+
 public:
 	void Init();
 	void UnInit();
