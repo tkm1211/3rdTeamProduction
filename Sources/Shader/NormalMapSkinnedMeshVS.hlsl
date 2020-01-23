@@ -23,12 +23,25 @@ VS_OUT main(float4 position : POSITION, float4 normal : NORMAL, float2 tex : TEX
 	float3 N = normalize(mul(normal.xyz, (float3x3)world));
 
 	//ê⁄ãÛä‘
-	float3 vN = N;
-	float3 vB = { 0, 1, -0.001f };
+	float3 vN;
+	float3 vB;
 	float3 vT;
-	vB = normalize(vB);
-	vT = normalize(cross(vB, vN));
-	vB = normalize(cross(vN, vT));
+	if (EyePos.w == 0.0f)
+	{
+		vN = N;
+		vB = float3(0, 1, -0.001f);
+		vB = normalize(vB);
+		vT = normalize(cross(vB, vN));
+		vB = normalize(cross(vN, vT));
+	}
+	else
+	{
+		vN = N;
+		vB = float3(0, -0.001f, 1);
+		vB = normalize(vB);
+		vT = normalize(cross(vN, vB));
+		vB = normalize(cross(vT, vN));
+	}
 
 	//vout.color = material_color * max(1, dot(L, N));
 	//vout.color.a = material_color.a;

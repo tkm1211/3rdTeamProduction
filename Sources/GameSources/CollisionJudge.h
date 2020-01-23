@@ -24,6 +24,9 @@ public:
 	// バフエリア vs Player
 	static void BuffAreaVsPlayer();
 
+	// 雑魚 vs 雑魚達
+	static void EnemyVsEnemies();
+
 	// Player vs ステージ
 	static void PlayerVsStage();
 

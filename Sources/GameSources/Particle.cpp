@@ -496,3 +496,39 @@ bool Particle::SetSparkAfterImage(SparkAfterImageParticle* p, DirectX::XMFLOAT3 
 
 	return true;
 }
+
+// –î
+void Particle::ArrowUpdate(ArrowParticleInfo* p)
+{
+	if (!p->data.isExist) return;
+
+	p->data.alpha = easing::InExp(p->data.time, p->data.existTime, 0.0f, 1.0f);
+
+	p->data.scale.x = 20.0f * p->data.alpha;
+	p->data.scale.y = 20.0f * p->data.alpha;
+
+	p->data.time++;
+
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+}
+
+bool Particle::SetArrowParticle(ArrowParticleInfo* p, DirectX::XMFLOAT3 pos)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	p->data.scale = { 20.0f, 20.0f };
+	float y = rand() % 100 + 30;
+	p->data.angle = { 0, 0, 0 };
+	p->data.alpha = 1.0f;
+	p->data.time = 0;
+	p->data.existTime = 100;
+	p->data.isExist = true;
+
+	p->data.tex.Set(1024.0f * 4, 0.0f, 1024.0f, 1024.0f);
+
+	return true;
+}

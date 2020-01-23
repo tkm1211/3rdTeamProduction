@@ -20,6 +20,9 @@ public:
 	// 2次元での円と円の衝突判定 & 押し出し 関数
 	static bool CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2);
 
+	// 2次元での円の押し出し 関数
+	static void CircleExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2);
+
 	// 2次元でのカプセルと円の衝突判定 & 押し出し 関数
 	// static bool CapsuleVsCircleAndExtrusion(DirectX::XMFLOAT3& nowPos1, DirectX::XMFLOAT3 oldPos1, float radius1, DirectX::XMFLOAT3 pos2, float radius2);
 	

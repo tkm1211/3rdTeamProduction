@@ -110,3 +110,7 @@ struct SparkAfterImageParticle
 	float originScale;
 };
 
+struct ArrowParticleInfo
+{
+	Data data;
+};

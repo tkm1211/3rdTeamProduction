@@ -10,12 +10,13 @@
 #include "Editer.h"
 #include "SoundLoader.h"
 #include "BGEditor.h"
+#include "ParticleSystem.h"
 
 
 void SceneManager::Init()
 {
 	// 初期化処理
-	SetScene(new SceneGame());
+	SetScene(new SceneTitle());
 	ShaderSystem::GetInstance()->Init();
 	Light::GetInstance()->Init();
 	//Fadeの初期化処理
@@ -67,7 +68,7 @@ void SceneManager::Update()
 	// 更新処理
 	if (pStackScene)
 	{
-		pStackScene->Update();
+		//pStackScene->Update();
 	}
 	if (pNext)
 	{
@@ -140,9 +141,28 @@ void SceneManager::ImGui()
 	}
 	if (commandFlg & useImGui)
 	{
-		pScene->ImGui();
 		Light::GetInstance()->ImGui();
 	}
+
+	pScene->ImGui();
+
+	static DirectX::XMFLOAT3 pos = { 0,0,0 };
+	ImGui::Begin("Particle");
+	ImGui::DragFloat3("pos", &pos.x, 1.0f);
+	//if (ImGui::Button("emit"))
+	{
+		ParticleSystem::GetInstance()->SetArrowParticle(pos, 15.0f);
+		ParticleSystem::GetInstance()->SetArrowParticle(pos, 15.0f);
+		ParticleSystem::GetInstance()->SetArrowParticle(pos, 15.0f);
+	}
+	ImGui::End();
+
+	ImGui::Begin("Scene ");
+	if (ImGui::Button("Pause"))
+	{
+		SetScene(new ScenePause(), true);
+	}
+	ImGui::End();
 
 #endif
 }
@@ -150,6 +170,10 @@ void SceneManager::ImGui()
 // シーンの切り換え
 void SceneManager::SetScene(Scene* scene, bool nowSceneStack)
 {
+	if (pStackScene)
+	{
+		pStackScene = nullptr;
+	}
 	if (nowSceneStack)
 	{
 		pStackScene = pScene;

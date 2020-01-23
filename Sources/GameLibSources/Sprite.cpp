@@ -367,6 +367,187 @@ void Sprite::Draw( float dx, float dy, float dw, float dh, float sx, float sy, f
 
 }
 
+void Sprite::Draw2(float dx, float dy, float dw, float dh, float sx, float sy, float sw, float sh, float angle, float r, float g, float b, float a) const
+{
+
+	// Get Context *******************************************************************
+
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();
+
+	// *******************************************************************************
+
+	// Get Screen Size for ViewPort **************************************************
+
+	D3D11_VIEWPORT viewport;
+	UINT numViewports = 1;
+
+	immediateContext->RSGetViewports(&numViewports, &viewport);
+
+	float screenWidth = viewport.Width;
+	float screenHeight = viewport.Height;
+
+	// *******************************************************************************
+
+	// Convert Screen Coordinates to NDC *********************************************
+
+		//left, top
+	float x0 = dx - dw / 2.0f;
+	float y0 = dy - dh / 2.0f;
+
+	//right, top
+	float x1 = dx + dw / 2.0f;
+	float y1 = dy - dh / 2.0f;
+
+	//left, bottom
+	float x2 = dx - dw / 2.0f;
+	float y2 = dy + dh / 2.0f;
+
+	//right, bottom
+	float x3 = dx + dw / 2.0f;
+	float y3 = dy + dh / 2.0f;
+
+	//Get Center Position
+	float mx = dx;
+	float my = dy;
+
+
+	//Convert to Coordinates Centered at 0
+	x0 -= mx;
+	y0 -= my;
+	x1 -= mx;
+	y1 -= my;
+	x2 -= mx;
+	y2 -= my;
+	x3 -= mx;
+	y3 -= my;
+
+
+	//Rotate Each Vertex Coordinate by Angle
+	float rx, ry;
+
+	float cos = cosf(angle * 0.01745f);
+	float sin = sinf(angle * 0.01745f);
+
+	//left, top
+	rx = x0;
+	ry = y0;
+
+	x0 = cos * rx + -sin * ry;
+	y0 = sin * rx + cos * ry;
+
+	//right, top
+	rx = x1;
+	ry = y1;
+
+	x1 = cos * rx + -sin * ry;
+	y1 = sin * rx + cos * ry;
+
+	//left, bottom
+	rx = x2;
+	ry = y2;
+
+	x2 = cos * rx + -sin * ry;
+	y2 = sin * rx + cos * ry;
+
+	//right, bottom
+	rx = x3;
+	ry = y3;
+	x3 = cos * rx + -sin * ry;
+	y3 = sin * rx + cos * ry;
+
+
+	//Convert to Original Coordinates
+	x0 += mx;
+	y0 += my;
+	x1 += mx;
+	y1 += my;
+	x2 += mx;
+	y2 += my;
+	x3 += mx;
+	y3 += my;
+
+
+	//Normalize and Convert to NDC
+	x0 = 2.0f * x0 / screenWidth - 1.0f;
+	y0 = 1.0f - 2.0f * y0 / screenHeight;
+
+	x1 = 2.0f * x1 / screenWidth - 1.0f;
+	y1 = 1.0f - 2.0f * y1 / screenHeight;
+
+	x2 = 2.0f * x2 / screenWidth - 1.0f;
+	y2 = 1.0f - 2.0f * y2 / screenHeight;
+
+	x3 = 2.0f * x3 / screenWidth - 1.0f;
+	y3 = 1.0f - 2.0f * y3 / screenHeight;
+
+	// *******************************************************************************
+
+	// Update Vertex Buffer with Calculation Result **********************************
+
+	HRESULT hr = S_OK;
+
+	D3D11_MAP map = D3D11_MAP_WRITE_DISCARD;
+	D3D11_MAPPED_SUBRESOURCE mappedBuffer;
+
+	hr = immediateContext->Map(vertexBuffer.Get(), 0, map, 0, &mappedBuffer);
+	assert(!hr && "Map	Error");
+
+	// Assign Calculation Result to Vertex Buffer
+	vertex* vertices = static_cast<vertex*>(mappedBuffer.pData);
+	vertices[0].pos.x = x0;
+	vertices[0].pos.y = y0;
+	vertices[1].pos.x = x1;
+	vertices[1].pos.y = y1;
+	vertices[2].pos.x = x2;
+	vertices[2].pos.y = y2;
+	vertices[3].pos.x = x3;
+	vertices[3].pos.y = y3;
+	vertices[0].pos.z = vertices[1].pos.z = vertices[2].pos.z = vertices[3].pos.z = 0.0f;
+
+	//Assign ( r, g, b, a )
+	DirectX::XMFLOAT4 color(r, g, b, a);
+	vertices[0].color = vertices[1].color = vertices[2].color = vertices[3].color = color;
+
+	//texcoord
+	vertices[0].texcoord.x = static_cast<FLOAT>(sx) / texture2dDesc.Width;
+	vertices[0].texcoord.y = static_cast<FLOAT>(sy) / texture2dDesc.Height;
+	vertices[1].texcoord.x = static_cast<FLOAT>(sx + sw) / texture2dDesc.Width;
+	vertices[1].texcoord.y = static_cast<FLOAT>(sy) / texture2dDesc.Height;
+	vertices[2].texcoord.x = static_cast<FLOAT>(sx) / texture2dDesc.Width;
+	vertices[2].texcoord.y = static_cast<FLOAT>(sy + sh) / texture2dDesc.Height;
+	vertices[3].texcoord.x = static_cast<FLOAT>(sx + sw) / texture2dDesc.Width;
+	vertices[3].texcoord.y = static_cast<FLOAT>(sy + sh) / texture2dDesc.Height;
+
+
+	immediateContext->Unmap(vertexBuffer.Get(), 0);
+
+	// *******************************************************************************
+
+	// Set Object and Draw ***********************************************************
+
+	UINT stride = sizeof(vertex);
+	UINT offset = 0;
+
+	immediateContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	immediateContext->IASetInputLayout(inputLayout.Get());
+
+	immediateContext->RSSetState(rasterizerState.Get());
+
+	immediateContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+	immediateContext->PSSetShader(pixelShader.Get(), nullptr, 0);
+
+	immediateContext->PSSetShaderResources(0, 1, shaderResourceView.GetAddressOf());
+	immediateContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
+
+	immediateContext->OMSetDepthStencilState(depthStencilState.Get(), 1);
+
+	immediateContext->Draw(4, 0);
+
+	// *******************************************************************************
+
+}
+
 void Sprite::Textout( std::string s, float x, float y, float w, float h, float r, float g, float b, float a ) const
 {
 

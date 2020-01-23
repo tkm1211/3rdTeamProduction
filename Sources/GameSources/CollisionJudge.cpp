@@ -4,9 +4,9 @@
 #include "ObjectSystem.h"
 #include "BG.h"
 #include "EnemyManager.h"
-#include "WaveManager.h"
 #include "ParticleSystem.h"
 #include "Wave.h"
+#include "WaveManager.h"
 #include "SoundLoader.h"
 #include "CameraSystem.h"
 #include "UiSystem.h"
@@ -154,18 +154,30 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 	{
 		if (warkerKokim.GetState() != WARKER_STATE::STRIKE || warkerKokim.GetNowAsphyxia()) continue;
 
-		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
+		if (player->GetonGrdCollision())
 		{
-			player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
-			DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
-			DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&warkerKokim.GetWeaponCollision()->GetPos());
-			DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
-			d = DirectX::XMVectorNegate(d);
-			d = DirectX::XMVector3Normalize(d);
-			DirectX::XMFLOAT3 sp = {};
-			DirectX::XMStoreFloat3(&sp, d);
-		//	CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
-		//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
+			DirectX::XMFLOAT3 grdCollisionPos = player->grdCollision->GetPos();
+			grdCollisionPos.y = player->grdCollision->GetCollisionScale().x;
+			if (Collision::SphereVsSphere(grdCollisionPos, warkerKokim.GetWeaponCollision()->GetPos(), player->grdCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
+			{
+				player->SuccessGuard();
+			}
+		}
+		else
+		{
+			if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
+			{
+				player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+				DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
+				DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&warkerKokim.GetWeaponCollision()->GetPos());
+				DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
+				d = DirectX::XMVectorNegate(d);
+				d = DirectX::XMVector3Normalize(d);
+				DirectX::XMFLOAT3 sp = {};
+				DirectX::XMStoreFloat3(&sp, d);
+				//	CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
+				//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
+			}
 		}
 	}
 
@@ -173,18 +185,28 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 	{
 		if (archerKokim.state != ARCHER_STATE::STRIKE || archerKokim.nowAsphyxia) continue;
 
-		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), archerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, archerKokim.GetWeaponCollision()->GetCollisionScale().x))
+		if (player->GetonGrdCollision())
 		{
-			player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
-			DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
-			DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&archerKokim.GetWeaponCollision()->GetPos());
-			DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
-			d = DirectX::XMVectorNegate(d);
-			d = DirectX::XMVector3Normalize(d);
-			DirectX::XMFLOAT3 sp = {};
-			DirectX::XMStoreFloat3(&sp, d);
-			CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({ sp.x * 10, 0, sp.z * 10 });
-			//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
+			if (Collision::SphereVsSphere(player->grdCollision->GetPos(), archerKokim.GetWeaponCollision()->GetPos(), player->grdCollision->GetCollisionScale().x, archerKokim.GetWeaponCollision()->GetCollisionScale().x))
+			{
+				player->SuccessGuard();
+			}
+		}
+		else
+		{
+			if (Collision::SphereVsSphere(player->GetModelData().GetPos(), archerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, archerKokim.GetWeaponCollision()->GetCollisionScale().x))
+			{
+				player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
+				DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
+				DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&archerKokim.GetWeaponCollision()->GetPos());
+				DirectX::XMVECTOR d = DirectX::XMVectorSubtract(e, p);
+				d = DirectX::XMVectorNegate(d);
+				d = DirectX::XMVector3Normalize(d);
+				DirectX::XMFLOAT3 sp = {};
+				DirectX::XMStoreFloat3(&sp, d);
+				CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({ sp.x * 10, 0, sp.z * 10 });
+				//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
+			}
 		}
 	}
 }
@@ -199,6 +221,69 @@ void CollisionJudge::BuffAreaVsPlayer()
 		if (Collision::SphereVsSphere(player->GetModelData().GetPos(), it.pArea_collision->GetPos(), player->bodyCollision->GetCollisionScale().x, it.pArea_collision->GetCollisionScale().x))
 		{
 			ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->checkBuff(&it);
+		}
+	}
+}
+
+void CollisionJudge::EnemyVsEnemies()
+{
+	EnemyManager* enemyManager;
+	enemyManager = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
+
+	WaveManager* waveManager;
+	waveManager = enemyManager->GetWaveManager();
+
+	Wave* waveData = &waveManager->GetWaves()[waveManager->GetWaveNowIndex()];
+
+	std::vector<WarkerKokim> warkerKokim = waveData->GetWarker();
+	std::vector<ArcherKokim> archerKokim = waveData->GetArcher();
+
+	for (size_t i = 0; i < warkerKokim.size(); i++)
+	{
+		for (size_t j = 0; j < warkerKokim.size(); j++)
+		{
+			if (i == j) continue;
+
+			DirectX::XMFLOAT3 pos1Float3 = warkerKokim[i].GetModelData()->GetPos();
+			DirectX::XMFLOAT3 pos2Float3 = warkerKokim[j].GetModelData()->GetPos();
+			DirectX::XMFLOAT2 pos1 = { pos1Float3.x, pos1Float3.z };
+			DirectX::XMFLOAT2 pos2 = { pos2Float3.x, pos2Float3.z };
+			if (Collision::SphereVsSphere(pos1Float3, pos2Float3, warkerKokim[i].GetBodyCollision()->GetCollisionScale().x, warkerKokim[j].GetBodyCollision()->GetCollisionScale().x))
+			{
+				Collision::CircleExtrusion(pos1, warkerKokim[i].GetBodyCollision()->GetCollisionScale().x, pos2, warkerKokim[j].GetBodyCollision()->GetCollisionScale().x);
+				warkerKokim[i].GetModelData()->SetPos(DirectX::XMFLOAT3(pos1.x, pos1Float3.y, pos1.y));
+			}
+		}
+
+		for (size_t j = 0; j < archerKokim.size(); j++)
+		{
+			DirectX::XMFLOAT3 pos1Float3 = warkerKokim[i].GetModelData()->GetPos();
+			DirectX::XMFLOAT3 pos2Float3 = archerKokim[j].GetModelData()->GetPos();
+			DirectX::XMFLOAT2 pos1 = { pos1Float3.x, pos1Float3.z };
+			DirectX::XMFLOAT2 pos2 = { pos2Float3.x, pos2Float3.z };
+			if (Collision::SphereVsSphere(pos1Float3, pos2Float3, warkerKokim[i].GetBodyCollision()->GetCollisionScale().x, archerKokim[j].GetBodyCollision()->GetCollisionScale().x))
+			{
+				Collision::CircleExtrusion(pos1, warkerKokim[i].GetBodyCollision()->GetCollisionScale().x, pos2, archerKokim[j].GetBodyCollision()->GetCollisionScale().x);
+				warkerKokim[i].GetModelData()->SetPos(DirectX::XMFLOAT3(pos1.x, pos1Float3.y, pos1.y));
+			}
+		}
+	}
+
+	for (size_t i = 0; i < archerKokim.size(); i++)
+	{
+		for (size_t j = 0; j < archerKokim.size(); j++)
+		{
+			if (i == j) continue;
+
+			DirectX::XMFLOAT3 pos1Float3 = archerKokim[i].GetModelData()->GetPos();
+			DirectX::XMFLOAT3 pos2Float3 = archerKokim[j].GetModelData()->GetPos();
+			DirectX::XMFLOAT2 pos1 = { pos1Float3.x, pos1Float3.z };
+			DirectX::XMFLOAT2 pos2 = { pos2Float3.x, pos2Float3.z };
+			if (Collision::SphereVsSphere(pos1Float3, pos2Float3, archerKokim[i].GetBodyCollision()->GetCollisionScale().x, archerKokim[j].GetBodyCollision()->GetCollisionScale().x))
+			{
+				Collision::CircleExtrusion(pos1, archerKokim[i].GetBodyCollision()->GetCollisionScale().x, pos2, archerKokim[j].GetBodyCollision()->GetCollisionScale().x);
+				archerKokim[i].GetModelData()->SetPos(DirectX::XMFLOAT3(pos1.x, pos1Float3.y, pos1.y));
+			}
 		}
 	}
 }

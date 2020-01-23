@@ -437,18 +437,23 @@ bool Collision::CircleVsCircleAndExtrusion(DirectX::XMFLOAT2& pos1, float radius
 {
 	if ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (radius1 + radius2) * (radius1 + radius2))
 	{
-		DirectX::XMFLOAT2 dir = { pos1.x - pos2.x, pos1.y - pos2.y };
-		float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
-
-		dir.x /= length;
-		dir.y /= length;
-
-		pos1.x = pos2.x + (radius1 + radius2) * dir.x;
-		pos1.y = pos2.y + (radius1 + radius2) * dir.y;
+		CircleExtrusion(pos1, radius1, pos2, radius2);
 
 		return true;
 	}
 	else return false;
+}
+
+void Collision::CircleExtrusion(DirectX::XMFLOAT2& pos1, float radius1, DirectX::XMFLOAT2 pos2, float radius2)
+{
+	DirectX::XMFLOAT2 dir = { pos1.x - pos2.x, pos1.y - pos2.y };
+	float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+
+	dir.x /= length;
+	dir.y /= length;
+
+	pos1.x = pos2.x + (radius1 + radius2) * dir.x;
+	pos1.y = pos2.y + (radius1 + radius2) * dir.y;
 }
 
 //******************************************************

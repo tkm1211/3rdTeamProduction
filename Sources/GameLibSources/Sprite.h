@@ -64,6 +64,27 @@ public:
 	{
 		Draw( pos.x, pos.y, size.x, size.y, texPos.x, texPos.y, texSize.x, texSize.y, angle, color.x, color.y, color.z, color.w );
 	}
+	void Draw2
+	(
+		float dx, float dy,
+		float dw, float dh,
+		float sx, float sy,
+		float sw, float sh,
+		float angle,
+		float r, float g, float b, float a
+	) const;
+	void Draw2
+	(
+		DirectX::XMFLOAT2 pos,
+		DirectX::XMFLOAT2 size,
+		DirectX::XMFLOAT2 texPos,
+		DirectX::XMFLOAT2 texSize,
+		float angle,
+		DirectX::XMFLOAT4 color
+	)
+	{
+		Draw2(pos.x, pos.y, size.x, size.y, texPos.x, texPos.y, texSize.x, texSize.y, angle, color.x, color.y, color.z, color.w);
+	}
 	void Textout( std::string s, float x, float y, float w, float h, float r = 1, float g = 1, float b = 1, float a = 1 ) const;
 	void SetShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView)
 	{

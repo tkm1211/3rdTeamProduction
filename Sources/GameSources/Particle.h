@@ -41,4 +41,7 @@ public:
 	void SparkAfterImageUpdate(SparkAfterImageParticle* p);
 	bool SetSparkAfterImage(SparkAfterImageParticle* p, DirectX::XMFLOAT3 pos, float scsale);
 
+	void ArrowUpdate(ArrowParticleInfo* p);
+	bool SetArrowParticle(ArrowParticleInfo* p, DirectX::XMFLOAT3 pos);
+
 };

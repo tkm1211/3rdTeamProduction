@@ -21,6 +21,7 @@ private:
 	UltimetThuderStoneParticle ultimetThunderStone[MAX];
 	SparkParticle spark[MAX];
 	SparkAfterImageParticle sparkAfterImage[MAX];
+	ArrowParticleInfo arrow[MAX];
 
 	Particle ptc;
 public:
@@ -187,6 +188,22 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			if (ptc.SetSparkAfterImage(&sparkAfterImage[i], pos, scale)) return;
+		}
+	}
+
+	// –î
+	void SetArrowParticle(DirectX::XMFLOAT3 pos, float len)
+	{
+		DirectX::XMFLOAT3 dir;
+		dir.x = (-100 + rand() % 200) / 100.0f;
+		dir.y = (-100 + rand() % 200) / 100.0f;
+		dir.z = (-100 + rand() % 200) / 100.0f;
+
+		for (int i = 0; i < MAX; i++)
+		{
+			DirectX::XMFLOAT3 _p = { pos.x + dir.x * len, pos.y + dir.y * len, pos.z + dir.z * len };
+
+			if (ptc.SetArrowParticle(&arrow[i], _p)) return;
 		}
 	}
 

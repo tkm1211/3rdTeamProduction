@@ -1,13 +1,13 @@
 #include "NormalMapSkinnedMesh.hlsli" 
 #include "Function.hlsli"
 
-// ディフューズ
-Texture2D    diffuseTexture : register(t0);
-SamplerState diffuseSampler : register(s0);
 
-// ノーマル
+Texture2D    diffuseTexture : register(t0);
 Texture2D    normalTexture : register(t1);
-//SamplerState normalSampler : register(s1);
+
+SamplerState pointSampler		: register(s0);
+SamplerState linerSampler		: register(s1);
+SamplerState anisotropicSampler : register(s2);
 
 
 float4 main(VS_OUT pin) : SV_TARGET
@@ -40,8 +40,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 	*/
 
 	// テクスチャ色取得
-	float4 color = diffuseTexture.Sample(diffuseSampler, pin.tex);
-	float3 N = normalTexture.Sample(diffuseSampler, Tex).xyz;
+	float4 color = diffuseTexture.Sample(anisotropicSampler, pin.tex);
+	float3 N = normalTexture.Sample(pointSampler, Tex).xyz;
 	N = N * 2.0f - 1.0f;
 
 	// 法線ワールド変換
@@ -54,7 +54,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
 	// 鏡面反射
 	float3 Ks = float3(1, 1, 1);
-	float3 S = BlinnPhongSpecular(N, L, C, E, Ks, 50);
+	float3 S = BlinnPhongSpecular(N, L, C, E, Ks, 200);
 
 	color *= pin.color * float4(A + D + S, 1.0);
 	return color;
