@@ -11,10 +11,10 @@ public:
 	void Update();
 	void Draw();
 
-	OBJ3D& GetModelData() { return modelData; };
+	OBJ3DInstance& GetModelData() { return modelData; };
 private:
 
-	OBJ3D modelData;
+	OBJ3DInstance modelData;
 	DirectX::XMFLOAT3 pVec;
 
 };

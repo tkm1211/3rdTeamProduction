@@ -14,16 +14,16 @@
 WarkerKokim::WarkerKokim(int num)
 {
 	{
-		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
-		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false);
-		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false);
-		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false);
-		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false);
+		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false, true);
+		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false, true);
+		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false, true);
+		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false, true);
+		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
 	}
 
 	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
 
-	modelData = std::make_shared<OBJ3D>();
+	modelData = std::make_shared<OBJ3DInstance>();
 
 
 	aiTreeData.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY,NULL,NULL);
@@ -64,11 +64,11 @@ void WarkerKokim::Init()
 {
 
 	{
-		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false);
-		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false);
-		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false);
-		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false);
-		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false);
+		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false, true);
+		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false, true);
+		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false, true);
+		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false, true);
+		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
 	}
 
 	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
@@ -94,6 +94,7 @@ void WarkerKokim::Init()
 	}
 	/*velocity = 3.0f;*/
 
+	strikeRecastMax = 200;
 	modelData->SetScale(DirectX::XMFLOAT3(2, 2, 2));
 	SetBehaviorTree(aiTreeData);
 	wanderingRct = 0;
@@ -185,7 +186,7 @@ void WarkerKokim::Update()
 	{
 		/*state = WARKER_STATE::TPOSE;*/
 
-		modelData->SetPosY(110);
+		modelData->SetPosY(180);
 	}
 
 	

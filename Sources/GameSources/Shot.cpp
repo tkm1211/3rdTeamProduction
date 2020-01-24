@@ -29,7 +29,7 @@ void Shot::Update()
 			DirectX::XMLoadFloat3(&modelData.GetSpeed())));
 	modelData.SetPos(temp);
 
-	ParticleSystem::GetInstance()->SetArrowParticle(temp, 20.0f);
+	ParticleSystem::GetInstance()->SetArrowParticle(temp, 10.0f);
 
 }
 

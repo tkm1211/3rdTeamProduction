@@ -10,11 +10,17 @@ void Light::Init()
 
 	lightAngle = 4.16f;
 	posY = -0.36f;
-	Light::SetAmbient(DirectX::XMFLOAT3(2.0f, 2.0f, 2.0f));
+	Light::SetAmbient(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 	//ƒ‰ƒCƒg•ûŒü
+#if 0
 	lightDir.x = sinf(lightAngle);
 	lightDir.y = posY;
 	lightDir.z = cosf(lightAngle);
+#elif 1
+	lightDir.x = 1.0f;
+	lightDir.y = 55.0f;
+	lightDir.z = 0.0f;
+#endif
 
 #if 1
 	// SetPointLight(0, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, 50.0f);
@@ -80,6 +86,7 @@ void Light::ImGui()
 	ImGui::DragFloat3("pos", &pointLight[lightNo].pos.x);
 	ImGui::DragFloat("range", &pointLight[lightNo].range);
 	ImGui::DragFloat3("ambient color", &ambient.x);
+	ImGui::DragFloat3("dir", &lightDir.x);
 	ImGui::DragFloat4("light color", &pointLight[lightNo].color.x);
 	ImGui::End();
 

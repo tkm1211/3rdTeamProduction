@@ -25,7 +25,7 @@
 #include "OBJ3D.h"
 
 
-//#define USE_CEREAL
+#define USE_CEREAL
 
 
 class SkinnedMeshBatch : public Mesh
@@ -330,10 +330,10 @@ public:
 			cereal::BinaryOutputArchive outputBinArchive( ofsBin );
 			outputBinArchive( *this );
 
-			std::ofstream ofsJson;
+			/*std::ofstream ofsJson;
 			ofsJson.open( ( std::string( fbxFileName ) + std::string( fbxName ) + ".json" ).c_str(), std::ios::out );
 			cereal::JSONOutputArchive outputJsonArchive( ofsJson );
-			outputJsonArchive( *this );
+			outputJsonArchive( *this );*/
 		}
 #else
 		LoadFBX(device, fileName);

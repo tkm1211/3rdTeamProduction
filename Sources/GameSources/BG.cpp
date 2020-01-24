@@ -21,6 +21,8 @@ void BG::Init()
 		t.type = BGEditor::GetInstance()->bgObject.at(i).GetType();
 		t.obj = BGEditor::GetInstance()->bgObject.at(i).GetOBJ3D();
 
+		if (t.type == ModelType::STONE1 || t.type == ModelType::STONE2 || t.type == ModelType::TREE) continue;
+
 		bgObject.push_back(t);
 
 	}
@@ -47,23 +49,13 @@ void BG::Draw()
 		SetRasterizerState(FrameWork::GetInstance().RS_CULL_BACK_FALSE);
 
 		ground->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), true);
-		ground->Render(groundData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		ground->Render(groundData.GetWorldMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), groundData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
-
-
 
 		wall->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
 		wall->Render(wallData.GetWorldMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), wallData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 
-		for (size_t i = 0; i < bgObject.size(); i++)
-		{
-			if (bgObject[i].type == ModelType::STONE1 || bgObject[i].type == ModelType::STONE2) continue;
-
-			bgModel[i]->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
-			bgModel[i]->Render(bgObject[i].GetOBJ3D().GetWorldMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetViewMatrix(), CameraSystem::GetInstance()->enemyEditorView.GetProjectionMatrix(),
-				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), bgObject[i].GetOBJ3D().GetColor(), FrameWork::GetInstance().GetElapsedTime());
-		}
 	}
 	else
 	{
@@ -81,7 +73,7 @@ void BG::Draw()
 
 		for (size_t i = 0; i < bgObject.size(); i++)
 		{
-			if (bgObject[i].type == ModelType::STONE1 || bgObject[i].type == ModelType::STONE2) continue;
+			if (bgObject[i].type == ModelType::STONE1 || bgObject[i].type == ModelType::STONE2 || bgObject[i].type == ModelType::TREE) continue;
 
 			bgModel[i]->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::NORMAL_MAP), false);
 			bgModel[i]->Render(bgObject[i].GetOBJ3D().GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
@@ -89,7 +81,7 @@ void BG::Draw()
 		}
 
 	}
-	wallCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
+	//wallCollision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 
 }
 

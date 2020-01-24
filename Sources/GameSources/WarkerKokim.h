@@ -63,6 +63,7 @@ public:
 	int& GetDamageRecast() { return damageRecast; };
 	bool& GetNowAsphyxia() { return nowAsphyxia; };
 
+	void SetPos(DirectX::XMFLOAT3 pos) { this->modelData->SetPos(pos); };
 	void SetAttackDistance(int attackDis) { this->attackDis=attackDis; };
 	void SetFindPlayerDistance(int findPdis) {this->findPdis=findPdis; };
 	void SetState(WARKER_STATE state) {this->state= state; };
@@ -76,9 +77,9 @@ private:
 
 	WARKER_STATE state = WARKER_STATE::RUN;
 	float plDot;
-	int attackDis=50;
+	int attackDis=500;
 	int findPdis=1000;
-	int strikeRecastMax = 500;
+	int strikeRecastMax =80;
 	int strikeRecastCnt = 0;
 	int damageRecast = 0;
 

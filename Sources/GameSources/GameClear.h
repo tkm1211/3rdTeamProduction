@@ -20,6 +20,7 @@ private:
 
 	std::unique_ptr<SpriteBatch> gameClearSpr;
 	std::unique_ptr<SpriteBatch> textSpr;
+	std::unique_ptr<Sprite> backSpr;
 
 public:
 	GameClear() {}

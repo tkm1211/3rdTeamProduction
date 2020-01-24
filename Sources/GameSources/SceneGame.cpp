@@ -18,10 +18,14 @@
 #include "Ranking.h"
 #include "Crystal.h"
 #include "ScenePause.h"
+#include "Wave.h"
 
 void SceneGame::Init()
 {
 	AllSoundStop();
+	AllBgmSoundStop();
+	PlaySoundMem(SoundLoader::GetInstance()->main.get());
+
 	gameTimer = std::make_unique<GameTimer>();
 	gameTimer->Init();
 	gameOver = std::make_unique<GameOver>();
@@ -57,10 +61,13 @@ void SceneGame::Init()
 	});*/
 	//UiSystem::GetInstance()->Init();
 
-	//UiSystem::GetInstance()->GetWaveTexAddress()->Start(1);
 	Editer::GetInstance()->SetNowEditer(false);
+	CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
+	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
+	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
+	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z });
 
-
+	isWave = false;
 	/*cnt = 0;
 	state = 0;*/
 }
@@ -76,10 +83,17 @@ void SceneGame::Update()
 	//{
 	//	loadingThread->join();
 	//}
+	ParticleSystem::GetInstance()->Update();
 
 	if (Fade::GetInstance()->onFadeFlg) return;
-	EnemyManager* enm = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 
+	if (!isWave)
+	{
+		UiSystem::GetInstance()->GetWaveTexAddress()->Start(1);
+		isWave = true;
+	}
+
+	EnemyManager* enm = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 	CharacterSystem::GetInstance()->Update();
 	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead()) CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
 	else CameraControl::CameraRotation(&CameraSystem::GetInstance()->mainView);
@@ -89,7 +103,6 @@ void SceneGame::Update()
 	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
 	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z });
 	
-	ParticleSystem::GetInstance()->Update();
 	CollisionJudge::DeathBlowVsEnemies();
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetFinalBlow()) return;
 	ObjectSystem::GetInstance()->Update();
@@ -97,8 +110,12 @@ void SceneGame::Update()
 	UiSystem::GetInstance()->Update();
 	CrystalSystem::GetInstance()->Update();
 
-	if (enm->finishWave)
+	if (enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish)
 	{
+		AllSoundStop();
+		AllBgmSoundStop();
+		PlaySoundMem(SoundLoader::GetInstance()->clear.get());
+
 		CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
 	}
 
@@ -108,7 +125,8 @@ void SceneGame::Update()
 	}
 	 if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
 	{
-		gameOver->Update();
+		 enm->stopTimer = true;
+		 gameOver->Update();
 	}
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->clearFlg)
 	{
@@ -157,6 +175,8 @@ void SceneGame::Update()
 
 	if (xInput[0].bSTARTt)
 	{
+		AllSoundStop();
+		CharacterSystem::GetInstance()->GetPlayerAddress()->StopMotion();
 		SceneManager::GetInstance()->SetScene(new ScenePause(), true);
 	}
 	static int keycnt = 0;
@@ -201,8 +221,8 @@ void SceneGame::Render()
 	}
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->clearFlg)
 	{
-		Ranking::GetInstance()->Draw();
 		gameClear->Draw();
+		Ranking::GetInstance()->Draw();
 	}
 }
 

@@ -59,7 +59,7 @@ public:
 	bool& GetNowAsphyxia() { return nowAsphyxia; };
 
 	void SetRecast(int hRecast) { recast = hRecast; };
-
+	void SetPos(DirectX::XMFLOAT3 pos) { this->modelData->SetPos(pos); };
 	void SetAttackDistance(int attackDis) { this->atDis = attackDis; };
 	void SetFindPlayerDistance(int findPdis) { this->findPdis = findPdis; };
 	void SetState(ARCHER_STATE state) { this->state = state; };

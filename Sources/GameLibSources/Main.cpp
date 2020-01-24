@@ -59,6 +59,13 @@ INT WINAPI wWinMain( HINSTANCE instance, HINSTANCE prevInstance, LPWSTR cmdLine,
 		rc.right - rc.left, rc.bottom - rc.top,
 		NULL, NULL, instance, NULL );
 
+	SetMenu(hwnd, NULL);	//メニューを隠す
+	SetWindowLong(hwnd, GWL_STYLE, WS_VISIBLE | WS_POPUP);//ウィンドウのスタイルを変更
+	MoveWindow(hwnd, GetSystemMetrics(SM_XVIRTUALSCREEN),
+		GetSystemMetrics(SM_YVIRTUALSCREEN),
+		GetSystemMetrics(SM_CXVIRTUALSCREEN),
+		GetSystemMetrics(SM_CYVIRTUALSCREEN), TRUE);
+
 	ShowWindow( hwnd, cmdShow );
 
 	DragAcceptFiles(hwnd, TRUE);

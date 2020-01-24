@@ -36,7 +36,7 @@ class EditEnemy
 {
 public:
 	EditEnemy(){};
-	EditEnemy(std::shared_ptr<OBJ3D> modelData, ENEMY_TYPE type,int num):
+	EditEnemy(std::shared_ptr<OBJ3DInstance> modelData, ENEMY_TYPE type,int num):
 		nowCatch(false), modelData(modelData),type(type), index(num)
 	{
 		
@@ -44,7 +44,7 @@ public:
 	
 	~EditEnemy() {};
 
-	std::shared_ptr<OBJ3D> modelData;
+	std::shared_ptr<OBJ3DInstance> modelData;
 	ENEMY_TYPE type;
 	int index;
 	bool nowCatch;
@@ -78,13 +78,13 @@ public:
 
 	void WarkerRenderer();
 	void AllDelete();
-
+	void AllDeleteX();
 
 	void ImGui();
 
 private:
 
-
+	int tmpWaveNum;
 
 	std::shared_ptr<Model> pEliteWarker;
 	std::shared_ptr<Model> pPlayer;

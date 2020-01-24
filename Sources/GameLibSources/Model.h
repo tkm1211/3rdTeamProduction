@@ -133,10 +133,10 @@ public: // アニメーション関数
 		return DirectX::XMFLOAT3( _M._41, _M._42, _M._43 );
 	}
 
-	std::vector<Mesh::Face> GetFaces()
+	/*std::vector<Mesh::Face> GetFaces()
 	{
 		return pMesh->GetFaces();
-	}
+	}*/
 
 	void SetAddGlobalTransform(const DirectX::XMFLOAT4X4& _addGlobalTransform)
 	{

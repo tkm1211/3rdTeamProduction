@@ -246,7 +246,7 @@ public:
 	std::vector<std::vector<Vertex>> integratedVertex;
 	std::vector<std::vector<unsigned int>>  integratedIndex;
 	std::vector<MeshData> meshes;
-	std::vector<Face> faces;
+	//std::vector<Face> faces;
 	int numIndex;
 
 private:
@@ -344,10 +344,10 @@ public:
 			cereal::BinaryOutputArchive outputBinArchive( ofsBin );
 			outputBinArchive( *this );
 
-			std::ofstream ofsJson;
+			/*std::ofstream ofsJson;
 			ofsJson.open( ( std::string( fbxFileName ) + std::string( fbxName ) + ".json" ).c_str(), std::ios::out );
 			cereal::JSONOutputArchive outputJsonArchive( ofsJson );
-			outputJsonArchive( *this );
+			outputJsonArchive( *this );*/
 		}
 #else
 		LoadFBX(device, fileName);
@@ -417,14 +417,14 @@ public:
 	}
 
 	// レイピック関数
-	int RayPick
+	/*int RayPick
 	(
 		const DirectX::XMFLOAT3& startPosition,
 		const DirectX::XMFLOAT3& endPosition,
 		DirectX::XMFLOAT3* outPosition,
 		DirectX::XMFLOAT3* outNormal,
 		float* outLength
-	);
+	);*/
 
 	bool GetBoneTransformIndex(std::string name, int& meshIndex, int& boneIndex)
 	{
@@ -494,7 +494,7 @@ public:
 		return DirectX::XMFLOAT4X4();
 	}
 
-	std::vector<Face> GetFaces() { return faces; }
+	//std::vector<Face> GetFaces() { return faces; }
 
 	DirectX::XMFLOAT3 GetVectexPos(std::string name, const DirectX::XMFLOAT3& pos, int vectexPosNo)
 	{
@@ -621,7 +621,7 @@ public:
 			CEREAL_NVP( integratedVertex ),
 			CEREAL_NVP( integratedIndex ),
 			CEREAL_NVP( meshes ),
-			CEREAL_NVP( faces ),
+			//CEREAL_NVP( faces ),
 			CEREAL_NVP( numIndex )
 		);
 	}

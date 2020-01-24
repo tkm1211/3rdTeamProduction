@@ -6,6 +6,10 @@
 void CrystalSystem::Init()
 {
 	crystal = std::make_unique<Model>("Data/Assets/Model/cl/crystal.fbx", false, true);
+	for (int i = 0; i < data.size(); i++)
+	{
+		data.at(i).Clear();
+	}
 }
 
 void CrystalSystem::Update()

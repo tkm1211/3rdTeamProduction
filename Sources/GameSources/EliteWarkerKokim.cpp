@@ -6,7 +6,7 @@
 #include "CharacterSystem.h"
 EliteWarkerKokim::EliteWarkerKokim(int num)
 {
-	modelData = std::make_shared<OBJ3D>();
+	modelData = std::make_shared<OBJ3DInstance>();
 
 	static BehaviorTree aiTree;
 

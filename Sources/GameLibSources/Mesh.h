@@ -35,7 +35,7 @@ protected:
 	BOOL handedCoordinateSystem = FALSE;
 
 public:
-	struct Face
+	/*struct Face
 	{
 		DirectX::XMFLOAT3 pos[3];
 		int materialIndex;
@@ -53,7 +53,7 @@ public:
 				CEREAL_NVP(materialIndex)
 			);
 		}
-	};
+	};*/
 
 public:
 	Mesh() {}
@@ -121,7 +121,7 @@ public:
 		DirectX::XMFLOAT3* outNormal,
 		float* outLength
 	) { return 0; }
-	virtual std::vector<Face> GetFaces() { return std::vector<Face>(); }
+	//virtual std::vector<Face> GetFaces() { return std::vector<Face>(); }
 
 	template <class T>
 	void serialize(T& archive)

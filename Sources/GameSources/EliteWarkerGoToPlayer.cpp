@@ -15,7 +15,7 @@ ActionBase::STATE EliteWarkerGotoPlayerAction::Update(AI * obj)
 #else
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
-	OBJ3D&o = *archer->GetModelData();
+	OBJ3DInstance&o = *archer->GetModelData();
 	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
 	o.SetAngleY(atan2(pTrs.GetPos().x - o.GetPos().x, pTrs.GetPos().z - o.GetPos().z));

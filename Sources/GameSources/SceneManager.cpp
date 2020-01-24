@@ -152,9 +152,6 @@ void SceneManager::ImGui()
 	ImGui::DragFloat3("pos", &pos.x, 1.0f);
 	//if (ImGui::Button("emit"))
 	{
-		ParticleSystem::GetInstance()->SetArrowParticle(pos, 15.0f);
-		ParticleSystem::GetInstance()->SetArrowParticle(pos, 15.0f);
-		ParticleSystem::GetInstance()->SetArrowParticle(pos, 15.0f);
 	}
 	ImGui::End();
 

@@ -25,7 +25,7 @@ ActionBase::STATE GotoPlayerAction::Update(AI*obj)
 #else
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
-	OBJ3D &o = *warker->GetModelData();
+	OBJ3DInstance &o = *warker->GetModelData();
 	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 	o.SetAngleY(atan2(pTrs.GetPos().x - o.GetPos().x, pTrs.GetPos().z - o.GetPos().z));
 

@@ -537,6 +537,8 @@ void Particle::ArrowUpdate(ArrowParticleInfo* p)
 	p->data.scale.x = 20.0f * p->data.alpha;
 	p->data.scale.y = 20.0f * p->data.alpha;
 
+	p->data.angle.z = rand() % 360 * 0.01745f;
+
 	p->data.time++;
 
 	if (p->data.time > p->data.existTime)
@@ -558,7 +560,7 @@ bool Particle::SetArrowParticle(ArrowParticleInfo* p, DirectX::XMFLOAT3 pos)
 	p->data.existTime = 100;
 	p->data.isExist = true;
 
-	p->data.tex.Set(1024.0f * 4, 0.0f, 1024.0f, 1024.0f);
+	p->data.tex.Set(1024.0f * 1, 1024.0f * 3, 1024.0f, 1024.0f);
 
 	return true;
 }

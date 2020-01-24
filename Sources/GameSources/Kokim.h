@@ -10,7 +10,7 @@ public:
 	int GetIndex() { return index; };
 	int GetHp() { return hp; };
 	float& GetVelocity() { return velocity; };
-	std::shared_ptr<OBJ3D> GetModelData() { return modelData; };
+	std::shared_ptr<OBJ3DInstance> GetModelData() { return modelData; };
 	CollisionPrimitive* GetBodyCollision() { return bodyCol.get(); };
 	CollisionPrimitive* GetWeaponCollision() { return weaponCol.get(); };
 
@@ -21,7 +21,7 @@ public:
 
 	std::shared_ptr<CollisionPrimitive> bodyCol;
 	std::shared_ptr<CollisionPrimitive> weaponCol;
-	std::shared_ptr<OBJ3D> modelData;
+	std::shared_ptr<OBJ3DInstance> modelData;
 
 	int index=0;
 	int hp=10;

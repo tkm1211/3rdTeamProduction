@@ -18,6 +18,7 @@ class Wave
 {
 public:
 	bool _isFinish = false;
+	bool _isChange = false;
 
 	int setWarkerAttackPoint = 1000;
 	int setArcherAttackPoint = 1000;
@@ -66,15 +67,15 @@ private:
 	int setArcherHp=10;
 	int setEliteWarkerHp=10;
 
-	int setWarkerAttackDis = 50;
-	int setArcherAttackDis = 50;
+	int setWarkerAttackDis = 300;
+	int setArcherAttackDis = 1500;
 	int setEliteWarkerAttackDis = 50;
 
 	int setWarkerFindPlayerDistance = 1000;
 	int setArcherFindPlayerDistance = 1000;
 	int setEliteWarkerFindPlayerDistance = 1000;
 
-	int setWarkerStrikeRecastMax = 120;
+	int setWarkerStrikeRecastMax = 80;
 	int setArcherStrikeRecastMax = 120;
 
 	float setWarkerVelocity = 10;

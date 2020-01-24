@@ -26,7 +26,11 @@ private:
 	std::unique_ptr<GameOver> gameOver;
 	std::unique_ptr<GameClear> gameClear;
 	std::unique_ptr<Sprite> back;
+
+	bool isWave;
+
 	/*std::unique_ptr<Sprite> nowLoading;
+
 
 	TexData nowLoadingData;
 	TexData dotData[3];

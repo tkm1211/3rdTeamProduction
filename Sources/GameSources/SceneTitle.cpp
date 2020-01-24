@@ -30,8 +30,9 @@ void SceneTitle::Init()
 	textSprData.texPos = { 0, 0 };
 	textSprData.size = { 735, 110 };
 
-	
-
+	AllSoundStop();
+	AllBgmSoundStop();
+	PlaySoundMem(SoundLoader::GetInstance()->title.get());
 	/*nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
 
 	nowLoadingData.pos = DirectX::XMFLOAT2(0.0f, 0.0f);
@@ -52,7 +53,7 @@ void SceneTitle::Update()
 
 	
 
-	if (xInput[0].bAt)
+	if (xInput[0].bAt || xInput[0].bBt || xInput[0].bXt || xInput[0].bYt)
 	{
 		Fade::GetInstance()->onFadeFlg = true;
 		Fade::GetInstance()->loading = true;

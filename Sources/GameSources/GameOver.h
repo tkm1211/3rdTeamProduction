@@ -20,6 +20,9 @@ private:
 
 	std::unique_ptr<SpriteBatch> gameOverSpr;
 	std::unique_ptr<SpriteBatch> textSpr;
+	std::unique_ptr<Sprite> backSpr;
+
+	bool isSound;
 
 public:
 	GameOver() {}

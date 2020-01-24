@@ -15,7 +15,7 @@ ActionBase::STATE ArcherTurnAction::Update(AI * obj)
 #else
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
-	OBJ3D &o = *archer->GetModelData();
+	OBJ3DInstance&o = *archer->GetModelData();
 	OBJ3D &pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
 	DirectX::XMVECTOR oVec = DirectX::XMVector3Normalize(
@@ -57,7 +57,7 @@ bool ArcherTurnJudge::Judgement(AI * obj)
 #else
 	ArcherKokim* archer = reinterpret_cast<ArcherKokim*>(obj);
 #endif
-	OBJ3D &o = *archer->GetModelData();
+	OBJ3DInstance&o = *archer->GetModelData();
 	OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
 	DirectX::XMVECTOR oVec = DirectX::XMVectorSet(cosf(o.GetAngle().y), 0, sinf(o.GetAngle().y), 0);

@@ -24,7 +24,7 @@ void BuffAreaSystem::Init()
 	areaFrameSubRad = 0.0f;
 
 	//pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
-	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
+	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexture.png");
 	onceLightNum = 0;
 	enabledBuffAreaNum = 0;
 	onCollision = false;
@@ -235,7 +235,7 @@ void BuffAreaSystem::BreakBuffArea()
 	}
 	areaModelData.state = 0;
 	CrystalSystem::GetInstance()->CrystalDestroy();
-	CharacterSystem::GetInstance()->GetEnemyManagerAddress()->AllDelete();
+	CharacterSystem::GetInstance()->GetEnemyManagerAddress()->AllDeleteX();
 }
 
 void BuffAreaSystem::ImGui()

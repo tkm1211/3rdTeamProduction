@@ -30,13 +30,13 @@ void Fade::LoadModelsInit()
 {
 	nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
 
-	nowLoadingData.pos = DirectX::XMFLOAT2(600.0f, 455.0f);
+	nowLoadingData.pos = DirectX::XMFLOAT2(1300.0f, 1080.0f - 110.0f);
 	nowLoadingData.texPos = DirectX::XMFLOAT2(0.0f, 110.0f);
 	nowLoadingData.size = DirectX::XMFLOAT2(440.0f, 110.0f);
 
 	for (int i = 0; i < 3; i++)
 	{
-		dotData[i].pos = DirectX::XMFLOAT2(1050.0f + 50.0f * i, 455.0f);
+		dotData[i].pos = DirectX::XMFLOAT2(1300.0f + 450.0f + 50.0f * i, 1080.0f - 110.0f);
 		dotData[i].texPos = DirectX::XMFLOAT2(10013.8f, 110.0f);
 		dotData[i].size = DirectX::XMFLOAT2(30.0f, 110.0f);
 	}

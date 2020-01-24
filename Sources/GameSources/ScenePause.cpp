@@ -4,7 +4,7 @@
 #include "SceneManager.h"
 #include "Blender.h"
 #include "InputDevice.h"
-
+#include "CharacterSystem.h"
 
 void ScenePause::Init()
 {
@@ -102,16 +102,19 @@ void ScenePause::Update()
 			switch (state)
 			{
 			case ScenePause::RETURN_GAME:
+				CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
 				SceneManager::GetInstance()->ReSetStackScene();
 				break;
 
 			case ScenePause::RESTART:
+				CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
 				Fade::GetInstance()->onFadeFlg = true;
 				Fade::GetInstance()->loading = true;
 				Fade::GetInstance()->SetNextScene(new SceneGame());
 				break;
 
 			case ScenePause::RETURN_TITLE:
+				CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
 				Fade::GetInstance()->onFadeFlg = true;
 				Fade::GetInstance()->SetNextScene(new SceneTitle());
 				break;

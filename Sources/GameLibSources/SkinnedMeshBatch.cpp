@@ -234,13 +234,17 @@ void SkinnedMeshBatch::End( ID3D11DeviceContext* immediateContext, const DirectX
 
 
 		BoneTransformBuffer boneTransformData[MAX_BUFFER_SIZE];
-		int maxFrame = static_cast<int>( mesh.skeletalAnimations.at( animationNumber ).skeletel.size() );
+		int maxFrame = mesh.skeletalAnimations.size() != 0 ? static_cast<int>( mesh.skeletalAnimations.at( animationNumber ).skeletel.size()) : 0 ;
 		int frameCnt = 0;
 
 		for( int j = 0; j < MAX_BUFFER_SIZE; j++ )
 		{
 			for ( int k = 0; k < MAX_FRAME; k++ )
 			{
+				for (size_t l = 0; l < MAX_BONES; l++)
+				{
+					DirectX::XMStoreFloat4x4(&boneTransformData[j].transform[k][l], DirectX::XMLoadFloat4x4(&originUnitMatrix));
+				}
 				if ( maxFrame <= frameCnt )
 				{
 					break;

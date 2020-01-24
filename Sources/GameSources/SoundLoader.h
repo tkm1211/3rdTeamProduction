@@ -7,6 +7,11 @@ private:
 	SoundLoader() {}
 
 public:
+	std::unique_ptr<CXAudio2> main;
+	std::unique_ptr<CXAudio2> clear;
+	std::unique_ptr<CXAudio2> over;
+	std::unique_ptr<CXAudio2> title;
+
 	std::unique_ptr<CXAudio2> walk;
 
 	std::unique_ptr<CXAudio2> crystalCrash;

@@ -10,14 +10,14 @@
 ArcherKokim::ArcherKokim(int num)
 {
 	{
-		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false);
-		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false);
-		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false);
-		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false);
+		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false, true);
+		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false, true);
+		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false, true);
+		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false, true);
 
-		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false);
+		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false, true);
 	}
-	modelData = std::make_shared<OBJ3D>();
+	modelData = std::make_shared<OBJ3DInstance>();
 	
 
 
@@ -48,12 +48,12 @@ ArcherKokim::ArcherKokim(int num)
 void ArcherKokim::Init()
 {
 	{
-		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false);
-		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false);
-		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false);
-		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false);
+		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false, true);
+		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false, true);
+		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false, true);
+		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false, true);
 
-		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false);
+		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false, true);
 	}
 
 
@@ -145,7 +145,7 @@ void ArcherKokim::Update()
 	}
 	else
 	{
-		modelData->SetPosY(110);
+		modelData->SetPosY(180);
 	}
 }
 

@@ -70,11 +70,11 @@ public:
 	{
 		if (type == ModelType::STONE1)
 		{
-			bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Rock01_MDL.fbx", true));
+			//bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Rock01_MDL.fbx", true));
 		}
 		else if (type == ModelType::STONE2)
 		{
-			bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Rock02_MDL.fbx", true));
+			//bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Rock02_MDL.fbx", true));
 		}
 		else if (type == ModelType::GRASS)
 		{
@@ -82,7 +82,7 @@ public:
 		}
 		else if (type == ModelType::TREE)
 		{
-			bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Wood_MDL.fbx", true));
+			//bgModel.push_back(std::make_unique<Model>("Data/Assets/Model/BG/Wood_MDL.fbx", true));
 		}
 	}
 

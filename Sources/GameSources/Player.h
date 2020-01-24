@@ -217,6 +217,8 @@ public:
 	void SufferDamage(int _damage);
 	// ÉKÅ[Éhê¨å˜
 	void SuccessGuard();
+	void StopMotion();
+	void StartMotion();
 	bool GetonGrdCollision() { return onGuardCollision; }
 	bool GetOnAtkCollision() { return onAtkCollision; }
 	bool GetOnBlowCollision() { return onFinalBlowCollision; }

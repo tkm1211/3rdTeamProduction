@@ -36,7 +36,7 @@ ActionBase::STATE WarkerWanderingAction::Update(AI*obj)
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 	
-	OBJ3D &o = *warker->GetModelData();
+	OBJ3DInstance &o = *warker->GetModelData();
 	switch (warker->stWandering)
 	{
 	case 0:

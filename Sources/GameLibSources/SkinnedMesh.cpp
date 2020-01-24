@@ -132,7 +132,7 @@ void SkinnedMesh::Preparation( ID3D11DeviceContext* immediateContext, Shader sha
 	cb1.eyePos.x = _viewPos.x;
 	cb1.eyePos.y = _viewPos.y;
 	cb1.eyePos.z = _viewPos.z;
-	cb1.eyePos.w = 1.0f;
+	cb1.eyePos.w = wireframe;
 
 	Light::CBufferLight02 cb2;
 	memcpy( cb2.pointLight, Light::GetInstance()->pointLight, sizeof( Light::POINTLIGHT ) * Light::POINTMAX );
@@ -606,8 +606,8 @@ void SkinnedMesh::FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMes
 		const int indexOffset = subset.indexStart + subset.indexCount;
 
 		// 保存用ポリゴンデータ
-		Face face;
-		face.materialIndex = indexOfMaterial;
+	//	Face face;
+	//	face.materialIndex = indexOfMaterial;
 
 		for ( int indexOfVertex = 0; indexOfVertex < 3; indexOfVertex++ )
 		{
@@ -625,7 +625,7 @@ void SkinnedMesh::FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMes
 			vertex.normal.z = static_cast<float>( normal[2] );
 
 			// 面ごとの頂点データ
-			face.pos[indexOfVertex] = vertex.pos;
+			//face.pos[indexOfVertex] = vertex.pos;
 
 			if ( fbxMesh->GetElementUVCount() != 0 )
 			{
@@ -679,7 +679,7 @@ void SkinnedMesh::FetchVertecesAndIndeces( ID3D11Device* device, FbxMesh* fbxMes
 		subset.indexCount += 3;
 
 		// 面データ保存
-		faces.push_back( face );
+		//faces.push_back( face );
 	}
 	integratedVertex.push_back( vertices );
 	integratedIndex.push_back( indices );
@@ -840,101 +840,101 @@ void SkinnedMesh::FetchAnimations( FbxMesh *fbxMesh, SkinnedMesh::SkeletalAnimat
 	numberOfAnimations = 0;
 }
 
-int SkinnedMesh::RayPick(const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, DirectX::XMFLOAT3* outPosition, DirectX::XMFLOAT3* outNormal, float* outLength)
-{
-	int ret = -1;
-	DirectX::XMVECTOR start = DirectX::XMLoadFloat3(&startPosition);
-	DirectX::XMVECTOR end = DirectX::XMLoadFloat3(&endPosition);
-	DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(end, start);
-	DirectX::XMVECTOR length = DirectX::XMVector3Length(vec);
-	DirectX::XMVECTOR dir = DirectX::XMVector3Normalize(vec);
-	float neart; // 一番近い距離を保持
-	DirectX::XMStoreFloat(&neart, length);
-
-	DirectX::XMVECTOR position, normal;
-	for (const auto& it : faces)
-	{
-		// 面頂点取得
-		DirectX::XMVECTOR a = DirectX::XMLoadFloat3(&it.pos[0]);
-		DirectX::XMVECTOR b = DirectX::XMLoadFloat3(&it.pos[1]);
-		DirectX::XMVECTOR c = DirectX::XMLoadFloat3(&it.pos[2]);
-
-		// 3辺算出
-		DirectX::XMVECTOR ab = DirectX::XMVectorSubtract(b, a);
-		DirectX::XMVECTOR bc = DirectX::XMVectorSubtract(c, b);
-		DirectX::XMVECTOR ca = DirectX::XMVectorSubtract(a, c);
-
-		// 2辺の外積による法線算出
-		DirectX::XMVECTOR n = DirectX::XMVector3Cross(ab, bc);
-
-		// nとrey(dir)との内積の結果がプラスならば裏向き
-		float dot = 0.0f;
-		DirectX::XMStoreFloat(&dot, DirectX::XMVector3Dot(n, dir));
-
-		if (0.0f < dot)// その場合、これ以上処理しない
-		{
-			continue;
-		}
-
-		// 交点算出	
-		// 交点までの距離(t)を算出の事
-		DirectX::XMVECTOR t;
-		DirectX::XMVECTOR v0 = DirectX::XMVectorSubtract(a, start);
-		DirectX::XMVECTOR vn_dot = DirectX::XMVector3Dot(v0, n);
-		DirectX::XMVECTOR dn_dot = DirectX::XMVector3Dot(dir, n);
-		t = DirectX::XMVectorDivide(vn_dot, dn_dot);
-
-		float ft;
-		DirectX::XMStoreFloat(&ft, t);
-		if (ft < 0.0f || ft > neart)
-		{
-			continue;
-		}
-
-		// 交点
-		DirectX::XMVECTOR cp = DirectX::XMVectorAdd(DirectX::XMVectorMultiply(dir, t), start);
-
-		// 内点判定
-		DirectX::XMVECTOR v1 = DirectX::XMVectorSubtract(a, cp);
-		DirectX::XMVECTOR temp = DirectX::XMVector3Cross(v1, ab);
-		DirectX::XMVECTOR work = DirectX::XMVector3Dot(temp, n);
-		float fwork;
-		DirectX::XMStoreFloat(&fwork, work);
-		if (fwork < 0.0f)
-		{
-			continue;
-		}
-		DirectX::XMVECTOR v2 = DirectX::XMVectorSubtract(b, cp);
-		temp = DirectX::XMVector3Cross(v2, bc);
-		work = DirectX::XMVector3Dot(temp, n);
-		DirectX::XMStoreFloat(&fwork, work);
-		if (fwork < 0.0f)
-		{
-			continue;
-		}
-		DirectX::XMVECTOR v3 = DirectX::XMVectorSubtract(c, cp);
-		temp = DirectX::XMVector3Cross(v3, ca);
-		work = DirectX::XMVector3Dot(temp, n);
-		DirectX::XMStoreFloat(&fwork, work);
-		if (fwork < 0.0f)
-		{
-			continue;
-		}
-
-		// 情報保存
-		position = cp;			// 当たった場所
-		normal = n;				// 法線
-		neart = ft;				// 距離
-		ret = it.materialIndex; // インデックス(戻り値)
-	}
-
-	if (ret != -1) // どこでも当たらなかったら
-	{
-		DirectX::XMStoreFloat3(outPosition, position);
-		DirectX::XMStoreFloat3(outNormal, normal);
-	}
-
-	// 最も近いヒット位置までの距離
-	*outLength = neart;
-	return ret;
-}
+//int SkinnedMesh::RayPick(const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, DirectX::XMFLOAT3* outPosition, DirectX::XMFLOAT3* outNormal, float* outLength)
+//{
+//	int ret = -1;
+//	DirectX::XMVECTOR start = DirectX::XMLoadFloat3(&startPosition);
+//	DirectX::XMVECTOR end = DirectX::XMLoadFloat3(&endPosition);
+//	DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(end, start);
+//	DirectX::XMVECTOR length = DirectX::XMVector3Length(vec);
+//	DirectX::XMVECTOR dir = DirectX::XMVector3Normalize(vec);
+//	float neart; // 一番近い距離を保持
+//	DirectX::XMStoreFloat(&neart, length);
+//
+//	DirectX::XMVECTOR position, normal;
+//	for (const auto& it : faces)
+//	{
+//		// 面頂点取得
+//		DirectX::XMVECTOR a = DirectX::XMLoadFloat3(&it.pos[0]);
+//		DirectX::XMVECTOR b = DirectX::XMLoadFloat3(&it.pos[1]);
+//		DirectX::XMVECTOR c = DirectX::XMLoadFloat3(&it.pos[2]);
+//
+//		// 3辺算出
+//		DirectX::XMVECTOR ab = DirectX::XMVectorSubtract(b, a);
+//		DirectX::XMVECTOR bc = DirectX::XMVectorSubtract(c, b);
+//		DirectX::XMVECTOR ca = DirectX::XMVectorSubtract(a, c);
+//
+//		// 2辺の外積による法線算出
+//		DirectX::XMVECTOR n = DirectX::XMVector3Cross(ab, bc);
+//
+//		// nとrey(dir)との内積の結果がプラスならば裏向き
+//		float dot = 0.0f;
+//		DirectX::XMStoreFloat(&dot, DirectX::XMVector3Dot(n, dir));
+//
+//		if (0.0f < dot)// その場合、これ以上処理しない
+//		{
+//			continue;
+//		}
+//
+//		// 交点算出	
+//		// 交点までの距離(t)を算出の事
+//		DirectX::XMVECTOR t;
+//		DirectX::XMVECTOR v0 = DirectX::XMVectorSubtract(a, start);
+//		DirectX::XMVECTOR vn_dot = DirectX::XMVector3Dot(v0, n);
+//		DirectX::XMVECTOR dn_dot = DirectX::XMVector3Dot(dir, n);
+//		t = DirectX::XMVectorDivide(vn_dot, dn_dot);
+//
+//		float ft;
+//		DirectX::XMStoreFloat(&ft, t);
+//		if (ft < 0.0f || ft > neart)
+//		{
+//			continue;
+//		}
+//
+//		// 交点
+//		DirectX::XMVECTOR cp = DirectX::XMVectorAdd(DirectX::XMVectorMultiply(dir, t), start);
+//
+//		// 内点判定
+//		DirectX::XMVECTOR v1 = DirectX::XMVectorSubtract(a, cp);
+//		DirectX::XMVECTOR temp = DirectX::XMVector3Cross(v1, ab);
+//		DirectX::XMVECTOR work = DirectX::XMVector3Dot(temp, n);
+//		float fwork;
+//		DirectX::XMStoreFloat(&fwork, work);
+//		if (fwork < 0.0f)
+//		{
+//			continue;
+//		}
+//		DirectX::XMVECTOR v2 = DirectX::XMVectorSubtract(b, cp);
+//		temp = DirectX::XMVector3Cross(v2, bc);
+//		work = DirectX::XMVector3Dot(temp, n);
+//		DirectX::XMStoreFloat(&fwork, work);
+//		if (fwork < 0.0f)
+//		{
+//			continue;
+//		}
+//		DirectX::XMVECTOR v3 = DirectX::XMVectorSubtract(c, cp);
+//		temp = DirectX::XMVector3Cross(v3, ca);
+//		work = DirectX::XMVector3Dot(temp, n);
+//		DirectX::XMStoreFloat(&fwork, work);
+//		if (fwork < 0.0f)
+//		{
+//			continue;
+//		}
+//
+//		// 情報保存
+//		position = cp;			// 当たった場所
+//		normal = n;				// 法線
+//		neart = ft;				// 距離
+//		ret = it.materialIndex; // インデックス(戻り値)
+//	}
+//
+//	if (ret != -1) // どこでも当たらなかったら
+//	{
+//		DirectX::XMStoreFloat3(outPosition, position);
+//		DirectX::XMStoreFloat3(outNormal, normal);
+//	}
+//
+//	// 最も近いヒット位置までの距離
+//	*outLength = neart;
+//	return ret;
+//}

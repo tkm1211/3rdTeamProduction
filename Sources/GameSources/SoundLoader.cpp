@@ -9,6 +9,11 @@
 //***************************************************************************************************
 void SoundLoader::load()
 {
+	main = std::make_unique<CXAudio2>(L"Data/Sound/BGM/GameMain.wav", 1);
+	clear = std::make_unique<CXAudio2>(L"Data/Sound/BGM/GameClear.wav", 0);
+	over = std::make_unique<CXAudio2>(L"Data/Sound/BGM/GameOver.wav", 0);
+	title   = std::make_unique<CXAudio2>(L"Data/Sound/BGM/Title.wav", 1);
+
 	walk = std::make_unique<CXAudio2>(L"Data/Sound/SE/player/Walk/walk.wav", 0);
 
 	crystalCrash = std::make_unique<CXAudio2>(L"Data/Sound/SE/MagicArea/CrystalCrash.wav", 0);
@@ -38,6 +43,11 @@ void SoundLoader::load()
 //***************************************************************************************************
 void SoundLoader::Update()
 {
+	main->Update();
+	clear->Update();
+	over->Update();
+	title->Update();
+
 	walk->Update();
 
 	crystalCrash->Update();
@@ -66,6 +76,11 @@ void SoundLoader::Update()
 //***************************************************************************************************
 void SoundLoader::Release()
 {
+	main->Relese();
+	clear->Relese();
+	title->Relese();
+	over->Relese();
+
 	walk->Relese();
 
 	crystalCrash->Relese();
@@ -113,6 +128,10 @@ void AllSoundStop()
 
 void AllBgmSoundStop()
 {
+	StopSoundMem(SoundLoader::GetInstance()->main.get());
+	StopSoundMem(SoundLoader::GetInstance()->clear.get());
+	StopSoundMem(SoundLoader::GetInstance()->over.get());
+	StopSoundMem(SoundLoader::GetInstance()->title.get());
 }
 
 

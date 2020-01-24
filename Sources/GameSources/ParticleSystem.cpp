@@ -7,7 +7,7 @@
 
 void ParticleSystem::Init()
 {
-	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexure.png");
+	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexture.png");
 	swordLocus = std::make_unique<SwordLocus>();
 	swordLocus->Init();
 	popParticleNum = 0;

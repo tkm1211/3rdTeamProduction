@@ -155,7 +155,7 @@ public:
 		{
 			if (ptc.SetUltimateThuder(&ultimetThunder[i], { pos.x + _p.x, pos.y +300, pos.z + _p.z }))
 			{
-				PlaySoundMem(SoundLoader::GetInstance()->lightningClone.get());
+				if(rand() % 100 > 40) PlaySoundMem(SoundLoader::GetInstance()->lightningClone.get());
 				DirectX::XMFLOAT3 _sp = {};
 				DirectX::XMStoreFloat3(&_sp, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&_p)));
 				num = 0;

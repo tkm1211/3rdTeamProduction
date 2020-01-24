@@ -45,7 +45,7 @@ void Player::Init()
 	atkCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(100, 100, 100));
 	atkCollision->SetColor({ 0, 1, 0, 1 });
 
-	blowCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(800, 800, 800));
+	blowCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(1000, 1000, 1000));
 	blowCollision->SetColor({ 0, 1, 0, 1 });
 
 	grdCollision         = std::make_unique<CollisionPrimitive>(1, true, DirectX::XMFLOAT3(30, 30, 30));
@@ -178,7 +178,6 @@ void Player::Update()
 			pDead->PauseAnimation();
 		}
 	}
-	ImGui();
 	if (isDead) return;
 
 	Move();
@@ -1047,6 +1046,64 @@ void Player::CollisionInformation()
 
 		break;
 
+	case ModelState::DASH:
+		// body
+		boneTransform = pDash->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
+
+		// bone information
+		boneTransform = pDash->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+
+		// arm
+		boneTransform = pDash->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
+
+		ParticleSystem::GetInstance()->GetSwordLocus()->SetEffectPoint({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -133.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -152.0f , boneTransformWithWorld._43 + boneTransformWithWorld._33 * -133.0f },
+			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
+
+		// R_Foot
+		boneTransform = pDash->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
+
+		// L_Foot
+		boneTransform = pDash->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
+
+		if (!makeRightFoot && footRStepSound->GetPos().y <= 0.08f)
+		{
+			makeRightFoot = true;
+			PlaySoundMem(SoundLoader::GetInstance()->walk.get());
+			SetVolume(SoundLoader::GetInstance()->walk.get(), 1.0f);
+		}
+		else if (footRStepSound->GetPos().y > 0.08f)
+		{
+			makeRightFoot = false;
+		}
+
+		if (!makeLeftFoot && footLStepSound->GetPos().y <= 0.08f)
+		{
+			makeLeftFoot = true;
+			PlaySoundMem(SoundLoader::GetInstance()->walk.get());
+			SetVolume(SoundLoader::GetInstance()->walk.get(), 1.0f);
+		}
+		else if (footLStepSound->GetPos().y > 0.08f)
+		{
+			makeLeftFoot = false;
+		}
+
+		break;
+
 	case ModelState::ATTACK1:
 		// body
 		boneTransform = pAttack[0]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
@@ -1249,6 +1306,106 @@ void Player::CollisionInformation()
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 		break;
 
+	}
+}
+
+void Player::StopMotion()
+{
+	switch (motionState)
+	{
+	case Player::ModelState::T:
+		break;
+	case Player::ModelState::WAIT:
+		pWait->PauseAnimation();
+		break;
+	case Player::ModelState::RUN:
+		pRun->PauseAnimation();
+		break;
+	case Player::ModelState::DASH:
+		pDash->PauseAnimation();
+		break;
+	case Player::ModelState::ATTACK1:
+		pAttack[0]->PauseAnimation();
+		break;
+	case Player::ModelState::ATTACK2:
+		pAttack[1]->PauseAnimation();
+		break;
+	case Player::ModelState::ATTACK3:
+		pAttack[3]->PauseAnimation();
+		break;
+	case Player::ModelState::GUARD1:
+		break;
+	case Player::ModelState::GUARD2:
+		pGuard[0]->PauseAnimation();
+		break;
+	case Player::ModelState::GUARD3:
+		pGuard[1]->PauseAnimation();
+		break;
+	case Player::ModelState::GUARD4:
+		pGuard[2]->PauseAnimation();
+		break;
+	case Player::ModelState::DAMAGE:
+		pGuard[3]->PauseAnimation();
+		break;
+	case Player::ModelState::FINALBLOW:
+		pFinalBlow->PauseAnimation();
+		break;
+	case Player::ModelState::CLEAR:
+		pClear->PauseAnimation();
+		break;
+	case Player::ModelState::DEAD:
+		pDead->PauseAnimation();
+		break;
+	}
+}
+
+void Player::StartMotion()
+{
+	switch (motionState)
+	{
+	case Player::ModelState::T:
+		break;
+	case Player::ModelState::WAIT:
+		pWait->ReStartAnimation();
+		break;
+	case Player::ModelState::RUN:
+		pRun->ReStartAnimation();
+		break;
+	case Player::ModelState::DASH:
+		pDash->ReStartAnimation();
+		break;
+	case Player::ModelState::ATTACK1:
+		pAttack[0]->ReStartAnimation();
+		break;
+	case Player::ModelState::ATTACK2:
+		pAttack[1]->ReStartAnimation();
+		break;
+	case Player::ModelState::ATTACK3:
+		pAttack[3]->ReStartAnimation();
+		break;
+	case Player::ModelState::GUARD1:
+		break;
+	case Player::ModelState::GUARD2:
+		pGuard[0]->ReStartAnimation();
+		break;
+	case Player::ModelState::GUARD3:
+		pGuard[1]->ReStartAnimation();
+		break;
+	case Player::ModelState::GUARD4:
+		pGuard[2]->ReStartAnimation();
+		break;
+	case Player::ModelState::DAMAGE:
+		pGuard[3]->ReStartAnimation();
+		break;
+	case Player::ModelState::FINALBLOW:
+		pFinalBlow->ReStartAnimation();
+		break;
+	case Player::ModelState::CLEAR:
+		pClear->ReStartAnimation();
+		break;
+	case Player::ModelState::DEAD:
+		pDead->ReStartAnimation();
+		break;
 	}
 }
 

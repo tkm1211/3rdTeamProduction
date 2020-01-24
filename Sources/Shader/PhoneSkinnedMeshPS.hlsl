@@ -91,6 +91,6 @@ float4 main(VS_OUT pin) : SV_TARGET
 	}
 
 	color *= pin.color * float4(A + PD + SD , 1.0);
-
+	color.a = material_color.a;
 	return color;
 }
