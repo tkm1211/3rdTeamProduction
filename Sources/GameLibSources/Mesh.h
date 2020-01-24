@@ -30,6 +30,9 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>		solidRasterizerState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>		depthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>			samplerState;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>			pointSamplerState;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>			linerSamplerState;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>			anisotropicSamplerState;
 
 	// TRUE : right handed , FALSE : left handed
 	BOOL handedCoordinateSystem = FALSE;

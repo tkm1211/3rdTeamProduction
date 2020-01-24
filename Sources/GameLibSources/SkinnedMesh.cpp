@@ -10,6 +10,8 @@
 
 using namespace fbxsdk;
 
+bool SkinnedMesh::pauseAnimCommonFlg = false;
+
 
 void SkinnedMesh::LoadFBX( ID3D11Device *device, const char* fileName )
 {
@@ -180,7 +182,7 @@ void SkinnedMesh::Render
 		{
 			CBuffer data;
 
-			if ( isAnimation )
+			if ( isAnimation && !pauseAnimCommonFlg )
 			{
 				if ( animationNumber < mesh.skeletalAnimations.size() && mesh.skeletalAnimations.at( animationNumber ).skeletel.size() > 0 )
 				{
@@ -838,6 +840,15 @@ void SkinnedMesh::FetchAnimations( FbxMesh *fbxMesh, SkinnedMesh::SkeletalAnimat
 	}
 
 	numberOfAnimations = 0;
+}
+
+void SkinnedMesh::OnPauseAnimation()
+{
+	pauseAnimCommonFlg = true;
+}
+void SkinnedMesh::OnReStartAnimation()
+{
+	pauseAnimCommonFlg = false;
 }
 
 //int SkinnedMesh::RayPick(const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, DirectX::XMFLOAT3* outPosition, DirectX::XMFLOAT3* outNormal, float* outLength)

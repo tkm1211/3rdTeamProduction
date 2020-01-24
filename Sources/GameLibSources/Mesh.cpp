@@ -48,6 +48,7 @@ void Mesh::Init( ID3D11Device *device, BOOL handedCoordinateSystem )
 // Create Depth Stencil State ****************************************************
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+#if 1
 	depthStencilDesc.DepthEnable = TRUE;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
@@ -62,7 +63,22 @@ void Mesh::Init( ID3D11Device *device, BOOL handedCoordinateSystem )
 	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
+#elif 0
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.StencilEnable = FALSE;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+#endif
 	hr = device->CreateDepthStencilState( &depthStencilDesc, depthStencilState.GetAddressOf() );
 	assert( !hr && "CreateDepthStencilState	Error" );
 
@@ -75,17 +91,33 @@ void Mesh::Init( ID3D11Device *device, BOOL handedCoordinateSystem )
 	smpDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	smpDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	smpDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	/*smpDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	smpDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-	smpDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-	smpDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-	smpDesc.MipLODBias = 0;
-	smpDesc.MaxAnisotropy = 16;
-	smpDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	smpDesc.MinLOD = 0;
-	smpDesc.MaxLOD = D3D11_FLOAT32_MAX;*/
 
 	hr = device->CreateSamplerState( &smpDesc, samplerState.GetAddressOf() );
+	assert( !hr && "CreateSamplerState	Error" );
+
+
+	smpDesc = {};
+	smpDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	smpDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	smpDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	smpDesc.MipLODBias = 0;
+	smpDesc.MaxAnisotropy = 16;
+	smpDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	float borderColour[4] = { 1, 1, 1, 1 };
+	memcpy(smpDesc.BorderColor, borderColour, sizeof(float) * 4);
+	smpDesc.MinLOD = 0;
+	smpDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	smpDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	hr = device->CreateSamplerState( &smpDesc, pointSamplerState.GetAddressOf() );
+	assert( !hr && "CreateSamplerState	Error" );
+
+	smpDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	hr = device->CreateSamplerState( &smpDesc, linerSamplerState.GetAddressOf() );
+	assert( !hr && "CreateSamplerState	Error" );
+
+	smpDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	hr = device->CreateSamplerState( &smpDesc, anisotropicSamplerState.GetAddressOf() );
 	assert( !hr && "CreateSamplerState	Error" );
 
 // *******************************************************************************

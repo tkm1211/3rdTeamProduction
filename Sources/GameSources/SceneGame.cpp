@@ -176,7 +176,9 @@ void SceneGame::Update()
 	if (xInput[0].bSTARTt)
 	{
 		AllSoundStop();
-		CharacterSystem::GetInstance()->GetPlayerAddress()->StopMotion();
+		// CharacterSystem::GetInstance()->GetPlayerAddress()->StopMotion();
+		SkinnedMesh::OnPauseAnimation();
+		SkinnedMeshBatch::OnPauseAnimation();
 		SceneManager::GetInstance()->SetScene(new ScenePause(), true);
 	}
 	static int keycnt = 0;

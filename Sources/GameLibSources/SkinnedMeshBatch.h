@@ -235,6 +235,7 @@ public:
 	std::vector<std::vector<unsigned int>>  integratedIndex;
 	std::vector<MeshData> meshes;
 	int numIndex;
+	static bool pauseAnimCommonFlg;
 
 private:
 	DirectX::XMFLOAT4X4 originUnitMatrix =
@@ -424,6 +425,9 @@ public:
 	{
 		return animationFrame;
 	}
+
+	static void OnPauseAnimation();
+	static void OnReStartAnimation();
 
 private:
 	void LoadFBX( ID3D11Device *device, const char* fileName );

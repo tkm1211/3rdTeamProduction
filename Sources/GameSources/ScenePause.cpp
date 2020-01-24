@@ -5,6 +5,8 @@
 #include "Blender.h"
 #include "InputDevice.h"
 #include "CharacterSystem.h"
+#include "SkinnedMesh.h"
+
 
 void ScenePause::Init()
 {
@@ -102,19 +104,25 @@ void ScenePause::Update()
 			switch (state)
 			{
 			case ScenePause::RETURN_GAME:
-				CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
+				//CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
+				SkinnedMesh::OnReStartAnimation();
+				SkinnedMeshBatch::OnReStartAnimation();
 				SceneManager::GetInstance()->ReSetStackScene();
 				break;
 
 			case ScenePause::RESTART:
-				CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
+				//CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
+				SkinnedMesh::OnReStartAnimation();
+				SkinnedMeshBatch::OnReStartAnimation();
 				Fade::GetInstance()->onFadeFlg = true;
 				Fade::GetInstance()->loading = true;
 				Fade::GetInstance()->SetNextScene(new SceneGame());
 				break;
 
 			case ScenePause::RETURN_TITLE:
-				CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
+				//CharacterSystem::GetInstance()->GetPlayerAddress()->StartMotion();
+				SkinnedMesh::OnReStartAnimation();
+				SkinnedMeshBatch::OnReStartAnimation();
 				Fade::GetInstance()->onFadeFlg = true;
 				Fade::GetInstance()->SetNextScene(new SceneTitle());
 				break;

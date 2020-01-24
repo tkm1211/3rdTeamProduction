@@ -248,6 +248,7 @@ public:
 	std::vector<MeshData> meshes;
 	//std::vector<Face> faces;
 	int numIndex;
+	static bool pauseAnimCommonFlg;
 
 private:
 	DirectX::XMFLOAT4X4 originUnitMatrix =
@@ -578,6 +579,9 @@ public:
 #endif
 		return DirectX::XMFLOAT3();
 	}
+
+	static void OnPauseAnimation();
+	static void OnReStartAnimation();
 
 private:
 	void LoadFBX( ID3D11Device *device, const char* fileName );

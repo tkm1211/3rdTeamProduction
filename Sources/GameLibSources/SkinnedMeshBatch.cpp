@@ -9,6 +9,8 @@
 
 using namespace fbxsdk;
 
+bool SkinnedMeshBatch::pauseAnimCommonFlg = false;
+
 
 void SkinnedMeshBatch::LoadFBX( ID3D11Device *device, const char* fileName )
 {
@@ -159,7 +161,7 @@ void SkinnedMeshBatch::Render( ID3D11DeviceContext *immediateContext, OBJ3DInsta
 	_animationData.isAnimation = obj.GetIsAnimation();
 	_animationData.isLoopAnimation = obj.GetIsLoopAnimation();
 
-	if ( _animationData.isAnimation )
+	if ( _animationData.isAnimation && !pauseAnimCommonFlg )
 	{
 		_animationData.animationTick = obj.GetAnimationTick() + elapsedTime;
 		int frame = static_cast<int>(_animationData.animationTick / meshes.at(0).skeletalAnimations.at(animationNumber).samplingTime);
@@ -760,4 +762,13 @@ void SkinnedMeshBatch::FetchAnimations( FbxMesh *fbxMesh, SkinnedMeshBatch::Skel
 	}
 
 	numberOfAnimations = 0;
+}
+
+void SkinnedMeshBatch::OnPauseAnimation()
+{
+	pauseAnimCommonFlg = true;
+}
+void SkinnedMeshBatch::OnReStartAnimation()
+{
+	pauseAnimCommonFlg = false;
 }
