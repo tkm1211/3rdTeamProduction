@@ -59,6 +59,20 @@ void PlayerTemplate::Init()
 		itemBatchData[i].Init(); // èâä˙âª
 		itemBatchData[i].SetScale({ 10.0f,10.0f,10.0f });
 	}
+
+
+	// Enemy SkinnedMeshBatch
+	{
+		pWait = std::make_unique<Model>("Data/Assets/Model/Player/MDL_Player_Wait.fbx", false, true);
+		pAttack = std::make_unique<Model>("Data/Assets/Model/Player/MDL_Player_Attack.fbx", false, true);
+		pRun = std::make_unique<Model>("Data/Assets/Model/Player/MDL_Player_Run.fbx", false, true);
+
+		for (int i = 0; i < MAX_ENEMY_INSTANCE; i++)
+		{
+			enemyData[i].obj.Init();
+			enemyData[i].state = rand() % 3;
+		}
+	}
 }
 void PlayerTemplate::UnInit()
 {
@@ -153,6 +167,37 @@ void PlayerTemplate::Draw()
 		pItemBatch->Render(itemBatchData[i], /*modelBatchData[i].GetWorldMatrix(),*/ CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
 	}
 	pItemBatch->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+
+
+
+	// Enemy SkinnedMeshBatch
+	{
+		pWaitB->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
+		pAttackB->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
+		pRunB->Begin(ShaderSystem::GetInstance()->GetShaderOfSkinnedMeshBatch(), false);
+
+		for (int i = 0; i < MAX_ENEMY_INSTANCE; i++)
+		{
+			switch (enemyData[i].state)
+			{
+			case 0:
+				pWaitB->Render(enemyData[i].obj, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+				break;
+			case 1:
+				pAttackB->Render(enemyData[i].obj, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+				break;
+			case 2:
+				pRunB->Render(enemyData[i].obj, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
+				break;
+
+			default: break;
+			}
+		}
+
+		pWaitB->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+		pAttackB->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+		pRunB->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }
 void PlayerTemplate::ImGui()
 {
