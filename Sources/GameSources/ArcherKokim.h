@@ -33,12 +33,8 @@ public:
 	ARCHER_STATE state;
 
 	std::shared_ptr<Shot> arrow;
-	std::shared_ptr<Model> pArcher;
-	std::shared_ptr<Model> pArcherAttack;
-	std::shared_ptr<Model> pArcherRun;
-	std::shared_ptr<Model> pArcherStay;
 
-	std::shared_ptr<Model> pShot;
+	bool isAttack;
 
 	ArcherKokim() {};
 	ArcherKokim(int num);

@@ -13,7 +13,7 @@ bool WarkerAttackJudge::Judgement(AI * obj)
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 
-	if (!warker->pWarkerAttack->GetAnimatingFlg()&& !warker->pWarkerJumpAttack->GetAnimatingFlg())
+	if (!warker->isAttack && !warker->isJumpAttack)
 	{
 		if (obj->GetEtoPdis() <= (float)warker->GetAttackDistance() &&
 			warker->GetPlayerDot() > 0.99f&&

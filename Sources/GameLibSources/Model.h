@@ -42,6 +42,7 @@ public:
 		float radius = 0.0f
 	);
 	void Begin(Shader shader, bool wireframe = false);
+	void SetShaders(Shader shader);
 	void Render
 	(
 		OBJ3DInstance& obj,

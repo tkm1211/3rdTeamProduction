@@ -21,8 +21,8 @@ VS_OUT main
 	int i = 0;
 	for (i = 0; i < 4; i++)
 	{
-		row_major float4x4 _boneTransforms = frame < MAX_FRAME ? boneTransforms1[frame][boneIndices[i]] : boneTransforms2[frame][boneIndices[i]];
-		_boneTransforms = frame < MAX_FRAME * 2 ? _boneTransforms : boneTransforms3[frame][boneIndices[i]];
+        row_major float4x4 _boneTransforms = frame < MAX_FRAME ? boneTransforms1[frame][boneIndices[i]] : boneTransforms2[frame - MAX_FRAME][boneIndices[i]];
+        _boneTransforms = frame < MAX_FRAME * 2 ? _boneTransforms : boneTransforms3[frame - MAX_FRAME * 2][boneIndices[i]];
 		p += (boneWeights[i] * mul(position, _boneTransforms));
 		n += (boneWeights[i] * mul(float4(normal.xyz, 0), _boneTransforms));
 	}

@@ -87,9 +87,10 @@ private:
 	int tmpWaveNum;
 
 	std::shared_ptr<Model> pEliteWarker;
-	std::shared_ptr<Model> pPlayer;
+	//std::shared_ptr<Model> pPlayer;
 
 	std::unique_ptr<WaveManager> waveMgr;
+
 
 	int enmNum = NULL;
 
@@ -101,5 +102,38 @@ private:
 	{
 		archive(waveMgr);
 	}
+};
+
+class EnemyModelManager
+{
+public:
+	// Warker Kokim Models
+	std::unique_ptr<Model> pWarker;
+	std::unique_ptr<Model> pWarkerRun;
+	std::unique_ptr<Model> pWarkerAttack;
+	std::unique_ptr<Model> pWarkerJumpAttack;
+	std::unique_ptr<Model> pWarkerWait;
+
+	// Archer Kokim Models
+	std::unique_ptr<Model> pArcher;
+	std::unique_ptr<Model> pArcherAttack;
+	std::unique_ptr<Model> pArcherRun;
+	std::unique_ptr<Model> pArcherStay;
+
+	// arrow
+	std::unique_ptr<Model> pShot;
+
+public:
+	 EnemyModelManager() {}
+	~EnemyModelManager() {}
+
+	static EnemyModelManager* GetInstance()
+	{
+		static EnemyModelManager instance;
+		return &instance;
+	}
+
+public:
+	void Init();
 };
 

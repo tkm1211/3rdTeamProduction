@@ -86,6 +86,7 @@ public:
 		bool solid
 	) {}
 	virtual void Begin(ID3D11DeviceContext* immediateContext, Shader shader, bool wireframe = false) {}
+	virtual void SetShaders(ID3D11DeviceContext* immediateContext, Shader shader) {}
 	virtual void Render
 	(
 		ID3D11DeviceContext* immediateContext,

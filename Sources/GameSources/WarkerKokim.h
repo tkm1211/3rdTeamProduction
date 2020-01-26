@@ -38,11 +38,8 @@ public:
 
 	WARKER_ATTACK_STATE stAttack;
 
-	std::shared_ptr<Model> pWarker;
-	std::shared_ptr<Model> pWarkerRun;
-	std::shared_ptr<Model> pWarkerAttack;
-	std::shared_ptr<Model> pWarkerJumpAttack;
-	std::shared_ptr<Model> pWarkerWait;
+	bool isAttack;
+	bool isJumpAttack;
 
 	WarkerKokim() {};
 	WarkerKokim(int num);

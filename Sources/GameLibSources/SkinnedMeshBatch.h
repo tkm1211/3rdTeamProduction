@@ -378,6 +378,7 @@ public:
 	};
 	std::vector<AnimationData> animationData;
 	void Begin(ID3D11DeviceContext* immediateContext, Shader shader, bool wireframe = false);
+	void SetShaders(ID3D11DeviceContext* immediateContext, Shader shader);
 	void Render
 	(
 		ID3D11DeviceContext *immediateContext,

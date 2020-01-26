@@ -52,6 +52,7 @@ void Fade::LoadModels()
 		std::lock_guard<std::mutex> lock(loadingMutex);
 
 		CharacterSystem::GetInstance()->Init();
+		EnemyModelManager::GetInstance()->Init();
 		ObjectSystem::GetInstance()->Init();
 		ParticleSystem::GetInstance()->Init();
 		UiSystem::GetInstance()->Init();

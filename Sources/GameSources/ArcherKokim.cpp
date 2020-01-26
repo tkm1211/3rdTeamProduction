@@ -9,14 +9,14 @@
 #include "CharacterSystem.h"
 ArcherKokim::ArcherKokim(int num)
 {
-	{
+	/*{
 		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false, true);
 		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false, true);
 		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false, true);
 		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false, true);
 
 		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false, true);
-	}
+	}*/
 	modelData = std::make_shared<OBJ3DInstance>();
 	
 
@@ -40,21 +40,21 @@ ArcherKokim::ArcherKokim(int num)
 	bodyCol= std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 
-
+	isAttack = false;
 
 	index = num;
 }
 
 void ArcherKokim::Init()
 {
-	{
-		pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false, true);
-		pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false, true);
-		pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false, true);
-		pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false, true);
+	//{
+	//	pArcher = std::make_shared<Model>("Data/Assets/Model/Enemys/Archer.fbx", false, true);
+	//	//pArcherAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx", false, true);
+	//	//pArcherRun = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx", false, true);
+	//	//pArcherStay = std::make_shared<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx", false, true);
 
-		pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false, true);
-	}
+	//	//pShot = std::make_shared<Model>("Data/Assets/Model/Enemys/Arrow.fbx", false, true);
+	//}
 
 
 
@@ -78,6 +78,7 @@ void ArcherKokim::Init()
 
 	modelData->SetScale(DirectX::XMFLOAT3(2, 2, 2));
 
+	isAttack = false;
 }
 
 void ArcherKokim::Add()

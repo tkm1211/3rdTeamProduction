@@ -91,6 +91,16 @@ void Model::Begin( Shader shader, bool wireframe )
 	}
 }
 
+void Model::SetShaders(Shader shader)
+{
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext = FrameWork::GetInstance().GetContext();
+
+	if ( pMesh )
+	{
+		pMesh->SetShaders( immediateContext.Get(), shader );
+	}
+}
+
 void Model::Render
  (  OBJ3DInstance& obj,
 	//const DirectX::XMMATRIX& world,

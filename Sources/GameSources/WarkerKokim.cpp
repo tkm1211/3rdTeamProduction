@@ -13,15 +13,15 @@
 #include "CharacterSystem.h"
 WarkerKokim::WarkerKokim(int num)
 {
-	{
+	/*{
 		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false, true);
 		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false, true);
 		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false, true);
 		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false, true);
 		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
-	}
+	}*/
 
-	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
+	//WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
 
 	modelData = std::make_shared<OBJ3DInstance>();
 
@@ -55,6 +55,9 @@ WarkerKokim::WarkerKokim(int num)
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 
+	isAttack = false;
+	isJumpAttack = false;
+
 	state = WARKER_STATE::WAIT;
 	Update();
 	
@@ -63,15 +66,15 @@ WarkerKokim::WarkerKokim(int num)
 void WarkerKokim::Init()
 {
 
-	{
+	/*{
 		pWarker = std::make_shared<Model>("Data/Assets/Model/Enemys/Warker.fbx", false, true);
 		pWarkerAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx", false, true);
 		pWarkerJumpAttack = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx", false, true);
 		pWarkerRun = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx", false, true);
 		pWarkerWait = std::make_shared<Model>("Data/Assets/Model/Enemys/WarkerWait.fbx", false, true);
-	}
+	}*/
 
-	WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
+	//WarkerAttackJudge::GetInstance()->pWarkerAttack = pWarkerAttack;
 	
 	aiTreeData.AddNode("", "Root", 0, BehaviorTree::SELECT_RULE::PRIORITY, NULL, NULL);
 	{
@@ -106,6 +109,9 @@ void WarkerKokim::Init()
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
 	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
 	state = WARKER_STATE::WAIT;
+
+	isAttack = false;
+	isJumpAttack = false;
 }
 
 void WarkerKokim::Add()
@@ -124,7 +130,7 @@ void WarkerKokim::Add()
 void WarkerKokim::Update()
 {
 
-	atAnimFrame = pWarkerAttack->GetAnimationFrame();
+	//atAnimFrame = pWarkerAttack->GetAnimationFrame();
 
 	if (!nowAsphyxia)
 	{

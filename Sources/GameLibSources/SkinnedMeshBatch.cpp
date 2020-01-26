@@ -129,6 +129,15 @@ void SkinnedMeshBatch::Begin( ID3D11DeviceContext* immediateContext, Shader shad
 
 	instance = 0;
 }
+void SkinnedMeshBatch::SetShaders(ID3D11DeviceContext* immediateContext, Shader shader)
+{
+	// シェーダーの設定
+	immediateContext->VSSetShader(shader.GetVertexShader().Get(), nullptr, 0);
+	immediateContext->PSSetShader(shader.GetPixelShader().Get(), nullptr, 0);
+
+	// 入力レイアウトの設定
+	immediateContext->IASetInputLayout(shader.GetInputLayout().Get());
+}
 void SkinnedMeshBatch::Render( ID3D11DeviceContext *immediateContext, OBJ3DInstance& obj, const DirectX::XMFLOAT4X4 &wvp, const DirectX::XMFLOAT4X4 &world, float elapsedTime )
 {
 	if (MAX_INSTANCE <= instance) return;
@@ -168,6 +177,10 @@ void SkinnedMeshBatch::Render( ID3D11DeviceContext *immediateContext, OBJ3DInsta
 		if (frame > static_cast<int>(meshes.at(0).skeletalAnimations.at(animationNumber).skeletel.size()) - 1)
 		{
 			_animationData.animationTick = 0.0f;
+			if (!_animationData.isLoopAnimation)
+			{
+				obj.SetIsAnimation(false);
+			}
 		}
 		obj.SetAnimationTick(_animationData.animationTick);
 	}
@@ -252,7 +265,7 @@ void SkinnedMeshBatch::End( ID3D11DeviceContext* immediateContext, const DirectX
 					break;
 				}
 
-				std::vector<Bone>& skeletal = mesh.skeletalAnimations.at( animationNumber ).skeletel.at( k ).bone;
+				std::vector<Bone>& skeletal = mesh.skeletalAnimations.at( animationNumber ).skeletel.at( k + MAX_FRAME * j ).bone;
 				size_t numberOfBones = skeletal.size();
 				_ASSERT_EXPR( numberOfBones < MAX_BONES, L"'the numberOfBones' exceeds MAX_BONES." );
 

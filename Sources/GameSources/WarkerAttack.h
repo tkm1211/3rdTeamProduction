@@ -15,7 +15,7 @@ public:
 		return &instance;
 	}
 
-	std::shared_ptr<Model> pWarkerAttack;
+	//std::shared_ptr<Model> pWarkerAttack;
 
 	virtual bool Judgement(AI *obj);
 };
