@@ -255,6 +255,8 @@ void CollisionJudge::EnemyVsEnemies()
 		for (size_t j = 0; j < warkerKokim.size(); j++)
 		{
 			if (i == j) continue;
+			if (warkerKokim[i].GetHp() <= 0) continue;
+			if (warkerKokim[j].GetHp() <= 0) continue;
 
 			DirectX::XMFLOAT3 pos1Float3 = warkerKokim[i].GetModelData()->GetPos();
 			DirectX::XMFLOAT3 pos2Float3 = warkerKokim[j].GetModelData()->GetPos();

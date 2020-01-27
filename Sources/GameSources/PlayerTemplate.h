@@ -27,21 +27,6 @@ private:
 	int instanceModelIndeces[2];
 
 
-	// Enemy SkinnedMeshBatch
-	std::unique_ptr<Model> pWaitB;
-	std::unique_ptr<Model> pAttackB;
-	std::unique_ptr<Model> pRunB;
-
-	struct EnemyData
-	{
-		OBJ3DInstance obj;
-		int state;
-	};
-
-	static const int MAX_ENEMY_INSTANCE = 150;
-	EnemyData enemyData[MAX_ENEMY_INSTANCE];
-
-
 	enum ModelState
 	{
 		WAIT,

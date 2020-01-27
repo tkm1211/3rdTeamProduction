@@ -23,6 +23,7 @@ private:
 	SparkParticle spark[MAX];
 	SparkAfterImageParticle sparkAfterImage[MAX];
 	ArrowParticleInfo arrow[MAX];
+	Buff buff[MAX];
 
 	Particle ptc;
 public:
@@ -37,6 +38,7 @@ public:
 	void Update();
 	void Draw();
 
+	void Load();
 	
 	static ParticleSystem* GetInstance()
 	{
@@ -217,7 +219,16 @@ public:
 		}
 	}
 
-	DirectX::XMFLOAT3 SphereLinear // 戻り値 : 補間座標
+	// バフ
+	void SetBuffPower(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 col, int n)
+	{
+		for (int i = 0; i < MAX; i++)
+		{
+			if (ptc.SetBuff(&buff[i], pos, col, n)) return;
+		}
+	}
+
+	DirectX::XMFLOAT3 SphereLinear // 戻り値 : 補間ベクトル
 	(
 		DirectX::XMFLOAT3 originPos, // 原点
 		DirectX::XMFLOAT3 oldPos,    // 前のフレームの座標
@@ -226,24 +237,40 @@ public:
 	)
 	{
 		DirectX::XMVECTOR start, end;
+		DirectX::XMFLOAT3 out;
+
 		start = DirectX::XMVector3Normalize(DirectX::XMVectorSet(oldPos.x - originPos.x, oldPos.y - originPos.y, oldPos.z - originPos.z, 1.0f));
 		end = DirectX::XMVector3Normalize(DirectX::XMVectorSet(nowPos.x - originPos.x, nowPos.y - originPos.y, nowPos.z - originPos.z, 1.0f));
+
 		DirectX::XMFLOAT3 _start, _end;
 		_start = DirectX::XMFLOAT3(oldPos.x - originPos.x, oldPos.y - originPos.y, oldPos.z - originPos.z);
 		_end = DirectX::XMFLOAT3(nowPos.x - originPos.x, nowPos.y - originPos.y, nowPos.z - originPos.z);
+
 		float angle = acosf(DirectX::XMVectorGetX(DirectX::XMVector3Dot(start, end)));
 		float sinSita = sinf(angle);
 		float startPoint = sinf(angle * (1 - t));
 		float endPoint = sinf(angle * t);
-		DirectX::XMFLOAT3 startFloat3, endFloat3;
-		DirectX::XMStoreFloat3(&startFloat3, start);
-		DirectX::XMStoreFloat3(&endFloat3, end);
-		float len = sqrtf(_start.x * _start.x + _start.y * _start.y + _start.z * _start.z);
-		DirectX::XMFLOAT3 out;
-		out.x = originPos.x + ((startPoint * startFloat3.x + endPoint * endFloat3.x) / sinSita) * len;
-		out.y = originPos.y + ((startPoint * startFloat3.y + endPoint * endFloat3.y) / sinSita) * len;
-		out.z = originPos.z + ((startPoint * startFloat3.z + endPoint * endFloat3.z) / sinSita) * len;
-		return out;
-	}
 
+		if (angle == 0.0f)
+		{
+			out.x = 0.0f;
+			out.y = 0.0f;
+			out.z = 0.0f;
+		}
+		else
+		{
+			DirectX::XMFLOAT3 startFloat3, endFloat3;
+			DirectX::XMStoreFloat3(&startFloat3, start);
+			DirectX::XMStoreFloat3(&endFloat3, end);
+
+			float len = sqrtf(_start.x * _start.x + _start.y * _start.y + _start.z * _start.z);
+
+			out.x = (startPoint * startFloat3.x + endPoint * endFloat3.x) / sinSita;
+			out.y = (startPoint * startFloat3.y + endPoint * endFloat3.y) / sinSita;
+			out.z = (startPoint * startFloat3.z + endPoint * endFloat3.z) / sinSita;
+		}
+
+		return out;
+
+	}
 };

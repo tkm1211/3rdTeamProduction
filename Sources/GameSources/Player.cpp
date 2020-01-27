@@ -11,31 +11,26 @@
 #include <fstream>
 #include <string>
 
+void PlayerModelManager::Init()
+{
+	pWait = std::make_unique<Model>("Data/Assets/Model//Pl/PlayerStay.fbx", false);
+	pRun = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerRun.fbx", false);
+	pDash = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerFastRun.fbx", false);
+	pAttack[0] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack1.fbx", false);
+	pAttack[1] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack2.fbx", false);
+	pAttack[2] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack3.fbx", false);
+	pGuard[0] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Do.fbx", false);
+	pGuard[1] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Stay.fbx", false);
+	pGuard[2] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd.fbx", false);
+	pGuard[3] = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Back.fbx", false);
+	pDamage = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerOuch.fbx", false);
+	pFinalBlow = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerFinalBrow.fbx", false);
+	pClear = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerWin.fbx", false);
+	pDead = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerDead.fbx", false);
+}
+
 void Player::Init()
 {
-	pWait         = std::make_unique<Model>("Data/Assets/Model//Pl/PlayerStay.fbx"          , false);
-	pRun          = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerRun.fbx"            , false);
-	pDash        = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerFastRun.fbx"      , false);
-	pAttack[0]  = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack1.fbx"      , false);
-	pAttack[1]  = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack2.fbx"      , false);
-	pAttack[2]  = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerAttack3.fbx"      , false);
-	pGuard[0]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Do.fbx"   , false);
-	pGuard[1]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Stay.fbx" , false);
-	pGuard[2]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd.fbx"         , false);
-	pGuard[3]   = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerGurd_Back.fbx"  , false);
-	pDamage    = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerOuch.fbx"          , false);
-	pFinalBlow  = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerFinalBrow.fbx"    , false);
-	pClear        = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerWin.fbx"          , false);
-	pDead        = std::make_unique<Model>("Data/Assets/Model/Pl/PlayerDead.fbx"          , false);
-
-
-	//pT         = std::make_unique<Model>("Data/Assets/Model/val/PlayerT.fbx"   , false);
-	//pWait      = std::make_unique<Model>("Data/Assets/Model/val/PlayerWait.fbx"   , false);
-	//pRun       = std::make_unique<Model>("Data/Assets/Model/val/PlayerRun.fbx"    , false);
-	//pAttack[0] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack1.fbx", false);
-	//pAttack[1] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack2.fbx", false);
-	//pAttack[2] = std::make_unique<Model>("Data/Assets/Model/val/PlayerAttack3.fbx", false);
-	//pDamage    = std::make_unique<Model>("Data/Assets/Model/val/PlayerHidame.fbx", false);
 
 	modelData.Init();
 	motionState = ModelState::WAIT;
@@ -69,6 +64,7 @@ void Player::Init()
 
 	moveSpeed                    = {0, 0, 0};
 	emitFinalBlowPos           = {0, 0, 0};
+	emitPower                     = {0, 0, 0};
 
 	attackMag                      = 0.0f;
 	totalAttack                     = 0.0f;
@@ -142,17 +138,6 @@ void Player::Init()
 
 void Player::UnInit()
 {
-	pT              = nullptr;
-	pWait         = nullptr;
-	pRun          = nullptr;
-	pAttack[0] = nullptr;
-	pAttack[1] = nullptr;
-	pAttack[2] = nullptr;
-	pGuard[0]  = nullptr;
-	pGuard[1]  = nullptr;
-	pGuard[2]  = nullptr;
-	pDamage   = nullptr;
-
 	modelData.UnInit();
 }
 
@@ -161,9 +146,9 @@ void Player::Update()
 	if (finish)
 	{
 		SwitchMotion(ModelState::CLEAR);
-		if (pClear->GetAnimationFrame() >= 63)
+		if (PlayerModelManager::GetInstance()->pClear->GetAnimationFrame() >= 63)
 		{
-			pClear->PauseAnimation();
+			PlayerModelManager::GetInstance()->pClear->PauseAnimation();
 			clearFlg = true;
 		}
 		return;
@@ -173,9 +158,9 @@ void Player::Update()
 	{
 		isDead = true;
 		SwitchMotion(ModelState::DEAD);
-		if (pDead->GetAnimationFrame() >= 30)
+		if (PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->GetAnimationFrame() >= 30)
 		{
-			pDead->PauseAnimation();
+			PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->PauseAnimation();
 		}
 	}
 	if (isDead) return;
@@ -205,14 +190,14 @@ void Player::Update()
 	}
 	static int t = 0;
 	if (isFinalBlow)
-	{	
-		if (pFinalBlow->GetAnimationFrame() >= 20 && pFinalBlow->GetAnimationFrame() <= 25)
+	{
+		if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() >= 20 && PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() <= 25)
 		{
 			moveSpeed = { 0.0f, finalBlowSpeedY, 0.0f };
 		}
-		else if (pFinalBlow->GetAnimationFrame() > 25 && pFinalBlow->GetAnimationFrame() <= 90)
+		else if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() > 25 && PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() <= 90)
 		{
-			if (pFinalBlow->GetAnimationFrame() == 43)
+			if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() == 43)
 			{
 				PlaySoundMem(SoundLoader::GetInstance()->thunder.get());
 				SetVolume(SoundLoader::GetInstance()->thunder.get(), 1.0f);
@@ -225,7 +210,7 @@ void Player::Update()
 			finalBlowSpeedY -= 0.5f;
 			if (finalBlowSpeedY <= 0) finalBlowSpeedY = 0.0f;
 		}
-		else if (pFinalBlow->GetAnimationFrame() > 90 && pFinalBlow->GetAnimationFrame() <= 100)
+		else if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() > 90 && PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() <= 100)
 		{
 			emitThunderStore = false;
 			if (!speedDownTrg)
@@ -236,10 +221,10 @@ void Player::Update()
 			}
 			t++;
 		}
-		else if (pFinalBlow->GetAnimationFrame() > 100 && pFinalBlow->GetAnimationFrame() <= 140)
+		else if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() > 100 && PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() <= 140)
 		{
 			onFinalBlowCollision = false;
-			if (pFinalBlow->GetAnimationFrame() == 132)
+			if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() == 132)
 			{
 				onFinalBlowCollision = true;
 				PlaySoundMem(SoundLoader::GetInstance()->lightning.get());
@@ -253,7 +238,7 @@ void Player::Update()
 			SetXInputVibration(65000, 65000, 60);
 		}
 
-		if (pFinalBlow->GetAnimationFrame() >= 140)
+		if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() >= 140)
 		{
 			emitThunderStore = false;
 			modelData.SetPosY(0.0f);
@@ -272,6 +257,9 @@ void Player::Update()
 	modelData.SetPosY(modelData.GetPos().y + moveSpeed.y);
 	modelData.SetPosZ(modelData.GetPos().z + moveSpeed.z);
 
+	float col = 1.0f / (float)(attackMag);
+	if (col >= 1.0f) col = 1.0f;
+	ParticleSystem::GetInstance()->SetBuffPower(emitPower, { 1.0f - col, col, 0.0f, 1.0f}, attackMag);
 
 }
 
@@ -280,87 +268,87 @@ void Player::Draw()
 	switch ( motionState )
 	{
 	case ModelState::WAIT:
-		pWait->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
+		PlayerModelManager::GetInstance()->pWait->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
-		pWait->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pWait->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		                                  DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::RUN:
-		pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false) ;
+		PlayerModelManager::GetInstance()->pRun->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false) ;
 
-		pRun->Render        ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pRun->Render        ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                               DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::DASH:
-		pDash->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false) ;
+		PlayerModelManager::GetInstance()->pDash->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false) ;
 
-		pDash->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pDash->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                               DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK1:
-		pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
+		PlayerModelManager::GetInstance()->pAttack[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
-		pAttack[0]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pAttack[0]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                       DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK2:
-		pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
+		PlayerModelManager::GetInstance()->pAttack[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
-		pAttack[1]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pAttack[1]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                       DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::ATTACK3:
-		pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
+		PlayerModelManager::GetInstance()->pAttack[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
 
-		pAttack[2]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pAttack[2]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                       DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::GUARD1:
-		pGuard[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
+		PlayerModelManager::GetInstance()->pGuard[0]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
-		pGuard[0]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pGuard[0]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 		                                          DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::GUARD2:
-		pGuard[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
+		PlayerModelManager::GetInstance()->pGuard[1]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE), false );
 
-		pGuard[1]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pGuard[1]->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::GUARD3:
-		pGuard[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
+		PlayerModelManager::GetInstance()->pGuard[2]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
 
-		pGuard[2]->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pGuard[2]->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                     DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::GUARD4:
-		pGuard[3]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
+		PlayerModelManager::GetInstance()->pGuard[3]->Preparation( ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh( ShaderSystem::PHONE ), false );
 
-		pGuard[3]->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pGuard[3]->Render     ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                     DirectX::XMFLOAT4( 0.0f, -1.0f, 1.0f, 0.0f ), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime() );
 		break;
 	case ModelState::DAMAGE:
-		pDamage->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+		PlayerModelManager::GetInstance()->pDamage->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
-		pDamage->Render        ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pDamage->Render        ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	case ModelState::FINALBLOW:
-		pFinalBlow->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+		PlayerModelManager::GetInstance()->pFinalBlow->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
-		pFinalBlow->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pFinalBlow->Render       ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	case ModelState::CLEAR:
-		pClear->Preparation      (ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+		PlayerModelManager::GetInstance()->pClear->Preparation      (ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
-		pClear->Render            ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->pClear->Render            ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	case ModelState::DEAD:
-		pDead->Preparation      (ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->Preparation      (ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::PHONE), false);
 
-		pDead->Render            ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->Render            ( modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			                                      DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), modelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		break;
 	}
@@ -420,45 +408,45 @@ void Player::SwitchMotion( ModelState state )
 	case Player::ModelState::WAIT:
 
 		motionState = ModelState::WAIT;
-		pWait->StartAnimation( 0, true );
-		pWait->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pWait->GetBoneTransformIndex(std::string("spine1") , bodyBone.meshIndex, bodyBone.boneIndex);
-		pWait->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pWait->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pWait->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pWait->StartAnimation( 0, true );
+		PlayerModelManager::GetInstance()->pWait->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pWait->GetBoneTransformIndex(std::string("spine1") , bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pWait->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pWait->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pWait->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 
 		break;
 	case Player::ModelState::RUN:
 
 		motionState = ModelState::RUN;
-		pRun->StartAnimation( 0, true );
-		pRun->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pRun->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
-		pRun->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pRun->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pRun->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pRun->StartAnimation( 0, true );
+		PlayerModelManager::GetInstance()->pRun->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pRun->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pRun->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pRun->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pRun->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 
 		break;
 	case Player::ModelState::DASH:
 
 		motionState = ModelState::DASH;
-		pDash->StartAnimation( 0, true );
-		pDash->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pDash->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
-		pDash->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pDash->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pDash->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDash->StartAnimation( 0, true );
+		PlayerModelManager::GetInstance()->pDash->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDash->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDash->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDash->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDash->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 
 		break;
 	case Player::ModelState::ATTACK1:
 
 		motionState = ModelState::ATTACK1;
-		pAttack[0]->StartAnimation( 0, false );
-		pAttack[0]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pAttack[0]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
-		pAttack[0]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pAttack[0]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pAttack[0]->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[0]->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 
 
 		PlaySoundMem(SoundLoader::GetInstance()->playerSwing1.get());
@@ -467,12 +455,12 @@ void Player::SwitchMotion( ModelState state )
 	case Player::ModelState::ATTACK2:
 
 		motionState = ModelState::ATTACK2;
-		pAttack[1]->StartAnimation( 0, false );
-		pAttack[1]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pAttack[1]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
-		pAttack[1]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pAttack[1]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pAttack[1]->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[1]->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 
 
 		PlaySoundMem(SoundLoader::GetInstance()->playerSwing2.get());
@@ -482,12 +470,12 @@ void Player::SwitchMotion( ModelState state )
 	case Player::ModelState::ATTACK3:
 
 		motionState = ModelState::ATTACK3;
-		pAttack[2]->StartAnimation( 0, false );
-		pAttack[2]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pAttack[2]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
-		pAttack[2]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pAttack[2]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pAttack[2]->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[2]->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 
 
 		PlaySoundMem(SoundLoader::GetInstance()->playerSwing3.get());
@@ -497,66 +485,73 @@ void Player::SwitchMotion( ModelState state )
 	case Player::ModelState::GUARD1:
 
 		motionState = ModelState::GUARD1;
-		pGuard[0]->StartAnimation( 0, false );
-		pGuard[0]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
-		pGuard[0]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[0]->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 
 		PlaySoundMem(SoundLoader::GetInstance()->holdShield.get());
 		break;
 	case Player::ModelState::GUARD2:
 
 		motionState = ModelState::GUARD2;
-		pGuard[1]->StartAnimation( 0, true );
-		pGuard[1]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
-		pGuard[1]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[1]->StartAnimation( 0, true );
+		PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 
 		break;
 	case Player::ModelState::GUARD3:
 
 		motionState = ModelState::GUARD3;
-		pGuard[2]->StartAnimation( 0, false );
-		pGuard[2]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
-		pGuard[2]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[2]->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		PlaySoundMem(SoundLoader::GetInstance()->guardSpark.get());
 
 		break;
 	case Player::ModelState::GUARD4:
 
 		motionState = ModelState::GUARD4;
-		pGuard[3]->StartAnimation( 0, false );
-		pGuard[3]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
-		pGuard[3]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[3]->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pGuard[3]->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[3]->GetBoneTransformIndex(std::string("L_hand"), leftBone.meshIndex, leftBone.boneIndex);
+		PlayerModelManager::GetInstance()->pGuard[3]->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		PlaySoundMem(SoundLoader::GetInstance()->notHoldShield.get());
 		break;
 	case Player::ModelState::DAMAGE:
 
 		motionState = ModelState::DAMAGE;
-		pDamage->StartAnimation( 0, false );
-		pDamage->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDamage->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pDamage->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pDamage->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		PlaySoundMem(SoundLoader::GetInstance()->playerDamage.get());
 		break;
 	case Player::ModelState::FINALBLOW:
 
 		motionState = ModelState::FINALBLOW;
-		pFinalBlow->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pFinalBlow->StartAnimation( 0, false );
 
-		pFinalBlow->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
-		pFinalBlow->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
-		pFinalBlow->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
-		pFinalBlow->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
-		pFinalBlow->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
+		PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransformIndex(std::string("R_Foot"), rightFootBone.meshIndex, rightFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransformIndex(std::string("L_Foot"), leftFootBone.meshIndex, leftFootBone.boneIndex);
+		PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransformIndex(std::string("R_kenkoukotsu"), rightArmBone.meshIndex, rightArmBone.boneIndex);
 		break;
 	case Player::ModelState::CLEAR:
 
 		motionState = ModelState::CLEAR;
-		pClear->StartAnimation( 0, false );
-		pClear->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->pClear->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->pClear->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->pClear->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		break;
 	case Player::ModelState::DEAD:
 
 		motionState = ModelState::DEAD;
-		pDead->StartAnimation( 0, false );
-		pDead->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->StartAnimation( 0, false );
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->GetBoneTransformIndex(std::string("R_hand"), rightBone.meshIndex, rightBone.boneIndex);
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->GetBoneTransformIndex(std::string("spine1"), bodyBone.meshIndex, bodyBone.boneIndex);
 		break;
 	}
 }
@@ -650,7 +645,7 @@ void Player::Attack()
 			attackCnt = 0;
 
 			// 入力
-			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 			{
 
 				if (xInput[0].bXt)
@@ -664,12 +659,12 @@ void Player::Attack()
 			moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
 
 			// Collision表示
-			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart && pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart && PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
 			{
 				onAtkCollision           = true;
 				isAttackLocusDisplay = true;
 			}
-			else if(pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
+			else if(PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
 			{
 				onAtkCollision           = false;
 				isAttackLocusDisplay = false;
@@ -678,7 +673,7 @@ void Player::Attack()
 			}
 
 			// 2段目にいくかどうか
-			if (pAttack[0]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
+			if (PlayerModelManager::GetInstance()->pAttack[0]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
 			{
 				if (enableNextAttack)
 				{
@@ -700,7 +695,7 @@ void Player::Attack()
 				attackCnt = 1;
 
 				// 入力
-				if (pAttack[1]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
+				if (PlayerModelManager::GetInstance()->pAttack[1]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime && PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 				{
 					if (xInput[0].bXt)
 					{
@@ -712,12 +707,12 @@ void Player::Attack()
 				moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
 
 				// Collision表示
-				if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart&& pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
+				if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart&& PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
 				{
 					onAtkCollision           = true;
 					isAttackLocusDisplay = true;
 				}
-				else if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
+				else if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
 				{
 					onAtkCollision           = false;
 					isAttackLocusDisplay = false;
@@ -726,7 +721,7 @@ void Player::Attack()
 				}
 
 				// 3段目にいくかどうか
-				if (pAttack[1]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
+				if (PlayerModelManager::GetInstance()->pAttack[1]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
 				{
 					if (enableNextAttack)
 					{
@@ -752,12 +747,12 @@ void Player::Attack()
 			moveSpeed.z = cosf(modelData.GetAngle().y) * attackInfo[attackCnt].speed;
 
 			// Collision表示
-			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart&& pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionStart&& PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() < attackInfo[attackCnt].atkCollisionEnd)
 			{
 				onAtkCollision           = true;
 				isAttackLocusDisplay = true;
 			}
-			else if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
+			else if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].atkCollisionEnd)
 			{
 				onAtkCollision           = false;
 				isAttackLocusDisplay = false;
@@ -765,7 +760,7 @@ void Player::Attack()
 				moveSpeed.z            = 0.0f;
 			}
 
-			if (pAttack[attackCnt]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() >= attackInfo[attackCnt].nextAttakTime)
 			{
 				isFinishAttack = true;
 			}
@@ -779,7 +774,7 @@ void Player::Attack()
 		{
 		case Player::AttackState::ATK1ST:
 			// 入力
-			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime&& pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime&& PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 			{
 				if (xInput[0].bXt)
 				{
@@ -788,7 +783,7 @@ void Player::Attack()
 					isFinishAttack       = false;
 				}
 			}
-			if (pAttack[attackCnt]->GetAnimationFrame() > 25)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > 25)
 			{
 				isAttack               = false;
 				isFinishAttack       = false;
@@ -798,7 +793,7 @@ void Player::Attack()
 			break;
 		case Player::AttackState::ATK2ND:
 			// 入力
-			if (pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime&& pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > attackInfo[attackCnt].inputStartTime&& PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() <= attackInfo[attackCnt].inputEndTime)
 			{
 				if (xInput[0].bXt)
 				{
@@ -807,7 +802,7 @@ void Player::Attack()
 					isFinishAttack       = false;
 				}
 			}
-			if (pAttack[attackCnt]->GetAnimationFrame() > 25)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > 25)
 			{
 				isAttack               = false;
 				isFinishAttack       = false;
@@ -817,7 +812,7 @@ void Player::Attack()
 			break;
 		case Player::AttackState::ATK3RD:
 			// 入力
-			if (pAttack[attackCnt]->GetAnimationFrame() > 20)
+			if (PlayerModelManager::GetInstance()->pAttack[attackCnt]->GetAnimationFrame() > 20)
 			{
 				attackCnt            = 0;
 				isFinishAttack      = false;
@@ -864,7 +859,7 @@ void Player::Guard()
 		switch (guardState)
 		{
 		case GuardState::GRD1ST:
-			if (pGuard[0]->GetAnimationFrame() >= 4)
+			if (PlayerModelManager::GetInstance()->pGuard[0]->GetAnimationFrame() >= 4)
 			{
 				SwitchMotion(ModelState::GUARD2);
 				guardState = GuardState::GRD2ND;
@@ -875,7 +870,7 @@ void Player::Guard()
 			break;
 		case GuardState::GRD3RD:
 			guardCrash = true;
-			if (pGuard[2]->GetAnimationFrame() >= 18)
+			if (PlayerModelManager::GetInstance()->pGuard[2]->GetAnimationFrame() >= 18)
 			{
 				guardCrash = false;
 				SwitchMotion(ModelState::GUARD2);
@@ -885,7 +880,7 @@ void Player::Guard()
 			}
 			break;
 		case GuardState::GRD4TH:
-			if (pGuard[3]->GetAnimationFrame() >= 4)
+			if (PlayerModelManager::GetInstance()->pGuard[3]->GetAnimationFrame() >= 4)
 			{
 				guardCrash = false;
 				guardState = GuardState::GRD1ST;
@@ -954,19 +949,20 @@ void Player::CollisionInformation()
 	{
 	case ModelState::WAIT:
 		// body
-		boneTransform = pWait->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pWait->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// attack
-		boneTransform = pWait->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pWait->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -975,13 +971,13 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pWait->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pWait->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pWait->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pWait->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -990,19 +986,20 @@ void Player::CollisionInformation()
 
 	case ModelState::RUN:
 		// body
-		boneTransform = pRun->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pRun->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// bone information
-		boneTransform = pRun->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pRun->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pWait->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1011,13 +1008,13 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pRun->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pRun->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pRun->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pRun->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1048,19 +1045,20 @@ void Player::CollisionInformation()
 
 	case ModelState::DASH:
 		// body
-		boneTransform = pDash->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pDash->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// bone information
-		boneTransform = pDash->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pDash->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pDash->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pDash->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1069,13 +1067,13 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pDash->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pDash->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pDash->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pDash->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1106,19 +1104,20 @@ void Player::CollisionInformation()
 
 	case ModelState::ATTACK1:
 		// body
-		boneTransform = pAttack[0]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// bone information
-		boneTransform = pAttack[0]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pAttack[0]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform)* modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1127,13 +1126,13 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pAttack[0]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pAttack[0]->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[0]->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1142,19 +1141,20 @@ void Player::CollisionInformation()
 
 	case ModelState::ATTACK2:
 		// body
-		boneTransform = pAttack[1]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// bone information
-		boneTransform = pAttack[1]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pAttack[1]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform)* modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1163,13 +1163,13 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pAttack[1]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pAttack[1]->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[1]->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1177,19 +1177,20 @@ void Player::CollisionInformation()
 		break;
 	case ModelState::ATTACK3:
 		// body
-		boneTransform = pAttack[2]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// bone information
-		boneTransform = pAttack[2]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pAttack[2]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform)* modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1198,13 +1199,13 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pAttack[2]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pAttack[2]->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pAttack[2]->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1212,39 +1213,78 @@ void Player::CollisionInformation()
 		break;
 	case ModelState::GUARD1:
 		// body
-		boneTransform = pGuard[0]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
+		// bone information
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
+
+		// arm
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
+
 		// left hand
-		boneTransform = pGuard[0]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[0]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		grdCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 		break;
 	case ModelState::GUARD2:
 		// body
-		boneTransform = pGuard[1]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 		
+		// bone information
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
+
+		// arm
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
+
 		// left hand
-		boneTransform = pGuard[1]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		grdCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 		break;
 	case ModelState::GUARD3:
 		// body
-		boneTransform = pGuard[2]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
+		// bone information
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
+
+		// arm
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
+
 		// left hand
-		boneTransform = pGuard[2]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[2]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		grdCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1252,13 +1292,26 @@ void Player::CollisionInformation()
 		break;
 	case ModelState::GUARD4:
 		// body
-		boneTransform = pGuard[3]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[3]->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
+		// bone information
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[4]->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
+
+		// arm
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[4]->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
+
 		// left hand
-		boneTransform = pGuard[3]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pGuard[3]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		grdCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
@@ -1266,19 +1319,20 @@ void Player::CollisionInformation()
 		break;
 	case ModelState::FINALBLOW:
 		// body
-		boneTransform = pFinalBlow->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// bone information
-		boneTransform = pFinalBlow->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
 
 		// arm
-		boneTransform = pFinalBlow->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
@@ -1287,26 +1341,40 @@ void Player::CollisionInformation()
 			{ boneTransformWithWorld._41, boneTransformWithWorld._42 , boneTransformWithWorld._43 }, armBonePos);
 
 		// R_Foot
-		boneTransform = pFinalBlow->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransform(rightFootBone.meshIndex, rightFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footRStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 
 		// L_Foot
-		boneTransform = pFinalBlow->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pFinalBlow->GetBoneTransform(leftFootBone.meshIndex, leftFootBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		footLStepSound->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
 		break;
 	case ModelState::DAMAGE:
 		// body
-		boneTransform = pDamage->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
+		boneTransform = PlayerModelManager::GetInstance()->pDamage->GetBoneTransform(bodyBone.meshIndex, bodyBone.boneIndex);
 		// ボーン行列をワールド空間に変換
 		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
 		bodyCollision->SetPos({ boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 });
+
+		// bone information
+		boneTransform = PlayerModelManager::GetInstance()->pDamage->GetBoneTransform(rightBone.meshIndex, rightBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		atkCollision->SetPos({ boneTransformWithWorld._41 + boneTransformWithWorld._31 * -37.0f, boneTransformWithWorld._42 + boneTransformWithWorld._32 * -48.0f, boneTransformWithWorld._43 + boneTransformWithWorld._33 * -67.0f });
+		emitPower = { boneTransformWithWorld._41, boneTransformWithWorld._42, boneTransformWithWorld._43 };
+
+		// arm
+		boneTransform = PlayerModelManager::GetInstance()->pDamage->GetBoneTransform(rightArmBone.meshIndex, rightArmBone.boneIndex);
+		// ボーン行列をワールド空間に変換
+		DirectX::XMStoreFloat4x4(&armBoneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());
+		armBonePos = { armBoneTransformWithWorld._41, armBoneTransformWithWorld._42, armBoneTransformWithWorld._43 };
 		break;
 
 	}
+
 }
 
 void Player::StopMotion()
@@ -1316,45 +1384,45 @@ void Player::StopMotion()
 	case Player::ModelState::T:
 		break;
 	case Player::ModelState::WAIT:
-		pWait->PauseAnimation();
+		PlayerModelManager::GetInstance()->pWait->PauseAnimation();
 		break;
 	case Player::ModelState::RUN:
-		pRun->PauseAnimation();
+		PlayerModelManager::GetInstance()->pRun->PauseAnimation();
 		break;
 	case Player::ModelState::DASH:
-		pDash->PauseAnimation();
+		PlayerModelManager::GetInstance()->pDash->PauseAnimation();
 		break;
 	case Player::ModelState::ATTACK1:
-		pAttack[0]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pAttack[0]->PauseAnimation();
 		break;
 	case Player::ModelState::ATTACK2:
-		pAttack[1]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pAttack[1]->PauseAnimation();
 		break;
 	case Player::ModelState::ATTACK3:
-		pAttack[3]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pAttack[3]->PauseAnimation();
 		break;
 	case Player::ModelState::GUARD1:
 		break;
 	case Player::ModelState::GUARD2:
-		pGuard[0]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pGuard[0]->PauseAnimation();
 		break;
 	case Player::ModelState::GUARD3:
-		pGuard[1]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pGuard[1]->PauseAnimation();
 		break;
 	case Player::ModelState::GUARD4:
-		pGuard[2]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pGuard[2]->PauseAnimation();
 		break;
 	case Player::ModelState::DAMAGE:
-		pGuard[3]->PauseAnimation();
+		PlayerModelManager::GetInstance()->pGuard[3]->PauseAnimation();
 		break;
 	case Player::ModelState::FINALBLOW:
-		pFinalBlow->PauseAnimation();
+		PlayerModelManager::GetInstance()->pFinalBlow->PauseAnimation();
 		break;
 	case Player::ModelState::CLEAR:
-		pClear->PauseAnimation();
+		PlayerModelManager::GetInstance()->pClear->PauseAnimation();
 		break;
 	case Player::ModelState::DEAD:
-		pDead->PauseAnimation();
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->PauseAnimation();
 		break;
 	}
 }
@@ -1366,45 +1434,45 @@ void Player::StartMotion()
 	case Player::ModelState::T:
 		break;
 	case Player::ModelState::WAIT:
-		pWait->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pWait->ReStartAnimation();
 		break;
 	case Player::ModelState::RUN:
-		pRun->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pRun->ReStartAnimation();
 		break;
 	case Player::ModelState::DASH:
-		pDash->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pDash->ReStartAnimation();
 		break;
 	case Player::ModelState::ATTACK1:
-		pAttack[0]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pAttack[0]->ReStartAnimation();
 		break;
 	case Player::ModelState::ATTACK2:
-		pAttack[1]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pAttack[1]->ReStartAnimation();
 		break;
 	case Player::ModelState::ATTACK3:
-		pAttack[3]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pAttack[3]->ReStartAnimation();
 		break;
 	case Player::ModelState::GUARD1:
 		break;
 	case Player::ModelState::GUARD2:
-		pGuard[0]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pGuard[0]->ReStartAnimation();
 		break;
 	case Player::ModelState::GUARD3:
-		pGuard[1]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pGuard[1]->ReStartAnimation();
 		break;
 	case Player::ModelState::GUARD4:
-		pGuard[2]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pGuard[2]->ReStartAnimation();
 		break;
 	case Player::ModelState::DAMAGE:
-		pGuard[3]->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pGuard[3]->ReStartAnimation();
 		break;
 	case Player::ModelState::FINALBLOW:
-		pFinalBlow->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pFinalBlow->ReStartAnimation();
 		break;
 	case Player::ModelState::CLEAR:
-		pClear->ReStartAnimation();
+		PlayerModelManager::GetInstance()->pClear->ReStartAnimation();
 		break;
 	case Player::ModelState::DEAD:
-		pDead->ReStartAnimation();
+		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->ReStartAnimation();
 		break;
 	}
 }
@@ -1414,7 +1482,7 @@ void Player::ImGui()
 	ImGui::Begin(u8"Player");
 	
 	ImGui::Text (u8"合計攻撃                 : %f" , totalAttack);
-	ImGui::Text (u8"アニメーションフレーム   : %d" , pClear->GetAnimationFrame());
+	ImGui::Text (u8"アニメーションフレーム   : %d" , PlayerModelManager::GetInstance()->pClear->GetAnimationFrame());
 
 	ImGui::Text (u8"パーティクル数           : %d" , ParticleSystem::GetInstance()->popParticleNum);
 	ParticleSystem::GetInstance()->popParticleNum = 0;
@@ -1436,10 +1504,10 @@ void Player::ImGui()
 	//ImGui::DragInt(u8"2##Player", &num[1]);
 	ImGui::DragFloat3(u8"3##Player", &_p.x);
 
-	//atkCollision->SetPos(pWait->GetVectexPos(std::string("model1"), { _p }, modelData.GetWorldMatrix(), num[0]));
+	//atkCollision->SetPos(PlayerModelManager::GetInstance()->pWait->GetVectexPos(std::string("model1"), { _p }, modelData.GetWorldMatrix(), num[0]));
 
 	////// bone information
-	//DirectX::XMFLOAT4X4 boneTransform = pGuard[1]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
+	//DirectX::XMFLOAT4X4 boneTransform = PlayerModelManager::GetInstance()->pGuard[1]->GetBoneTransform(leftBone.meshIndex, leftBone.boneIndex);
 	//// ボーン行列をワールド空間に変換
 	//DirectX::XMFLOAT4X4 boneTransformWithWorld;
 	//DirectX::XMStoreFloat4x4(&boneTransformWithWorld, DirectX::XMLoadFloat4x4(&boneTransform) * modelData.GetWorldMatrix());

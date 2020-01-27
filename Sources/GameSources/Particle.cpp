@@ -564,3 +564,46 @@ bool Particle::SetArrowParticle(ArrowParticleInfo* p, DirectX::XMFLOAT3 pos)
 
 	return true;
 }
+
+void Particle::BuffUpdate(Buff* p)
+{
+	if (!p->data.isExist) return;
+
+	float s = easing::InExp(p->data.time, p->data.existTime, 0.0f, p->originScale);
+	p->color.w = easing::InExp(p->data.time, p->data.existTime, 0.0f, 1.0f);
+
+	p->data.scale = { s, s };
+
+	p->data.angle.z = rand() % 360 * 0.01745f;
+
+	p->data.pos.y += p->speed.y;
+
+	p->data.time++;
+
+	if (p->data.time > p->data.existTime)
+	{
+		p->data.isExist = false;
+	}
+
+}
+
+bool Particle::SetBuff(Buff* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 col, int n)
+{
+	if (p->data.isExist) return false;
+
+	p->data.pos = pos;
+	p->originScale = rand() % 10 + 10.0f + (5 * (n + 1));
+	p->speed.y = rand() % 5 + 3.0f;
+	p->data.scale = { p->originScale, p->originScale };
+	p->data.angle = { 0, 0, 0 };
+	p->data.alpha = 1.0f;
+	p->color = col;
+	p->data.time = 0;
+	p->data.existTime = rand() % 30 + 30.0f;
+	p->data.isExist = true;
+
+	p->data.tex.Set(1024.0f * 2, 1024.0f * 3, 1024.0f, 1024.0f);
+
+	return true;
+
+}

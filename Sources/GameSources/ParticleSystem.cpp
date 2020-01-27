@@ -27,6 +27,7 @@ void ParticleSystem::Update()
 		ptc.UltimetThuderUpdate(&ultimetThunder[i]);
 		ptc.UltimetThuderStoneUpdate(&ultimetThunderStone[i]);
 		ptc.ArrowUpdate(&arrow[i]);
+		ptc.BuffUpdate(&buff[i]);
 		if (ptc.SparkUpdate(&spark[i]))
 		{
 			SetSparkAfterImage(spark[i].data.pos, spark[i].data.scale.x);
@@ -123,6 +124,13 @@ void ParticleSystem::Draw()
 			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 				arrow[i].data.pos, arrow[i].data.tex.x, arrow[i].data.tex.y, arrow[i].data.tex.sx, arrow[i].data.tex.sy,
 				arrow[i].data.angle, arrow[i].data.scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+			popParticleNum++;
+		}
+		if (buff[i].data.isExist)
+		{
+			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				buff[i].data.pos, buff[i].data.tex.x, buff[i].data.tex.y, buff[i].data.tex.sx, buff[i].data.tex.sy,
+				buff[i].data.angle, buff[i].data.scale, buff[i].color);
 			popParticleNum++;
 		}
 	}

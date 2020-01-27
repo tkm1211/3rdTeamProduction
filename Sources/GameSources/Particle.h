@@ -45,4 +45,7 @@ public:
 	void ArrowUpdate(ArrowParticleInfo* p);
 	bool SetArrowParticle(ArrowParticleInfo* p, DirectX::XMFLOAT3 pos);
 
+	void BuffUpdate(Buff* p);
+	bool SetBuff(Buff* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 col, int n);
+
 };

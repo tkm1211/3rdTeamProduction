@@ -51,14 +51,12 @@ void Fade::LoadModels()
 	{
 		std::lock_guard<std::mutex> lock(loadingMutex);
 
-		CharacterSystem::GetInstance()->Init();
+		PlayerModelManager::GetInstance()->Init();
 		EnemyModelManager::GetInstance()->Init();
-		ObjectSystem::GetInstance()->Init();
-		ParticleSystem::GetInstance()->Init();
-		UiSystem::GetInstance()->Init();
-		Ranking::GetInstance()->Init();
-		CrystalSystem::GetInstance()->Init();
-	});
+		BuffModelManager::GetInstance()->Init();
+		BGModelManager::GetInstance()->Init();
+		CrystalModelManager::GetInstance()->Init();
+		});
 }
 
 void Fade::UnInit()

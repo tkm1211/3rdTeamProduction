@@ -52,11 +52,14 @@ void SceneTitle::Update()
 	if (Fade::GetInstance()->loading) return;
 
 	
+	if (GetKeyState('L') < 0)
+	{
 
-	if (xInput[0].bAt || xInput[0].bBt || xInput[0].bXt || xInput[0].bYt)
+	}
+	if (xInput[0].bAt || xInput[0].bBt || xInput[0].bXt || xInput[0].bYt || GetKeyState(' ') < 0)
 	{
 		Fade::GetInstance()->onFadeFlg = true;
-		Fade::GetInstance()->loading = true;
+		Fade::GetInstance()->loading = false;
 		Fade::GetInstance()->SetNextScene(new SceneGame());
 	}
 	addSize = (sinf(cnt / 15.0f)) / 4.0f + 1.0f;

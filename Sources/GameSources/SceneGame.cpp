@@ -33,6 +33,13 @@ void SceneGame::Init()
 	gameClear = std::make_unique<GameClear>();
 	gameClear->Init();
 
+	CharacterSystem::GetInstance()->Init();
+	ObjectSystem::GetInstance()->Init();
+	CrystalSystem::GetInstance()->Init();
+	ParticleSystem::GetInstance()->Init();
+	UiSystem::GetInstance()->Init();
+	Ranking::GetInstance()->Init();
+
 	back = std::make_unique<Sprite>(L"Data/Assets/Texture/blackFade.png");
 	/*nowLoading = std::make_unique<Sprite>(L"Data/Assets/Texture/text03.png");
 
@@ -67,6 +74,9 @@ void SceneGame::Init()
 	float playerAngle = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
 	CameraSystem::GetInstance()->mainView.SetTarget({ playerPos.x, playerPos.y + 150,   playerPos.z });
 
+	cameraMovePos[0] = {};
+	cameraMovePos[1] = {};
+	finishCameraMoveCnt = 0;
 	isWave = false;
 	/*cnt = 0;
 	state = 0;*/
@@ -83,6 +93,7 @@ void SceneGame::Update()
 	//{
 	//	loadingThread->join();
 	//}
+
 	ParticleSystem::GetInstance()->Update();
 
 	if (Fade::GetInstance()->onFadeFlg) return;
@@ -95,8 +106,31 @@ void SceneGame::Update()
 
 	EnemyManager* enm = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 	CharacterSystem::GetInstance()->Update();
-	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead()) CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
-	else CameraControl::CameraRotation(&CameraSystem::GetInstance()->mainView);
+	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead() && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish)
+	{
+		CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
+		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
+	}
+	else if (CharacterSystem::GetInstance()->GetPlayerAddress()->finish)
+	{
+		DirectX::XMFLOAT3 tmp;
+		tmp.x = (cameraMovePos[1].x - cameraMovePos[0].x) / 60.0f;;
+		tmp.y = (cameraMovePos[1].y - cameraMovePos[0].y) / 60.0f;;
+		tmp.z = (cameraMovePos[1].z - cameraMovePos[0].z) / 60.0f;;
+
+
+		if (finishCameraMoveCnt < 60)
+		{
+			CameraControl::AddSpeedUpdate(&CameraSystem::GetInstance()->mainView, tmp);
+			finishCameraMoveCnt++;
+		}
+	}
+	else
+	{
+		CameraControl::CameraRotation(&CameraSystem::GetInstance()->mainView);
+		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
+	}
+
 	CollisionJudge::CameraVsStage();
 
 	DirectX::XMFLOAT3 playerPos = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
@@ -110,14 +144,23 @@ void SceneGame::Update()
 	UiSystem::GetInstance()->Update();
 	CrystalSystem::GetInstance()->Update();
 
-	if (enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish)
-	{
-		AllSoundStop();
-		AllBgmSoundStop();
-		PlaySoundMem(SoundLoader::GetInstance()->clear.get());
+	//if (enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish && CrystalSystem::GetInstance()->AllExist())
+	//{
+	//	AllSoundStop();
+	//	AllBgmSoundStop();
+	//	PlaySoundMem(SoundLoader::GetInstance()->clear.get());
 
-		CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
-	}
+	//	DirectX::XMFLOAT3 tmpP = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
+	//	float tmpAng = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
+	//	tmpP.x += sinf(tmpAng) * 400.0f;
+	//	tmpP.y = 100.0f;
+	//	tmpP.z += cosf(tmpAng) * 400.0f;
+
+	//	cameraMovePos[0] = CameraSystem::GetInstance()->mainView.GetPos();
+	//	cameraMovePos[1] = tmpP;
+
+	//	CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
+	//}
 
 	if(!enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
 	{
@@ -158,6 +201,7 @@ void SceneGame::Update()
 	CollisionJudge::EnemiesAttackVsPlayer();
 	CollisionJudge::EnemyVsEnemies();
 	CollisionJudge::PlayerVsEnemies();
+	CollisionJudge::BuffAreaVsPlayer();
 	CollisionJudge::EnemiesVsStage();
 
 	//TODO TITLE
@@ -176,9 +220,7 @@ void SceneGame::Update()
 	if (xInput[0].bSTARTt)
 	{
 		AllSoundStop();
-		// CharacterSystem::GetInstance()->GetPlayerAddress()->StopMotion();
-		SkinnedMesh::OnPauseAnimation();
-		SkinnedMeshBatch::OnPauseAnimation();
+		CharacterSystem::GetInstance()->GetPlayerAddress()->StopMotion();
 		SceneManager::GetInstance()->SetScene(new ScenePause(), true);
 	}
 	static int keycnt = 0;
@@ -207,6 +249,7 @@ void SceneGame::Render()
 
 	CharacterSystem::GetInstance()->Draw();
 	ObjectSystem::GetInstance()->Draw();
+	CrystalSystem::GetInstance()->Draw();
 	UiSystem::GetInstance()->Draw();
 	gameTimer->Draw();
 
@@ -215,7 +258,6 @@ void SceneGame::Render()
 		ParticleSystem::GetInstance()->Draw();
 	}
 
-	CrystalSystem::GetInstance()->Draw();
 	//UiSystem::GetInstance()->Draw();
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
 	{
@@ -234,6 +276,10 @@ void SceneGame::ImGui()
 	CharacterSystem::GetInstance()->GetPlayerAddress()->ImGui();
 
 	ImGui::Begin("Title");
+	if (ImGui::Button("clear"))
+	{
+		CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
+	}
 	if (ImGui::Button("BuffArea  POP "))
 	{
 		ObjectSystem::GetInstance()->GetBuffAreaSystemAddress()->SetBuffArea(CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos());

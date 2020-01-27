@@ -114,3 +114,11 @@ struct ArrowParticleInfo
 {
 	Data data;
 };
+
+struct Buff
+{
+	Data data;
+	float originScale;
+	DirectX::XMFLOAT3 speed;
+	DirectX::XMFLOAT4 color;
+};

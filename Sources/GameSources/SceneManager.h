@@ -27,6 +27,7 @@ public:
 	void Render();
 	void ImGui();
 
+
 	// Scene* scene : 次のシーン, bool nowSceneStack : 現在のシーンを残したいかどうか？
 	void SetScene(Scene* scene, bool nowSceneStack = false);
 

@@ -19,6 +19,27 @@
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/string.hpp>
 
+class BGModelManager
+{
+public:
+	std::unique_ptr<Model> ground;
+	std::unique_ptr<Model> wall;
+
+public:
+	BGModelManager() {}
+	~BGModelManager() {}
+
+	static BGModelManager* GetInstance()
+	{
+		static BGModelManager instance;
+		return &instance;
+	}
+
+public:
+	void Init();
+};
+
+
 class BgData
 {
 private:
@@ -47,8 +68,6 @@ private:
 
 	std::vector<std::unique_ptr<Model>> bgModel;
 	std::vector<BgData> bgObject;
-	std::unique_ptr<Model> ground;
-	std::unique_ptr<Model> wall;
 	OBJ3D groundData;
 	OBJ3D wallData;
 

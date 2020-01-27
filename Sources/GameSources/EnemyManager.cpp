@@ -156,8 +156,11 @@ void EnemyManager::Update()
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
 	}
 
+#ifdef _DEBUG
 
-	//ImGui();
+	ImGui();
+#endif // _DEBUG
+
 }
 
 void EnemyManager::Draw()

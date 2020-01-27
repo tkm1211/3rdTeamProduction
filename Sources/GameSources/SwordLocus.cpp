@@ -4,8 +4,13 @@
 #include "Blender.h"
 #include "CharacterSystem.h"
 
+
 void SwordLocus::Init()
 {
+
+	spr = std::make_unique<SwordLocusSprite>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/swordLocus.png");
+	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/thunderStore.png");
+
 	// geometry collision
 	for (int i = 0; i < 9 * 11 + 1; i++)
 	{
@@ -16,8 +21,6 @@ void SwordLocus::Init()
 		ci[i].swordPoint->SetColor({ 0, 0, 1, 1 });
 	}
 
-	spr = std::make_unique<SwordLocusSprite>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/swordLocus.png");
-	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/thunderStore.png");
 
 	for (int i = 0; i < 9 * 11 + 1; i++)
 	{
@@ -39,6 +42,7 @@ void SwordLocus::Draw()
 	//	ci[i].handPoint->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	//	ci[i].swordPoint->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime());
 	//}
+	if (CharacterSystem::GetInstance()->GetPlayerAddress()->clearFlg) return;
 		SetBlenderMode(BM_ALPHA);
 	if (CharacterSystem::GetInstance()->GetPlayerAddress()->GetisAttackLocusDisplay())
 	{

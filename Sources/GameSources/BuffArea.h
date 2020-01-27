@@ -4,6 +4,28 @@
 #include "Collision.h"
 #include "Billboard.h"
 
+class BuffModelManager
+{
+public:
+	std::unique_ptr<Model> pArea;
+	std::unique_ptr<Model> pMainArea;
+	std::unique_ptr<Billboard> texture;
+
+public:
+	BuffModelManager() {}
+	~BuffModelManager() {}
+
+	static BuffModelManager* GetInstance()
+	{
+		static BuffModelManager instance;
+		return &instance;
+	}
+
+public:
+	void Init();
+};
+
+
 class  BuffAreaInfo
 {
 public:
@@ -98,10 +120,8 @@ private:
 	float SUB_RAD = 0.1f;
 	float RADIUS = 500.0f;
 
-	std::unique_ptr<Model> pArea;
 	AreaModelData areaModelData;
 
-	std::unique_ptr<Model> pCrystal;
 
 	int onceLightNum;
 	int enabledBuffAreaNum;
@@ -110,7 +130,8 @@ private:
 	float areaFrameSubRad;
 public:
 	std::vector<BuffAreaInfo> buffArea;
-	std::unique_ptr<Billboard> texture;
+
+	int num;
 private:
 	void SetBuffArea(BuffAreaInfo b);
 	void BreakBuffArea();
@@ -118,6 +139,7 @@ public:
 	BuffAreaSystem(const BuffAreaSystem& obj) {}
 	BuffAreaSystem() {}
 	~BuffAreaSystem() {}
+
 
 	void Init();
 	void Update();

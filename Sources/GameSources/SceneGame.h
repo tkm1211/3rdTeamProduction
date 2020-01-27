@@ -27,7 +27,11 @@ private:
 	std::unique_ptr<GameClear> gameClear;
 	std::unique_ptr<Sprite> back;
 
+	DirectX::XMFLOAT3 cameraMovePos[2];
+
 	bool isWave;
+
+	int finishCameraMoveCnt;
 
 	/*std::unique_ptr<Sprite> nowLoading;
 

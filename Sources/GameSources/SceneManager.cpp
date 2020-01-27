@@ -7,16 +7,17 @@
 #include "Light.h"
 #include "CameraSystem.h"
 #include "CameraControl.h"
+#include "CharacterSystem.h"
 #include "Editer.h"
 #include "SoundLoader.h"
 #include "BGEditor.h"
 #include "ParticleSystem.h"
-
+#include "SceneLoad.h"
 
 void SceneManager::Init()
 {
 	// ‰Šú‰»ˆ—
-	SetScene(new SceneTitle());
+	SetScene(new SceneLoad());
 	ShaderSystem::GetInstance()->Init();
 	Light::GetInstance()->Init();
 	//Fade‚Ì‰Šú‰»ˆ—
@@ -54,7 +55,7 @@ void SceneManager::Update()
 
 	if (!Editer::GetInstance()->GetNowEditer() && !BGEditor::GetInstance()->GetOn())
 	{
-		CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
+		//CameraControl::MouseControlUpdate(&CameraSystem::GetInstance()->mainView);
 	}
 	else if (BGEditor::GetInstance()->GetOn())
 	{

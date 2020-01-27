@@ -17,6 +17,34 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
 
+class PlayerModelManager
+{
+public:
+	std::unique_ptr<Model> pT;
+	std::unique_ptr<Model> pWait;
+	std::unique_ptr<Model> pRun;
+	std::unique_ptr<Model> pDash;
+	std::unique_ptr<Model> pAttack[3];
+	std::unique_ptr<Model> pDamage;
+	std::unique_ptr<Model> pGuard[4];
+	std::unique_ptr<Model> pFinalBlow;
+	std::unique_ptr<Model> pClear;
+	std::unique_ptr<Model> pDead;
+
+public:
+	PlayerModelManager() {}
+	~PlayerModelManager() {}
+
+	static PlayerModelManager* GetInstance()
+	{
+		static PlayerModelManager instance;
+		return &instance;
+	}
+
+public:
+	void Init();
+};
+
 class Player
 {
 private:
@@ -99,16 +127,6 @@ private:
 
 	ModelState motionState;
 
-	std::unique_ptr<Model> pT;
-	std::unique_ptr<Model> pWait;
-	std::unique_ptr<Model> pRun;
-	std::unique_ptr<Model> pDash;
-	std::unique_ptr<Model> pAttack[3];
-	std::unique_ptr<Model> pDamage;
-	std::unique_ptr<Model> pGuard[4];
-	std::unique_ptr<Model> pFinalBlow;
-	std::unique_ptr<Model> pClear;
-	std::unique_ptr<Model> pDead;
 
 	OBJ3D modelData;
 
@@ -119,6 +137,8 @@ private:
 	DirectX::XMFLOAT3 moveSpeed;
 
 	DirectX::XMFLOAT3 emitFinalBlowPos;
+
+	DirectX::XMFLOAT3 emitPower;
 
 	// íiäKçUåÇï èÓïÒ
 	PlayerAttackInfo attackInfo[3];

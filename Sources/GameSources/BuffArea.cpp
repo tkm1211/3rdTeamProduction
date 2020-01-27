@@ -12,10 +12,17 @@
 #include "CharacterSystem.h"
 #include "Crystal.h"
 
+void BuffModelManager::Init()
+{
+	pArea = std::make_unique<Model>("Data/Assets/Model/val/AreaFrame.fbx", false);
+	pMainArea = std::make_unique<Model>("Data/Assets/Model/val/mainArea.fbx", false);
+	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexture.png");
+
+}
+
 void BuffAreaSystem::Init()
 {
 	//ÉÇÉfÉãÇÃÉçÅ[Éh
-	pArea = std::make_unique<Model>("Data/Assets/Model/val/AreaFrame.fbx", false);
 	areaModelData.areaModelData.Init();
 	areaModelData.state = 0;
 	areaModelData.timer = 0;
@@ -24,10 +31,10 @@ void BuffAreaSystem::Init()
 	areaFrameSubRad = 0.0f;
 
 	//pCrystal = std::make_unique<Model>("Data/Assets/Model/val/crystal.fbx", false);
-	texture = std::make_unique<Billboard>(FrameWork::GetInstance().GetDevice().Get(), L"Data/Assets/Texture/ParticleTexture.png");
 	onceLightNum = 0;
 	enabledBuffAreaNum = 0;
 	onCollision = false;
+
 	allArea = 0;
 	// jsonì«Ç›çûÇ›
 	std::ifstream ifs;
@@ -102,6 +109,7 @@ void BuffAreaSystem::Update()
 
 	}
 
+
 	CharacterSystem::GetInstance()->GetPlayerAddress()->SetAttackMag(enabledBuffAreaNum);
 
 	if (areaModelData.state == 1)
@@ -131,13 +139,12 @@ void BuffAreaSystem::Draw()
 		//areaModelData.areaModelData.SetScale({ 30, 30, 30 } );
 		areaModelData.areaModelData.SetPosY(15);
 		SetRasterizerState(FrameWork::RS_CULL_NONE_TRUE);
-		pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
-		pArea->Render(areaModelData.areaModelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+		BuffModelManager::GetInstance()->pArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+		BuffModelManager::GetInstance()->pArea->Render(areaModelData.areaModelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
 			DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), areaModelData.areaModelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
 		SetRasterizerState(FrameWork::RS_CULL_BACK_TRUE);
 	}
 
-	SetBlenderMode(BM_ALPHA);
 	//pCrystal->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
 	//for (auto& ba : buffArea)
 	//{
@@ -148,22 +155,24 @@ void BuffAreaSystem::Draw()
 	//}
 
 	//SetBlenderMode(BM_ADD);
-	texture->Begin(FrameWork::GetInstance().GetContext().Get());
+	//BuffModelManager::GetInstance()->texture->Begin(FrameWork::GetInstance().GetContext().Get());
+	BuffModelManager::GetInstance()->pMainArea->Preparation(ShaderSystem::GetInstance()->GetShaderOfSkinnedMesh(ShaderSystem::DEFAULT), false);
+	int i = 0;
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;
 		{
-			texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
-				{ ba.pos.x, 0 + 10, ba.pos.z }, 1024 * 2, 0, 1024, 1024,
-				{ DirectX::XMConvertToRadians(90) + CameraSystem::GetInstance()->mainView.GetRotateX(), 0, 0 }, { ba.modelData.GetScale().x * 3.0f, ba.modelData.GetScale().y * 3.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
-			if (onCollision) ba.pArea_collision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), false);
+			ba.modelData.SetPosY(0 +0.3f * i);
+			BuffModelManager::GetInstance()->pMainArea->Render(ba.modelData.GetWorldMatrix(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+				DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), areaModelData.areaModelData.GetColor(), FrameWork::GetInstance().GetElapsedTime());
+			//BuffModelManager::GetInstance()->texture->Render(FrameWork::GetInstance().GetContext().Get(), CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(),
+			//	{ ba.pos.x, 0 + 10, ba.pos.z }, 1024 * 2, 0, 1024, 1024,
+			//	{ DirectX::XMConvertToRadians(90) + CameraSystem::GetInstance()->mainView.GetRotateX(), 0, 0 }, { ba.modelData.GetScale().x * 3.0f, ba.modelData.GetScale().y * 3.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+			//if (onCollision) ba.pArea_collision->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), FrameWork::GetInstance().GetElapsedTime(), false);
+			i++;
 		}
 	}
-	texture->End();
-
-
-	//SetBlenderMode(BM_ALPHA);
-
+	//BuffModelManager::GetInstance()->texture->End();
 
 }
 
@@ -226,7 +235,7 @@ void BuffAreaSystem::SetBuffArea(DirectX::XMFLOAT3 pos)
 void BuffAreaSystem::BreakBuffArea()
 {
 	PlaySoundMem(SoundLoader::GetInstance()->crystalCrash.get());
-
+	enabledBuffAreaNum = 0;
 	for (auto& ba : buffArea)
 	{
 		if (!ba.isExist) continue;

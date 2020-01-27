@@ -119,3 +119,8 @@ void CameraControl::CameraRotation( Camera* camera )
 {
 	camera->rotateY += 1 * 0.01745f;
 }
+
+void CameraControl::AddSpeedUpdate(Camera* camera, DirectX::XMFLOAT3 _speed)
+{
+	camera->SetPos({ camera->GetPos().x + _speed.x, camera->GetPos().y + _speed.y, camera->GetPos().z + _speed.z });
+}

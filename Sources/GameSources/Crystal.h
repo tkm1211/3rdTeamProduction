@@ -3,6 +3,25 @@
 #include "SkinnedMeshBatch.h"
 #include "Model.h"
 
+class CrystalModelManager
+{
+public:
+	std::unique_ptr<Model> crystal;
+
+public:
+	CrystalModelManager() {}
+	~CrystalModelManager() {}
+
+	static CrystalModelManager* GetInstance()
+	{
+		static CrystalModelManager instance;
+		return &instance;
+	}
+
+public:
+	void Init();
+};
+
 class CrystalData
 {
 public:
@@ -40,7 +59,6 @@ class CrystalSystem
 {
 
 private:
-	std::unique_ptr<Model> crystal;
 	std::vector<CrystalData> data;
 
 public:
@@ -54,6 +72,8 @@ public:
 
 	void CrystalDestroy();
 	void PopCrystal(DirectX::XMFLOAT3 pos);
+
+	bool AllExist();
 
 	static CrystalSystem* GetInstance()
 	{
