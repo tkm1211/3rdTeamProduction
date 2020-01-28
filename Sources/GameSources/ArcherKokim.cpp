@@ -133,6 +133,10 @@ void ArcherKokim::Update()
 			damageRecast--;
 		}
 
+		if (hidame)
+		{
+			state = ARCHER_STATE::HIDAME;
+		}
 
 		if (hp <= 0)
 		{

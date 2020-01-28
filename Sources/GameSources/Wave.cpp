@@ -28,7 +28,9 @@ void Wave::Update()
 	}
 	for (auto &wrk : warker)
 	{
+
 		wrk.Update();
+		
 	}
 	for (auto &ewrk : eliteWarker)
 	{

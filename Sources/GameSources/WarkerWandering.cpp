@@ -16,7 +16,7 @@ bool WarkerWanderingJudge::Judgement(AI* obj)
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
 
-	if (warker->wanderingRct > warker->wanderingRctMax)
+	if (warker->wanderingRct > warker->wanderingRctMax && obj->GetEtoPdis() > 150)
 	{
 		return true;
 	}

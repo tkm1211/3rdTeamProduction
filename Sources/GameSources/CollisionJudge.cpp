@@ -143,6 +143,7 @@ void CollisionJudge::PlayerAttackVsEnemies()
 
 void CollisionJudge::EnemiesAttackVsPlayer()
 {
+	static int cnt = 0;
 	EnemyManager* enemyManager;
 	enemyManager = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 
@@ -170,8 +171,10 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 		}
 		else
 		{
-			if (Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
+			if (!warkerKokim.hitPl&&Collision::SphereVsSphere(player->GetModelData().GetPos(), warkerKokim.GetWeaponCollision()->GetPos(), player->bodyCollision->GetCollisionScale().x, warkerKokim.GetWeaponCollision()->GetCollisionScale().x))
 			{
+				warkerKokim.hitPl = true;
+
 				player->SufferDamage(MAX_PLAYER_DAMAGE * (0.7f + ((rand() % 500 + 1) / 1000.0f)));
 				DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&player->GetModelData().GetPos());
 				DirectX::XMVECTOR e = DirectX::XMLoadFloat3(&warkerKokim.GetWeaponCollision()->GetPos());
@@ -183,6 +186,10 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 				//	CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
 				//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
 			}
+			/*else
+			{
+				warkerKokim.hitPl = false;
+			}*/
 		}
 	}
 
@@ -221,6 +228,14 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 			}
 		}
 	}
+
+	//cnt++;
+
+	//if (cnt >= 60)
+	//{
+	//	cnt = 0;
+	//	hitPl = false;
+	//}
 }
 
 void CollisionJudge::BuffAreaVsPlayer()

@@ -13,7 +13,8 @@ enum class ARCHER_STATE
 	WAIT,
 	RUN,
 	STRIKE,
-	TPOSE
+	TPOSE,
+	HIDAME
 };
 
 class Shot;
@@ -27,6 +28,7 @@ public:
 	int damageRecast = 0;
 	int recastMax=100;
 	int attackPoint;
+	int hidameCnt = 0;
 
 	bool nowAsphyxia = false;
 

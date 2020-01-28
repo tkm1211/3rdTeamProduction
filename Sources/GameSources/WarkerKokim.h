@@ -10,7 +10,8 @@ enum class WARKER_STATE
 	RUN,
 	STRIKE,
 	JUMP_ATTACK,
-	TPOSE
+	TPOSE,
+	HIDAME
 };
 
 enum class  WARKER_ATTACK_STATE
@@ -32,6 +33,8 @@ public:
 	int atAnimFrame;
 	int attackPoint;
 	bool nowJumpAttack;
+	bool hitPl=false;
+	int hidameCnt=0;
 
 	DirectX::XMFLOAT3 vec;
 	DirectX::XMFLOAT3 atJumpVec;
@@ -67,6 +70,9 @@ public:
 	void SetStrikeRecastMax(int recast) { strikeRecastMax = recast; };
 	void SetStrikeRecastCnt(int recast) { strikeRecastCnt = recast; };
 	void SetDamageRecast(int damageRecast) { this->damageRecast = damageRecast; };
+	void SetAttackPoint(int attack) { this->attackPoint = attack; };
+
+
 	void ChangeNowAsphyxia() { nowAsphyxia ^= 1; };
 private:
 

@@ -113,15 +113,18 @@ public:
 	std::unique_ptr<Model> pWarkerAttack;
 	std::unique_ptr<Model> pWarkerJumpAttack;
 	std::unique_ptr<Model> pWarkerWait;
+	std::unique_ptr<Model> pWarkerHidame;
 
 	// Archer Kokim Models
 	std::unique_ptr<Model> pArcher;
 	std::unique_ptr<Model> pArcherAttack;
 	std::unique_ptr<Model> pArcherRun;
 	std::unique_ptr<Model> pArcherStay;
-
+	std::unique_ptr<Model> pArcherHidame;
 	// arrow
 	std::unique_ptr<Model> pShot;
+
+
 
 public:
 	 EnemyModelManager() {}

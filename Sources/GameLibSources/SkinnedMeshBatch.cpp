@@ -29,7 +29,7 @@ void SkinnedMeshBatch::LoadFBX( ID3D11Device *device, const char* fileName )
 	importStatus = importer->Initialize( fileName, -1, manager->GetIOSettings() );
 	_ASSERT_EXPR_A( importStatus, importer->GetStatus().GetErrorString() );
 
-
+	
 	// Create a new scene so it can be populated by the imported file.
 	FbxScene* scene = FbxScene::Create( manager, "" );
 

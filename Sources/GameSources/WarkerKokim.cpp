@@ -53,7 +53,10 @@ WarkerKokim::WarkerKokim(int num)
 	stWandering = 0;
 	wanderingCnt = 0;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(50, 50, 50));
+	searchCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(findPdis, 20, findPdis));
+
+
 
 	isAttack = false;
 	isJumpAttack = false;
@@ -107,7 +110,9 @@ void WarkerKokim::Init()
 	stWandering = 0;
 	wanderingCnt = 0;
 	bodyCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(60, 180, 60));
-	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(20, 20, 20));
+	weaponCol = std::make_shared<CollisionPrimitive>(1, false, DirectX::XMFLOAT3(50, 50, 50));
+	searchCol = std::make_shared<CollisionPrimitive>(2, false, DirectX::XMFLOAT3(findPdis, 20, findPdis));
+
 	state = WARKER_STATE::WAIT;
 
 	isAttack = false;
@@ -130,10 +135,21 @@ void WarkerKokim::Add()
 void WarkerKokim::Update()
 {
 
+
+	static WARKER_STATE s = state;
+
+	if (WARKER_STATE::STRIKE == s && state != s)
+	{
+		hitPl = false;
+	}
+
+	s = state;
 	//atAnimFrame = pWarkerAttack->GetAnimationFrame();
 
 	if (!nowAsphyxia)
 	{
+
+
 		OBJ3D& pTrs = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData();
 
 		
@@ -176,6 +192,12 @@ void WarkerKokim::Update()
 
 		AI::Update();
 		bodyCol->SetPos(modelData->GetPos());
+		searchCol->SetPos(modelData->GetPos());
+
+		if (hidame)
+		{
+			state = WARKER_STATE::HIDAME;
+		}
 
 		if (damageRecast > 0)
 		{

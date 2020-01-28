@@ -15,18 +15,29 @@ public:
 	CollisionPrimitive* GetWeaponCollision() { return weaponCol.get(); };
 
 
-	void Damage(int damage) { hp-=damage; };
+	void Damage(int damage) 
+	{
+		hp-=damage;
+		hidame = true;
+		modelData->SetPos(DirectX::XMFLOAT3(
+			modelData->GetPos().x - modelData->GetSpeed().x*20,
+			modelData->GetPos().y - modelData->GetSpeed().y*20,
+			modelData->GetPos().z - modelData->GetSpeed().z*20));
+
+	};
 	void SetHp(int hp) { this->hp = hp; };
 	void SetVelocity(float velocity) { this->velocity = velocity; };
 
 	std::shared_ptr<CollisionPrimitive> bodyCol;
 	std::shared_ptr<CollisionPrimitive> weaponCol;
+	std::shared_ptr<CollisionPrimitive> searchCol;
 	std::shared_ptr<OBJ3DInstance> modelData;
 
 	int index=0;
 	int hp=10;
 	float velocity = 5;
-
+	bool hidame = false;
+	
 	template<class Archive>
 	void serialize(Archive & archive)
 	{
