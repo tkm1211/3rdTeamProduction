@@ -158,7 +158,7 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 
 	for (auto& warkerKokim : waveData->GetWarker())
 	{
-		if (warkerKokim.GetState() != WARKER_STATE::STRIKE || warkerKokim.GetNowAsphyxia()) continue;
+		if (warkerKokim.GetState() != WARKER_STATE::STRIKE && warkerKokim.GetState() != WARKER_STATE::JUMP_ATTACK || warkerKokim.GetNowAsphyxia()) continue;
 
 		if (player->GetonGrdCollision())
 		{
@@ -186,10 +186,7 @@ void CollisionJudge::EnemiesAttackVsPlayer()
 				//	CharacterSystem::GetInstance()->GetPlayerAddress()->SetMoveSpeed({sp.x * 10, 0, sp.z * 10});
 				//	ParticleSystem::GetInstance()->SetPlayerAttackSlashParticle(warkerKokim.GetModelData()->GetPos());
 			}
-			/*else
-			{
-				warkerKokim.hitPl = false;
-			}*/
+			
 		}
 	}
 

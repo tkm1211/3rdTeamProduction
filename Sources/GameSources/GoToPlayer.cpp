@@ -15,7 +15,7 @@ bool GotoPlayerJudge::Judgement(AI* obj)
 #else
 	WarkerKokim* warker = reinterpret_cast<WarkerKokim*>(obj);
 #endif
-	if (obj->GetEtoPdis() < 150 || warker->hidame)
+	if (obj->GetEtoPdis() < 100 || warker->hidame)
 	{
 		return false;
 	}

@@ -94,6 +94,11 @@ void EnemyManager::Update()
 		{
 			if (waveMgr->GetWaves().size() > 0)
 			{
+				for (auto &w: waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()+1).GetWarker())
+				{
+					w.modelData->SetScale(DirectX::XMFLOAT3(2 + waveMgr->GetWaveNowIndex()*0.5f, 2 + waveMgr->GetWaveNowIndex()*0.5f, 2 + waveMgr->GetWaveNowIndex()*0.5f));
+				}
+
 				for (auto &w : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
 				{
 					waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()+1).GetWarker().emplace_back(w);
@@ -237,11 +242,11 @@ void EnemyManager::Draw()
 
 		
 	
-		for (auto &wrk : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
+		/*for (auto &wrk : waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetWarker())
 		{
 			wrk.GetWeaponCollision()->Render(CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), DirectX::XMFLOAT4(0, 1, 0, 1), FrameWork::GetInstance().GetElapsedTime());
 		}
-		
+		*/
 	}
 
 }
