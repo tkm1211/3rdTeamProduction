@@ -21,7 +21,7 @@ int bonein;
 void EnemyModelManager::Init()
 {
 	// Warker Kokim Models
-	pWarker				= std::make_unique<Model>("Data/Assets/Model/Enemys/Warker.fbx"				, false);
+	pWarker				= std::make_unique<Model>("Data/Assets/Model/Enemys/Warker.fbx"				, false, true);
 	pWarkerAttack		= std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerAttack.fbx"		, false, true);
 	pWarkerJumpAttack	= std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerJumpAttack.fbx"	, false, true);
 	pWarkerRun			= std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerRun.fbx"			, false, true);
@@ -29,7 +29,7 @@ void EnemyModelManager::Init()
 	pWarkerHidame= std::make_unique<Model>("Data/Assets/Model/Enemys/WarkerHidame.fbx", false, true);
 
 	// Archer Kokim Models
-	pArcher				= std::make_unique<Model>("Data/Assets/Model/Enemys/Archer.fbx"				, false);
+	pArcher				= std::make_unique<Model>("Data/Assets/Model/Enemys/Archer.fbx"				, false, true);
 	pArcherAttack		= std::make_unique<Model>("Data/Assets/Model/Enemys/ArcherAttack.fbx"		, false, true);
 	pArcherRun			= std::make_unique<Model>("Data/Assets/Model/Enemys/ArcherRun.fbx"			, false, true);
 	pArcherStay			= std::make_unique<Model>("Data/Assets/Model/Enemys/ArcherStay.fbx"			, false, true);
@@ -160,10 +160,23 @@ void EnemyManager::Update()
 				}
 			}
 		}
+		if (nextWave)
+		{
+			waveMgr->GetWaveNowIndex()++;
+
+			if (waveMgr->GetWaveNowIndex() + 1 > tmpWaveNum)
+			{
+				UiSystem::GetInstance()->GetWaveTexAddress()->Start(waveMgr->GetWaveNowIndex() + 1);
+				tmpWaveNum = waveMgr->GetWaveNowIndex() + 1;
+
+				waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isChange = false;
+			}
+		}
 
 		if (nextWave && waveMgr->GetWaves().size() - 1 == waveMgr->GetWaveNowIndex())
 		{
 			waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+			finishWave = true;
 		}
 
 	}
@@ -173,6 +186,7 @@ void EnemyManager::Update()
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex()).GetArcher().size() <= 0)
 	{
 		waveMgr->GetWaves().at(waveMgr->GetWaveNowIndex())._isFinish = true;
+		finishWave = true;
 	}
 
 #ifdef _DEBUG
@@ -272,6 +286,7 @@ void EnemyManager::ArcherRenderer()
 			else if (arc.GetNowAsphyxia())
 			{
 				arc.modelData->SetIsAnimation(false);
+				arc.modelData->SetAnimationTick(0.0f);
 			}
 
 			{

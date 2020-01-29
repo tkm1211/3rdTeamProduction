@@ -439,7 +439,7 @@ void CollisionJudge::DeathBlowVsEnemies()
 			DirectX::XMFLOAT2 enemyPos = DirectX::XMFLOAT2(enemyPosFloat3.x, enemyPosFloat3.z);
 			float enemyScale = warkerKokim.GetBodyCollision()->GetScale().x;
 
-			if (Collision::CircleVsCircleAndExtrusion(deathBlowPos, deathBlowScale, enemyPos, enemyScale))
+			if (Collision::CircleVsCircleAndExtrusion(deathBlowPos, deathBlowScale, enemyPos, enemyScale, false))
 			{
 				warkerKokim.Damage(10000);
 				warkerKokim.SetDamageRecast(50);

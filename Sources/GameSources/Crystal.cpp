@@ -41,7 +41,7 @@ void CrystalSystem::Draw()
 		if (!data.at(i).isExist) continue;
 		data.at(i).crystalData.SetColor({3.0f, 3.0f ,3.0f, 0.6f});
 		data.at(i).crystalData.SetScale({3.0f, 3.0f, 3.0f});
-		data.at(i).crystalData.SetPosY(80.0f);
+		data.at(i).crystalData.SetPosY(230.0f);
 		CrystalModelManager::GetInstance()->crystal->Render(data.at(i).crystalData, CameraSystem::GetInstance()->mainView.GetViewMatrix(), CameraSystem::GetInstance()->mainView.GetProjectionMatrix(), FrameWork::GetInstance().GetElapsedTime());
 	}
 	CrystalModelManager::GetInstance()->crystal->End(DirectX::XMFLOAT4(0.0f, -1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f));
@@ -54,7 +54,7 @@ void CrystalSystem::PopCrystal(DirectX::XMFLOAT3 pos)
 
 	tmp.isExist = true;
 	tmp.crystalData.SetPos(pos);
-	tmp.crystalData.SetPosY(5.0f);
+	tmp.crystalData.SetPosY(40.0f);
 
 	for (int i = 0; i < data.size(); i++)
 	{

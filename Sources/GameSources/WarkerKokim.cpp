@@ -214,7 +214,7 @@ void WarkerKokim::Update()
 	{
 		/*state = WARKER_STATE::TPOSE;*/
 
-		modelData->SetPosY(180);
+		modelData->SetPosY(180*2);
 	}
 
 	

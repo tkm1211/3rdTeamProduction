@@ -9,7 +9,7 @@ void SpecialAttackGauge::Init()
 
 	texcoord = { 830 - 19, 43 };
 
-	addGauge = 0.0;
+	addGauge = 798.0;
 	attackPoint = 0;
 	totalPoint = 0;
 	isReset = false;

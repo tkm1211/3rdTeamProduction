@@ -599,7 +599,7 @@ bool Particle::SetBuff(Buff* p, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 col, in
 	p->data.alpha = 1.0f;
 	p->color = col;
 	p->data.time = 0;
-	p->data.existTime = rand() % 30 + 30.0f;
+	p->data.existTime = rand() % 10 + 10.0f;
 	p->data.isExist = true;
 
 	p->data.tex.Set(1024.0f * 2, 1024.0f * 3, 1024.0f, 1024.0f);

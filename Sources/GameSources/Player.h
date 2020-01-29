@@ -237,8 +237,6 @@ public:
 	void SufferDamage(int _damage);
 	// ÉKÅ[Éhê¨å˜
 	void SuccessGuard();
-	void StopMotion();
-	void StartMotion();
 	bool GetonGrdCollision() { return onGuardCollision; }
 	bool GetOnAtkCollision() { return onAtkCollision; }
 	bool GetOnBlowCollision() { return onFinalBlowCollision; }
@@ -293,7 +291,7 @@ public:
 	void SetAttackMag(int mag) { attackMag = mag; }
 	float GetAttackDamage() 
 	{
-		totalAttack = attackInfo[attackCnt].power * (1.0f + ATK_MAG * attackMag);
+		totalAttack = attackInfo[attackCnt].power * (1.0f + 0.10f * attackMag);
 		return totalAttack; 
 	}
 	void ImGui();

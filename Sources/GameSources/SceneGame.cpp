@@ -106,6 +106,7 @@ void SceneGame::Update()
 
 	EnemyManager* enm = CharacterSystem::GetInstance()->GetEnemyManagerAddress();
 	CharacterSystem::GetInstance()->Update();
+
 	if (!CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead() && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish)
 	{
 		CameraControl::PadControlUpdate(&CameraSystem::GetInstance()->mainView);
@@ -144,23 +145,14 @@ void SceneGame::Update()
 	UiSystem::GetInstance()->Update();
 	CrystalSystem::GetInstance()->Update();
 
-	//if (enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish && CrystalSystem::GetInstance()->AllExist())
-	//{
-	//	AllSoundStop();
-	//	AllBgmSoundStop();
-	//	PlaySoundMem(SoundLoader::GetInstance()->clear.get());
+	if (enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->finish && CrystalSystem::GetInstance()->AllExist())
+	{
+		AllSoundStop();
+		AllBgmSoundStop();
+		PlaySoundMem(SoundLoader::GetInstance()->clear.get());
 
-	//	DirectX::XMFLOAT3 tmpP = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetPos();
-	//	float tmpAng = CharacterSystem::GetInstance()->GetPlayerAddress()->GetModelData().GetAngle().y;
-	//	tmpP.x += sinf(tmpAng) * 400.0f;
-	//	tmpP.y = 100.0f;
-	//	tmpP.z += cosf(tmpAng) * 400.0f;
-
-	//	cameraMovePos[0] = CameraSystem::GetInstance()->mainView.GetPos();
-	//	cameraMovePos[1] = tmpP;
-
-	//	CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
-	//}
+		CharacterSystem::GetInstance()->GetPlayerAddress()->finish = true;
+	}
 
 	if(!enm->finishWave && !CharacterSystem::GetInstance()->GetPlayerAddress()->GetisDead())
 	{
@@ -220,7 +212,8 @@ void SceneGame::Update()
 	if (xInput[0].bSTARTt)
 	{
 		AllSoundStop();
-		CharacterSystem::GetInstance()->GetPlayerAddress()->StopMotion();
+		SkinnedMesh::OnPauseAnimation();
+		SkinnedMeshBatch::OnPauseAnimation();
 		SceneManager::GetInstance()->SetScene(new ScenePause(), true);
 	}
 	static int keycnt = 0;

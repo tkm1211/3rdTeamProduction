@@ -143,6 +143,7 @@ void Player::UnInit()
 
 void Player::Update()
 {
+	static bool trg = false;
 	if (finish)
 	{
 		SwitchMotion(ModelState::CLEAR);
@@ -197,7 +198,7 @@ void Player::Update()
 		}
 		else if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() > 25 && PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() <= 90)
 		{
-			if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() == 43)
+			if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() == 40)
 			{
 				PlaySoundMem(SoundLoader::GetInstance()->thunder.get());
 				SetVolume(SoundLoader::GetInstance()->thunder.get(), 1.0f);
@@ -224,15 +225,14 @@ void Player::Update()
 		else if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() > 100 && PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() <= 140)
 		{
 			onFinalBlowCollision = false;
-			if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() == 132)
+			if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() == 132 && !trg)
 			{
+				trg = true;
 				onFinalBlowCollision = true;
 				PlaySoundMem(SoundLoader::GetInstance()->lightning.get());
 				SetVolume(SoundLoader::GetInstance()->lightning.get(), 1.0f);
 			}
-			emitFinalBlowPos = { sinf(modelData.GetAngle().y) * 300.0f, 50.0f, cosf(modelData.GetAngle().y) * 300.0f };
 			moveSpeed = { 0.0f, 0.0f, 0.0f };
-			blowCollision->SetPos(modelData.GetPos());
 			speedDownTrg = false;
 			ParticleSystem::GetInstance()->SetUltimateThunder(modelData.GetPos());
 			SetXInputVibration(65000, 65000, 60);
@@ -240,6 +240,7 @@ void Player::Update()
 
 		if (PlayerModelManager::GetInstance()->pFinalBlow->GetAnimationFrame() >= 140)
 		{
+			trg = false;
 			emitThunderStore = false;
 			modelData.SetPosY(0.0f);
 			isFinalBlow = false;
@@ -260,6 +261,7 @@ void Player::Update()
 	float col = 1.0f / (float)(attackMag);
 	if (col >= 1.0f) col = 1.0f;
 	ParticleSystem::GetInstance()->SetBuffPower(emitPower, { 1.0f - col, col, 0.0f, 1.0f}, attackMag);
+	blowCollision->SetPos(modelData.GetPos());
 
 }
 
@@ -1375,106 +1377,6 @@ void Player::CollisionInformation()
 
 	}
 
-}
-
-void Player::StopMotion()
-{
-	switch (motionState)
-	{
-	case Player::ModelState::T:
-		break;
-	case Player::ModelState::WAIT:
-		PlayerModelManager::GetInstance()->pWait->PauseAnimation();
-		break;
-	case Player::ModelState::RUN:
-		PlayerModelManager::GetInstance()->pRun->PauseAnimation();
-		break;
-	case Player::ModelState::DASH:
-		PlayerModelManager::GetInstance()->pDash->PauseAnimation();
-		break;
-	case Player::ModelState::ATTACK1:
-		PlayerModelManager::GetInstance()->pAttack[0]->PauseAnimation();
-		break;
-	case Player::ModelState::ATTACK2:
-		PlayerModelManager::GetInstance()->pAttack[1]->PauseAnimation();
-		break;
-	case Player::ModelState::ATTACK3:
-		PlayerModelManager::GetInstance()->pAttack[3]->PauseAnimation();
-		break;
-	case Player::ModelState::GUARD1:
-		break;
-	case Player::ModelState::GUARD2:
-		PlayerModelManager::GetInstance()->pGuard[0]->PauseAnimation();
-		break;
-	case Player::ModelState::GUARD3:
-		PlayerModelManager::GetInstance()->pGuard[1]->PauseAnimation();
-		break;
-	case Player::ModelState::GUARD4:
-		PlayerModelManager::GetInstance()->pGuard[2]->PauseAnimation();
-		break;
-	case Player::ModelState::DAMAGE:
-		PlayerModelManager::GetInstance()->pGuard[3]->PauseAnimation();
-		break;
-	case Player::ModelState::FINALBLOW:
-		PlayerModelManager::GetInstance()->pFinalBlow->PauseAnimation();
-		break;
-	case Player::ModelState::CLEAR:
-		PlayerModelManager::GetInstance()->pClear->PauseAnimation();
-		break;
-	case Player::ModelState::DEAD:
-		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->PauseAnimation();
-		break;
-	}
-}
-
-void Player::StartMotion()
-{
-	switch (motionState)
-	{
-	case Player::ModelState::T:
-		break;
-	case Player::ModelState::WAIT:
-		PlayerModelManager::GetInstance()->pWait->ReStartAnimation();
-		break;
-	case Player::ModelState::RUN:
-		PlayerModelManager::GetInstance()->pRun->ReStartAnimation();
-		break;
-	case Player::ModelState::DASH:
-		PlayerModelManager::GetInstance()->pDash->ReStartAnimation();
-		break;
-	case Player::ModelState::ATTACK1:
-		PlayerModelManager::GetInstance()->pAttack[0]->ReStartAnimation();
-		break;
-	case Player::ModelState::ATTACK2:
-		PlayerModelManager::GetInstance()->pAttack[1]->ReStartAnimation();
-		break;
-	case Player::ModelState::ATTACK3:
-		PlayerModelManager::GetInstance()->pAttack[3]->ReStartAnimation();
-		break;
-	case Player::ModelState::GUARD1:
-		break;
-	case Player::ModelState::GUARD2:
-		PlayerModelManager::GetInstance()->pGuard[0]->ReStartAnimation();
-		break;
-	case Player::ModelState::GUARD3:
-		PlayerModelManager::GetInstance()->pGuard[1]->ReStartAnimation();
-		break;
-	case Player::ModelState::GUARD4:
-		PlayerModelManager::GetInstance()->pGuard[2]->ReStartAnimation();
-		break;
-	case Player::ModelState::DAMAGE:
-		PlayerModelManager::GetInstance()->pGuard[3]->ReStartAnimation();
-		break;
-	case Player::ModelState::FINALBLOW:
-		PlayerModelManager::GetInstance()->pFinalBlow->ReStartAnimation();
-		break;
-	case Player::ModelState::CLEAR:
-		PlayerModelManager::GetInstance()->pClear->ReStartAnimation();
-		break;
-	case Player::ModelState::DEAD:
-		PlayerModelManager::GetInstance()->PlayerModelManager::GetInstance()->pDead->ReStartAnimation();
-		break;
-	}
 }
 
 void Player::ImGui()

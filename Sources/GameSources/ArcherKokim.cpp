@@ -150,7 +150,7 @@ void ArcherKokim::Update()
 	}
 	else
 	{
-		modelData->SetPosY(180);
+		modelData->SetPosY(180*2);
 	}
 }
 

@@ -34,7 +34,7 @@ void GameOver::Draw()
 	backSpr->Draw({ 0, 0 }, { 1920, 1080 }, { 0,0 }, { 1920, 1080 }, 0, { 1, 1, 1, 0.75f });
 
 	gameOverSpr->Begin();
-	gameOverSpr->Draw({ (1920 / 2 - (735.0f / 2.0f)) , 32 }, { 735.0f * 1.0f, 110.0f * 0.0f }, { 0.0f, 0.0f }, { 735.0f, 110.0f }, 0, { 1, 1, 1, 1 });
+	gameOverSpr->Draw({ (1920 / 2 - (735.0f / 2.0f)) , 32 }, { 735.0f * 1.0f, 110.0f * 1.0f }, { 0.0f, 110.0f }, { 735.0f, 110.0f }, 0, { 1, 1, 1, 1 });
 	gameOverSpr->End();
 
 	textSpr->Begin();
